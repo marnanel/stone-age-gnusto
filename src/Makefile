@@ -1,6 +1,6 @@
 # Makefile - makefile for gnusto
 #
-# $Header: /cvs/gnusto/src/Makefile,v 1.16 2004/08/01 02:52:45 marnanel Exp $
+# $Header: /cvs/gnusto/src/Makefile,v 1.17 2004/09/28 19:55:58 naltrexone42 Exp $
 #
 # Copyright (c) 2003 Thomas Thurman
 # thomas@thurman.org.uk
@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
 
 APPLICATION = gnusto
-VERSION = 0.6.0
+VERSION = 0.7.0
 XPIFILE = ../downloads/${APPLICATION}-${VERSION}.xpi
 PYTHON = python
 MOZILLA = ~/firefox/firefox

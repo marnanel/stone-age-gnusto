@@ -4,7 +4,7 @@
 
 <!--
 
-$Header: /cvs/gnusto/src/gnusto/content/gnusto.xul,v 1.73 2004/04/12 03:49:24 marnanel Exp $
+$Header: /cvs/gnusto/src/gnusto/content/gnusto.xul,v 1.74 2004/09/28 19:55:58 naltrexone42 Exp $
 
 Copyright (c) 2003 Thomas Thurman
 thomas@thurman.org.uk
@@ -25,7 +25,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
 -->
 
 <window
-	title="Gnusto"
+	title="Gnusto 0.7"
 	xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
 	xmlns:html="http://www.w3.org/1999/xhtml"
 	id="gnusto"
@@ -160,7 +160,7 @@ function ensureHappiness() {
 <menu id="file-menu" label="File" accesskey="F">
 <menupopup>
 <menuitem label="New (restart)" accesskey="N" disabled="true" />
-<menuitem label="Open Guide..." accesskey="G" oncommand="openDialog('guide-wizard.xul');"/>
+<!-- <menuitem label="Open Guide..." accesskey="G" oncommand="openDialog('guide-wizard.xul');"/> -->
 <menuitem label="Open file..." accesskey="O" oncommand="command_open();"/>
 <menuitem label="Save" disabled="true" accesskey="S"/>
 <menuitem label="Save as..." disabled="true" accesskey="A"/>

@@ -1,7 +1,7 @@
 // mozilla-glue.js || -*- Mode: Java; tab-width: 2; -*-
 // Interface between gnusto-lib.js and Mozilla. Needs some tidying.
 // Now uses the @gnusto.org/engine;1 component.
-// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.142 2004/08/01 03:22:02 marnanel Exp $
+// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.143 2004/09/28 19:55:58 naltrexone42 Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -266,10 +266,10 @@ function command_exec(args) {
 								var timeout_deciseconds = engine.effect(1)*1;
 
 								if (timeout_deciseconds) {
-										win_show_status("Timed read: "+timeout_deciseconds+'ds');
+										//win_show_status("Timed read: "+timeout_deciseconds+'ds');
 										timeout_begin(timeout_deciseconds);
 								} else {
-										win_show_status("Not a timed read. "+engine.effect(1));
+										//win_show_status("Not a timed read. "+engine.effect(1));
 								}
 
 								// This'll be handled by the window's input routines.
@@ -294,10 +294,10 @@ function command_exec(args) {
 								var timeout_deciseconds = engine.effect(1)*1;
 
 								if (timeout_deciseconds) {
-										win_show_status("Timed read: "+timeout_deciseconds+'ds');
+										//win_show_status("Timed read: "+timeout_deciseconds+'ds');
 										timeout_begin(timeout_deciseconds);
 								} else {
-										win_show_status("Not a timed read. "+engine.effect(1));
+										//win_show_status("Not a timed read. "+engine.effect(1));
 								}
 
 								win_relax();
