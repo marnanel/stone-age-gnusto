@@ -1,7 +1,7 @@
 // barbara.js || -*- Mode: Java; tab-width: 2; -*-
 // Lightweight lower-window handler.
 //
-// $Header: /cvs/gnusto/src/gnusto/content/barbara.js,v 1.29 2004/09/29 18:37:05 naltrexone42 Exp $
+// $Header: /cvs/gnusto/src/gnusto/content/barbara.js,v 1.30 2004/09/29 23:49:59 naltrexone42 Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -158,7 +158,7 @@ function barbara_set_input(textlist) {
 function barbara_print_status() {
 	
 	        var zVersion = engine.getByte(0);
-	        if (zVersion < 5) {                  
+	        if (zVersion < 4) {                  
 	          win_clear(1);
                   win_set_top_window_size(1);	          	
                   bocardo_gotoxy(1,0,2);
