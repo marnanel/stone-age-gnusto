@@ -16,23 +16,35 @@
     <script type="application/x-javascript">
       <![CDATA[
         function onLoad() {
-          var curErrorText = document.getElementById("errorText");
-          curErrorText.value = window.arguments[0];
-          var cbTransient = document.getElementById("transientCheckBox");
-          
-          if (window.arguments[1] < 500) {
-            cbTransient.hidden = true;          
-          }
-          else {
-            cbTransient.hidden = false;          
-          }
+           try {
+              var params = window.arguments[0].QueryInterface(Components.interfaces.nsIDialogParamBlock);
+
+              var errorcode = params.GetInt(0);
+              var messages = params.GetString(0);
+
+              var curErrorText = document.getElementById("errorText");
+              curErrorText.value = messages;
+
+              var cbTransient = document.getElementById("transientCheckBox");
+
+              if (errorcode < 500) {
+                 cbTransient.hidden = true;          
+                 cbTransient.checked = false; // just to be sure.
+              } else {
+                 cbTransient.hidden = false;          
+              }
+            } catch(e) { alert(e); }
         }
+
         function onDialogAccept() {
-          if (window.arguments[1] > 500) {
-            var cbTransient = document.getElementById("transientCheckBox");
-            window.opener.ignore_transient_errors = cbTransient.checked;
+           if (document.getElementById("transientCheckBox").checked) {
+               errorbox = Components.classes['@gnusto.org/errorbox;1'].
+		             getService(Components.interfaces.gnustoIErrorBox);
+
+               errorbox.ignoreTransientErrors(1);
           }
         }
+
       ]]>
     </script>
 
