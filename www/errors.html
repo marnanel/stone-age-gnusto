@@ -68,6 +68,11 @@ didn't correspond to any of them.</td></tr>
 <tr><th>206</th><td><b>Unreal property.</b> The story asked what followed
 a particular property of an object, and there wasn't such a property.</td></tr>
 
+<tr><th>3xx</th><td><b>Glue errors.</b> These are errors in the interface
+between Mozilla and the Z-machine.</td></tr>
+
+<tr><th>300</th><td><b>JavaScript compile error</b> ("unhappy source"). This
+error is caused when one of Gnusto's own source code files fails to compile.</td></tr>
 
 <tr><th>7xx</th><td>
 <b>Transient story errors.</b> These happen when Gnusto's Z-machine thinks it's found
@@ -101,6 +106,10 @@ only works for properties with lengths less than three bytes.</td></tr>
 
 <tr><th>706</th><td><b>Property too long to get.</b> The get_prop opcode
 only works for properties with lengths already less than three bytes.
-(You can get at the data in other ways, just not with this opcode.)</td></tr>
+(You can get at the data in other ways, just not with this opcode.)
+Gnusto will return the first two bytes if asked to carry on.<br><br>
+<i>This error is ignored by default</i> to work around a bug in old
+versions of the Inform library. See <a href="http://www.mozdev.org/bugs/show_bug.cgi?id=3314">bug 3314</a>.
+</td></tr>
 
 </table>
