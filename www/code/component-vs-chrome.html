@@ -12,4 +12,9 @@
 
 <p>Components live in the <code>components/</code> directory of your Mozilla installation. Gnusto's component JavaScript and <a href="http://www.mozilla.org/scriptable/xpidl/">XPIDL</a> are in the subdirectories of <a href="http://www.mozdev.org/source/browse/gnusto/src/gnusto/xpcom/"><code>$/src/xpcom</code></a> in CVS; <a href="jury-rig.html">jury-rig</a> should handle everything to do with compiling and copying these files between your Gnusto source directory and your Mozilla installation.</p>
 
-<p><b>Why use components rather than chrome?</b> We are gradually moving parts of <a href="/code/">Gnusto's code</a> from chrome to component form, because...</p>
+<p>For more information, see:<ul>
+<li><a href="http://books.mozdev.org/html/mozilla-chp-8.html">chapter 8 of Boswell <i lang="la">et al.</i>, 2002: <cite>Creating Applications with Mozilla</cite>, O'Reilly</a>.</li>
+<li><a href="http://dmoz.org/Computers/Programming/Component_Frameworks/XPCOM/">Open Directory Project: XPCOM</a></li>
+</ul></p>
+
+<p><b>Why use components rather than chrome?</b> We are gradually moving parts of <a href="/code/">Gnusto's code</a> from chrome to component form, because components are simpler and cleaner. For example, there's no possibility that an identifier we use in one part of the program will clash with one from another part. There are also a few <a href="http://mozdev.org/bugs/show_bug.cgi?id=4984">things you just can't do in chrome</a>.</p>
