@@ -1,7 +1,54 @@
 <h1 class="page-header"><img src="lanterns/screen.png" alt="" width="32" height="64"> <i>Bocardo</i> - <code>upper.js</code></h5>
 
-<p align="right"><a href="http://www.mozdev.org/source/browse/gnusto/src/gnusto/content/upper.js">Read the code</a></p>
-<p align="right">Replaces: <code><a href="barbara.html">Barbara</a></code></p>
+<p align="right"><a href="http://www.mozdev.org/source/browse/gnusto/src/gnusto/content/upper.js">Read the code</a><br>
+Replaces: <code><a href="barbara.html">Barbara</a></code></p>
+
+<p>The Z-machine has <a href="http://www.gnelson.demon.co.uk/zspec/sect08.html">a complicated screen model</a> that is better suited to character-based displays than the HTML or XUL representation. Bocardo therefore attempts to produce HTML which allows the rest of the system to treat the screen more like a <a href="http://vt100.net">VT100</a> than a browser.</p>
+
+<p><small><b>Source of the name "upper.js":</b> Bocardo developed from the code to handle the upper window in <a href="barbara.html">Barbara</a>.</small></p>
+
+<p>The identifier prefix for Bocardo is <code>win</code>.</p>
+
+<h2>The layout</h2>
+
+<p><b>The screen:</b> The whole screen area is wrapped in one element. This is a <code>&lt;pre&gt;</code> to make spaces significant. (An alternative method would be to replace all spaces with non-breaking spaces.)</p>
+
+<p><b><code>&lt;div&gt;</code>s represent lines:</b> This <code>&lt;pre&gt;</code> contains a series of <code>&lt;div&gt;</code>s. Because <code>&lt;div&gt;</code>s are block-level elements, they are rendered one below the other.</p>
+
+<p><b><code>&lt;spans&gt;</code>s represent sequences of characters:</b> Every <code>&lt;div&gt;</code> contains zero or more <code>&lt;spans&gt;</code>, which are rendered horizontally next to one another. Each span <em>may</em> be CSS-formatted, but not necessarily differently to its neighbours.</p>
+
+<h2>The public methods</h2>
+
+<p><b>win_setup():</b> call this before any writes to the screen, or to clear the screen.</p>
+
+<p><b>win_resize(width, height):</b> changes the <em>maximum</em> width and height of the screen. It will affect where wrapping and scrolling happen, but it will never make the screen smaller.</p>
+
+<p><b>win_reset_scroll_count():</b> The win_chalk() function will stop after printing a certain amount of text, so that the user can read it. If you know that the user has had a chance to catch up with all the text on the screen (for example, when the user has had a chance to wait for input), call this function to reset the internal counter, so that a whole screenful of text must pass again before pausing.</p>
+
+<p><b>win_chalk(window, style, text)</b> writes <var>text</var> onto window number <var>window</var> using the CSS style <var>style</var>. The function may stop printing when a whole screenful has been written, in which case it will return the unwritten part of the string; it returns an empty string if the whole string was written.</p>
+
+<p>Most of win_chalk() is written in terms of a private function, <b>win__subchalk()</b> [which should probably be a subfunction of win_chalk()]: win_chalk() divides the text into linefuls, and handles pausing for more, and win__subchalk() handles manipulating the HTML.</p>
+
+<p><b>win_gotoxy(win,x,y)</b> moves the cursor on window <var>win</var> to co-ordinate <var>x</var>,<var>y</var>. Note the order of the co-ordinates, which is that commonly used in graphics libraries but opposite to that used in Z-code. Note also that this function is never called on the lower window in practice.</p>
+
+<p><b>win_set_top_window_size(lines)</b> sets the size of the upper window. <em>This will not affect the current screen</em>. For example, it's quite valid to extend the upper window to cover the entire lower window, draw a box on top, and then reset the upper window to cover only a small part of the screen; many Inform games do just that.</p>
+
+<p><b>win_clear(win)</b> clears a window.</p>
+
+<p><b>win_print_table(window, style, lines) writes a series of lines <var>lines</var> onto window number <var>window</var> using the CSS style <var>style</var>, one below the other. The cursor is not moved. This is an attempt to implement <a href="http://www.gnelson.demon.co.uk/zspec/sect15.html#print_table"><code>@print_table</code></a>, which is rather under-specified in the documentation.</p>
+
+<h2>The future</h2>
+
+<p><b>Improvements:</b> The system works far better than <a href="barbara.html">the old <code>Barbara</code> system</a>. However:</p>
+<ul>
+<li>It's <b>slow</b>. Drawing up a fairly simple screen can take over a second. Even the simplest update takes around twice as many <a href="http://www.w3.org/DOM/"><acronym title="document object model">DOM</acronym></a> operations as in Barbara.</li>
+<li>There's <b>no scrollback</b>.</li>
+<li><b>Monospace looks frumpy</b>, it has to be said.</li>
+</ul>
+
+<p>I have some ideas on how to improve this; I'll add them here in a while.</p>
+
+<p><b>Sharing work:</b> It's possible that some of the work we've done here will be useful to other projects (e.g. <a href="http://mudzilla.mozdev.org">MudZilla</a>, or that their work can be used here; we should contact them and talk about it.</p>
 
 <p align="right"><a href=".">Other bits of the code</a></p>
 
