@@ -6,3 +6,16 @@ window {
 	border: 0;
 }
 
+description#canary {
+	font-family: monospace;
+}
+
+body {
+	font-size: 15px;
+}
+
+pre {
+	background-color: #FFFF99;
+        border: 0;
+        margin: 0;
+}
