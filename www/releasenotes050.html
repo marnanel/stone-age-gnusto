@@ -1,0 +1,87 @@
+<h1 class="page-header">Gnusto 0.5.0 Release Notes</h1>
+
+<p>  The purpose of this document is to provide testers and end-users with the information they need to install and use the latest version of Gnusto.  It also provides a quick summary of new features, bugfixes, and known issues.  We'll do our best to update this document based on any feedback we may receive, so please report any errors or omissions to <a href="mailto:gnusto@mozdev.org">gnusto@mozdev.org</a>.  Please report any bugs you may find in <a href="http://gnusto.mozdev.org/bugs.html">bugzilla</a>.  Checking for duplicates before submitting a bug report is appreciated.</p>  
+
+<h4>What's New in Gnusto 0.5.0?</h4>
+
+<p>Gnusto 0.5.0 features <a href="http://mozdev.org/bugs/buglist.cgi?&chfield=resolution&chfieldfrom=04-17-2003&chfieldto=07-30-2003&chfieldvalue=FIXED&product=gnusto">many</a> bugfixes and enhancements over 0.4.0 and should be usable to play most Version-5 Z-Code games correctly.  Here are the highlights:</p>
+
+<ul>
+  <li>Gnusto is now capable of loading unmangled Z-code under all (tested) versions of Mozilla and Firebird.  Mozilla versions prior to
+    1.4Alpha will load the games very slowly, however.  This is due to a bug in Mozilla-- there's not much we can do about it.</li>
+  <li>Gnusto now works under <a href="http://www.mozilla.org/projects/firebird">Firebird</a>.  It even has a spiffy button you can add
+      to the toolbar if you go to View->Toolbars->Customize.</li> 
+  <li>The screen handler has been heavily rewritten.  This allows the following:
+   <ul>
+     <li>Dynamic resizing of the game screen</li>
+     <li>User text-entry into the main game screen (instead of the text-entry bar as in previous versions).</li>
+     <li>General coolness.</li>
+   </ul>
+  </li>
+  <li>Added support for all remaining V5 opcodes.  We haven't found (and have not yet constructed) test cases for a few of the more obscure
+      opcodes, so they may be  buggy.  Please report in-game difficulties to us so we can find good test cases.</li>
+  <li>Speed improvements</li>
+  <li>Improvements to the installer (proper skin registration)</li>
+  <li>Improved handling for [More] text paging</li>
+  <li>Support for Custom Alphabet Tables and Custom Unicode Translation Tables</li>
+  <li>Friendlier Error Window</li>  
+  <li>Lots of bugfixes and tweaks, many of which aren't actually documented in Bugzilla even though they ought to be.</li>
+</ul>
+
+<h4>Known Issues</h4>
+
+<p>Gnusto is a work in progress and many known issues remain.  If Gnusto is giving you trouble, it's a good idea to consult 
+this list.  If the issue is not on the list, please check <a href="http://gnusto.mozdev.org/bugs.html">bugzilla</a>.  If it's not in bugzilla, 
+please <a href="http://gnusto.mozdev.org/bugs.html">file a bug</a> and we really will see what we can do to help.</p>
+
+<ul>
+  <li>Mozilla builds prior to 1.4Alpha load z-code files very slowly.  Now that Gnusto supports proper z-code, it no longer supports
+      the mangled z-code format.</li>
+  <li>Copies of Mozilla / Firebird referencing very old profiles may have installation issues.  The problem will manifest itself in one of two
+      ways (that we know of so far)-- Gnusto screen will be the window border-color rather than white, with no text coloring or formatting <i>or</i>
+      (in Firebird only) the gnusto icon won't show up in the Customize Toolbar palette.  The former issue can be resolved by installing a second
+      time over the original installation.  Both issues can be resolved by building a new profile (run Moz/FB with -p at the command line, create a
+      new profile, import bookmarks from old profile, reinstall extensions).  
+</ul>
+
+<h4>Compatibility Info</h4>
+
+<p> Currently Gnusto only supports Version-5 Z-code files.  Support for Versions 1-4 and 7-8 are slated for release in Gnusto 0.6.0 (which
+    may or may not be tagged as Gnusto 1.0).  </p>
+
+<h4>Version History</h4>
+
+<ul>
+  <li>Gnusto 0.4.0 (18 April 2003):  Improved screen-handler, color-handling, boxes. Support for more opcodes, BAF's Guide interface. </li>
+  <li>Gnusto 0.3.0 (23 March 2003):  Added support for Mozilla 1.3, improved error handling.</li>
+  <li>Gnusto 0.2.0 (04 March 2003):  Allowed the loading of arbitrary (mangled) z-code files.</li>
+  <li>Gnusto 0.1.0 (04 February 2003):  Hardcoded to run an embedded, mangled copy of "Troll's Eye View".</li>
+  <li>Blorple 0.0.2 (23 December 2002):  Proof of concept demo.</li>
+  <li>Blorple 0.0.1:  Proof of concept demo.</li>    
+</ul>
+            
+
+<h4>Installation Notes</h4>
+
+<p>Click on the install link on the <a href="http://gnusto.mozdev.org/installation.html">installation</a> page, then restart the browser once the installation is complete.  "Interactive Fiction" will now show up in the Tool menu and will invoke Gnusto when selected.</p>
+
+<p>If you're feeling brave (or are just impatient to get the latest bugfix), you can always pull the latest source from 
+<a href="http://gnusto.mozdev.org/source.html">CVS</a>.  Due to the fact that the installer registers the skin and so forth, just pulling the source from CVS
+and copying over the proper directories won't work. If you haven't installed the latest milestone, install that first.  Then delete the existing gnusto 
+directory under Mozilla\chrome (or MozillaFirebird\chrome) and replace it with a copy of the gnusto subdirectory from gnusto\src.  Restart the browser and 
+you're hopefully good to go.   
+It's worth noting, however, that pulling the latest source from CVS can easily land you with a non-working copy of Gnusto.  Try at your own risk.</p>
+
+<h4>Uninstalling</h4>
+
+<p>Sorry, but once again there is no automated way to uninstall Gnusto.  We're aware that manual uninstallation is a pain.  Unfortunately, while the Moz API 
+publishes uninstall functions, they're just stubs-- they don't work.  So, it's difficult and hackish to cobble together an uninstall.  That's why the majority of extensions don't offer automated uninstalls.
+  We may give up and do it anyway for the next release (we had a preliminary uninstaller for 0.5.0 that worked before we added Firebird support), but in the 
+mean time we're going to lobby for the Moz team to implement the uninstall API.  Please vote for the corresponding bug in bugzilla.  
+
+In the mean-time, there is a manual workaround.  Follow all steps as a partial uninstall can cause Moz to freeze on launch.  Close Mozilla completely, 
+deleting any line with the word "gnusto" in it from chrome\overlayinfo\communicator\content\overlays.rdf and 
+chrome\installed-chrome.txt (if you're extra-tidy and know what you're doing, optinally purge all gnusto references in chrome\chrome.rdf as well), 
+restart the browser and you're good to go.  </p>
+ 
+<p align="right">Last Updated: 20 July 2003</p>
