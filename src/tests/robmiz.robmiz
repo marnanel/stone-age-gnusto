@@ -1,0 +1,27 @@
+	;; Gnusto tests.  -*- asm -*-
+	;; Test for robmiz itself
+	
+	;; Copyright (c) 2003 Thomas Thurman. Distributed under v2 of the GNU GPL.
+	;; $Id: robmiz.robmiz,v 1.1 2003/11/24 16:35:12 marnanel Exp $
+
+	option arch "z5"
+	option output "/tmp/verify.z5"
+
+	;; ATM, we're trying for an exact dupe of the Inform-created code.
+	;; This means that the "infodump" of this and that should be
+	;; substantially the same before we get on to "txd"ing it.
+
+	;; Bootstrap:
+	call_vs 4f4 gef		; hope it's exactly the same length :)
+	quit
+		
+$main:	nop			; main procedure
+	quit
+	endproc
+
+$weird:	locals a b		; don't know where this one came from!
+	rfalse
+	endproc
+
+	;; EOF robmiz.robmiz
+	
