@@ -36,8 +36,6 @@ interface gnustoIEngine : nsISupports
 
   readonly attribute string architecture;
 
-  attribute short goldenTrail;
-
   readonly attribute string status;
 
   short getByte(in long address);
@@ -50,6 +48,10 @@ interface gnustoIEngine : nsISupports
   // Use zero as the seed to return to pseudorandom numbers.
   // Why are there no writeonly attributes?
   void setRandomSeed(in long seed);
+
+  // The golden trail dumps PC information as the engine's
+  // control passes through the program.
+  void setGoldenTrail(in short whether);
 
   // The copper trail prints JIT information to the burin
   // as the engine runs.
