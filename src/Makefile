@@ -1,6 +1,6 @@
 # Makefile - makefile for gnusto
 #
-# $Header: /cvs/gnusto/src/Makefile,v 1.11 2003/11/16 19:53:29 marnanel Exp $
+# $Header: /cvs/gnusto/src/Makefile,v 1.12 2003/11/17 02:55:03 marnanel Exp $
 #
 # Copyright (c) 2003 Thomas Thurman
 # thomas@thurman.org.uk
@@ -40,6 +40,9 @@ balances: juryrig
 xpi:
 	rm -f ${XPIFILE}
 	zip -9 -q ${XPIFILE} install.js `find ${APPLICATION}/|grep -v CVS`
+
+test:
+	cd tests && $(MAKE) test
 
 love:
 	@echo "make: hardware upgrade required"
