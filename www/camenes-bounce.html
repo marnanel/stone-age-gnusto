@@ -34,3 +34,9 @@
 <p>which looks at the target URL of the hyperlink that caused the event, strips the first thirteen characters away (since they will be "<code>javascript://</code>"), and evaluates the remaining string <strong>in the context of the outer window</strong>, which achieves our purpose.</p>
 
 <p>Thanks to the folk on <a href="http://www.mozdev.org/irc.html"><tt>#mozilla</tt></a> who helped me hash this out.</p>
+
+<h5>Postscript</h5>
+
+<p><a href="http://www.mozilla.org/projects/rt-messaging/chatzilla/">Chatzilla</a> and <a href="http://www.mozilla.org/projects/venkman/">Venkman</a> appear to have this problem as well. Their solution is to implement a new URL scheme; Mozilla will then call the application with the contents of the URL. Chatzilla's scheme is the quasi-standard <a href="http://www.mozilla.org/projects/rt-messaging/chatzilla/irc-urls.html"><code>irc:</code>...</a>; Venkman's is the entirely custom <code>x-jsd</code>.</p>
+
+<p>We should evaluate using this approach later.</p>
