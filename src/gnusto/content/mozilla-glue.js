@@ -1,7 +1,7 @@
 // mozilla-glue.js || -*- Mode: Java; tab-width: 2; -*-
 // Interface between gnusto-lib.js and Mozilla. Needs some tidying.
 // Now uses the @gnusto.org/engine;1 component.
-// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.128 2003/12/07 04:47:47 marnanel Exp $
+// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.129 2003/12/12 02:07:03 marnanel Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -594,10 +594,28 @@ function glue_init() {
 
 		if ('input' in glue__arguments) {
 				for (i in glue__arguments.input) {
-						var stream = new Components.Constructor('@mozilla.org/filespec;1',
-																										'nsIFileSpec')();
-						stream.nativePath = glue__arguments.input[i];
-						replayer.replay(stream);
+						var arg = glue__arguments.input[i];
+
+						if (arg[0]=='*') {
+								// Input arguments beginning with a star are
+								// literal strings. They may be separated by
+								// slashes.
+								var commands = arg.
+										substring(1).
+										replace('_',' ','g').
+										split('/');
+
+								for (i in commands) {
+										replayer.playString(commands[i]);
+								}
+						} else {
+								// Otherwise they're a filename.
+								var stream = new Components.
+										Constructor('@mozilla.org/filespec;1',
+																'nsIFileSpec')();
+								stream.nativePath = arg;
+								replayer.replay(stream);
+						}
 				}
 		}
 
