@@ -1,7 +1,7 @@
 // mozilla-glue.js || -*- Mode: Java; tab-width: 2; -*-
 // Interface between gnusto-lib.js and Mozilla. Needs some tidying.
 // Now uses the @gnusto.org/engine;1 component.
-// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.132 2004/01/19 03:29:22 marnanel Exp $
+// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.133 2004/01/19 22:32:13 marnanel Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -1015,19 +1015,19 @@ function quitGame() {
 }
 
 function gnusto_error(n) {
+		var message = 'Gnusto error';
+		
+		for (var i=0; i<arguments.length; i++) {
+				if (arguments[i] && arguments[i].toString) {
+						message += '\n' + arguments[i].toString();
+				}
+		}
+
 		if ((typeof errorbox)=='object') {
-				errorbox.alert(n, 'fromtop');
+				errorbox.alert(n, message);
 		} else {
 				// We don't have the standard error-reporting component;
 				// cope as best we can.
-				var message = 'Gnusto error';
-
-				for (var i=0; i<arguments.length; i++) {
-						if (arguments[i] && arguments[i].toString) {
-								message += '\n' + arguments[i].toString();
-						}
-				}
-
 				alert(message);
 		}
 }
@@ -1298,6 +1298,8 @@ function load_from_file(file) {
 
 		} else if (result[0]=='nyi') {
 				gnusto_error(101, '(from beret)');
+		} else if (result[0]=='invalid') {
+				gnusto_error(311, 'Invalid story file.');
 		} else {
 				gnusto_error(311, '(from beret)');
 		}
