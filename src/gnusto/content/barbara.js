@@ -1,7 +1,7 @@
 // barbara.js || -*- Mode: Java; tab-width: 2; -*-
 // Lightweight lower-window handler.
 //
-// $Header: /cvs/gnusto/src/gnusto/content/barbara.js,v 1.31 2004/09/30 18:22:48 naltrexone42 Exp $
+// $Header: /cvs/gnusto/src/gnusto/content/barbara.js,v 1.32 2004/09/30 20:56:39 naltrexone42 Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -74,7 +74,7 @@ function barbara_start_game() {
 		barbara__after_cursor = null;
 
 		barbara__most_seen = 0;
-		
+		barbara__last_width = barbara__get_viewport_width();
 		
 }
 
@@ -285,42 +285,58 @@ function barbara_relax() {
 		}
 }
 
-
+// This is a relax triggered by the user resizing the gnusto container window
 function barbara_resize_relax() {
 
+                if (barbara__get_viewport_width() < barbara__last_width) {
+                    bocardo_trim_upper_window_to_fit();
+                }
+                
 		var page_height = barbara__get_page_height();
+		
 
 		if (page_height < barbara__get_viewport_height()) {
 				// Then we haven't started scrolling yet.
 				// barbara__most_seen is now the page height, of course.
 				barbara__most_seen = page_height;
-				
-				// Make the top of the page stick to the top of the
-				// viewport just below the upper window		
-				barbara_print_status();
+				barbara__set_viewport_top(page_height);
 				
 				// reset more to prevent lockup
 				barbara__set_more(0);
 
-		} else {
+	        } else {
+		                // most_seen should change if the width of the screen changes,
+		                // so we should scale it.  This will NOT be perfect, but should
+		                // only really be an issue if we're paused for more.
+		                barbara__most_seen = barbara__most_seen * (barbara__get_viewport_width() / barbara__last_width);
+		  
 				// The lower screen is adjusted by some amount
+                                if (!barbara__more_waiting) {
+                                  barbara__set_viewport_top(page_height - (barbara__get_viewport_height() - bocardo_get_top_window_height() ));
+                                  barbara__most_seen = page_height;
+                                } else {
+                                  barbara__set_viewport_top(barbara__most_seen - (barbara__get_viewport_height() - bocardo_get_top_window_height() ));
+                                }
+                                
+				//var slippage = page_height - barbara__most_seen;
 
-				var slippage = page_height - barbara__most_seen;
-
-				if (slippage > barbara__get_viewport_height()) {
+				//if (slippage > barbara__get_viewport_height()) {
 						// More than a screenful. Scroll to the top...
-						barbara__set_viewport_top(barbara__most_seen);
-						barbara__set_more(1);
-				} else {
-						// Jump straight to the bottom. No problem.
-						barbara__set_viewport_top(page_height);
-						barbara__set_more(0);
-				}
+				//		barbara__set_viewport_top(barbara__most_seen);
+				//		barbara__set_more(1);
+				//} else {
+				//		// Jump straight to the bottom. No problem.
+				//		barbara__set_viewport_top(page_height);
+				//		barbara__set_more(0);
+				//}
 
 				// This implies collapsing the upper screen (see bug 4050).
 				bocardo_collapse();
-				barbara_print_status();
 		}
+		barbara__last_width = barbara__get_viewport_width();
+                // reprint status based on new window width
+		barbara_print_status();
+		
 }
 ////////////////////////////////////////////////////////////////
 
@@ -403,6 +419,10 @@ function barbara__set_viewport_top(y) {
 
 function barbara__get_viewport_height() {
 		return win_get_dimensions()[1];
+}
+
+function barbara__get_viewport_width() {
+		return win_get_dimensions()[0];	
 }
 
 function barbara__get_page_height() {

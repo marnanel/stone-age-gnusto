@@ -1,7 +1,7 @@
 // gnusto-lib.js || -*- Mode: Java; tab-width: 2; -*-
 // upper.js -- upper window handler.
 //
-// $Header: /cvs/gnusto/src/gnusto/content/upper.js,v 1.51 2004/09/30 18:22:48 naltrexone42 Exp $
+// $Header: /cvs/gnusto/src/gnusto/content/upper.js,v 1.52 2004/09/30 20:56:39 naltrexone42 Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -115,6 +115,32 @@ function bocardo_relax() {
 
 ////////////////////////////////////////////////////////////////
 
+bocardo_trim_upper_window_to_fit() {
+    // process each row in the upper window
+    for (var row = 0; row < bocardo__screen_window.childNodes.length; row++) {
+    	var current_line = bocardo__screen_window.childNodes[row];
+    	var cursor = 0;
+    	var charactersSeen = 0;
+   	// walk through the nodes on this row to find the one (if any) that crosses the edge of the screen
+      	while (
+      	         (cursor < current_line.childNodes.length) && 
+      	         (
+      	            (charactersSeen + current_line.childNodes[cursor].getAttribute('value').length) <= bocardo__screen_width
+      	          )
+      	       ) {
+			charactersSeen += current_line.childNodes[cursor].getAttribute('value').length;
+			cursor++;
+	}
+	 
+        if (cursor < current_line.childNodes.length) { // if we determined that the row is wider than the window
+            current_line.childNodes[cursor].setAttribute('value',
+				current_line.childNodes[cursor].getAttribute('value').substring(bocardo__screen_width-charactersSeen));
+        }
+        
+    }
+}
+
+////////////////////////////////////////////////////////////////
 function bocardo_chalk(win, text) {
 
 		var paused_for_more = 0;
