@@ -1,6 +1,6 @@
 // install.js - installation script
 //   Heavily based on ForumZilla's install.js.
-// $Header: /cvs/gnusto/src/install.js,v 1.10 2004/02/19 00:50:26 naltrexone42 Exp $
+// $Header: /cvs/gnusto/src/install.js,v 1.11 2004/02/19 02:35:48 naltrexone42 Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -31,10 +31,11 @@ try {
 
     // prepare to install package directory onto user's computer
     var chromeType = DELAYED_CHROME;
-    var gnustoDir = getFolder("chrome/gnusto");
-    var componentsDir = getFolder("Components");
-    var xptDir1 = getFolder("Components");
-    var xptDir2 = getFolder("Components");
+    var gnustoDir = getFolder("Program", "chrome/gnusto");
+    var chromeDir = getFolder("Program", "chrome");
+    var componentsDir = getFolder("Program", "Components");
+    var xptDir1 = componentsDir;
+    var xptDir2 = componentsDir;
 
     //Clean up old installs of Gnusto   
     deleteThisFolder("Program","chrome/gnusto");
@@ -50,14 +51,15 @@ try {
     {
     	chromeType = PROFILE_CHROME;
     	gnustoDir = getFolder("Profile", "chrome/gnusto");
-    	componentsDir = getFolder(gnustoDir, "components");
+    	chromeDir = getFolder("Profile", "chrome");
+      	componentsDir = getFolder(gnustoDir, "components");
     	xptDir1 = getMozProfilePluginDir();
-    	alert('Moz: ' + xptDir);
+    	//alert('Moz: ' + xptDir1);
     	xptDir2 = getNativeProfilePluginDir();
-    	alert('Native: ' + xptDir2);
+    	//alert('Native: ' + xptDir2);
     	
     	//create profile-only folders that may not exist
-        err = File.dirCreate(components);
+        err = File.dirCreate(componentsDir);
         if (err) throw ('dirCreate: ' + err);
         err = File.dirCreate(xptDir1);
         if (err) throw ('dirCreate: ' + err);
@@ -69,7 +71,7 @@ try {
     err = File.dirCreate(gnustoDir);
     if (err) throw ('dirCreate: ' + err);
     
-    err = addDirectory("" , "gnusto", chromeDir, "gnusto");
+    err = addDirectory("" , "gnusto", gnustoDir, "");
     if (err) throw ('addDirectory: ' + err);
     err = addDirectory("" , "components", componentsDir, "");
     if (err) throw ('addDirectory: ' + err);   
@@ -80,7 +82,7 @@ try {
       if (err) throw ('addDirectory: ' + err);
     }
 
-/*    
+   
     ////////////////////////////////////////////////////////////////
     // register content's contents.rdf in chrome registry
 
@@ -104,7 +106,7 @@ try {
 			 chromeDir,
 			 "gnusto/skin/");
     if (err) throw ('registerChrome: ' + err);
-*/
+
     ////////////////////////////////////////////////////////////////
     // install package
     err = performInstall();
@@ -123,13 +125,13 @@ try {
     	"difficulty with the installation process: if the Gnusto screen is not white and "+
     	"the text is unformatted, you should run the installer a second time.  If the problem " +
     	"persists, you'll need to create a new FB / Moz profile and install under that.  Thanks!");
-*/
+
 } catch(e) {
 
     // write the error to Mozilla/bin/install.log
     logComment(e);
     // and warn the user...
-    alert('error:');
+    alert(e);
     // cancel the installation and return an error
     cancelInstall(err);
 }
@@ -252,7 +254,7 @@ function getMozProfilePluginDir( )
   var curDir = getFolder("Current User");
   var compDir = new String(curDir);
   compDir = new String(compDir.toLowerCase());
-   	
+     	
   while (compDir.indexOf(curBrowser) != -1) {
     var previousDir = curDir;
     curDir = File.dirGetParent(curDir);
@@ -264,6 +266,5 @@ function getMozProfilePluginDir( )
     curDir = getFolder(curDir, ".mozilla/plugins");
   else
     curDir = getFolder(curDir, "mozilla/plugins");
-
   return curDir;
 }
