@@ -1,5 +1,5 @@
 // -*- Mode: Java; tab-width: 2; -*-
-// $Id: beret.js,v 1.6 2003/10/27 00:25:50 marnanel Exp $
+// $Id: beret.js,v 1.7 2003/10/28 01:45:44 marnanel Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -20,7 +20,7 @@
 
 ////////////////////////////////////////////////////////////////
 
-const CVS_VERSION = '$Date: 2003/10/27 00:25:50 $';
+const CVS_VERSION = '$Date: 2003/10/28 01:45:44 $';
 const BERET_COMPONENT_ID = Components.ID("{ed0618e3-8b2b-4bc8-b1a8-13ae575efc60}");
 const BERET_DESCRIPTION  = "Checks file magic and routes them accordingly";
 const BERET_CONTRACT_ID  = "@gnusto.org/beret;1";
@@ -143,9 +143,8 @@ Beret.prototype = {
 
 								// FIXME: We also don't check this yet. We should. We will.
 
-								dump(iff_details);
-
-								var umem = 0;
+								var memory = 0;
+								var memory_is_compressed = 0;
 								var stks = 0;
 								var pc = 0;
 
@@ -157,27 +156,26 @@ Beret.prototype = {
 												pc = content[pc_location]<<16 |
 														content[pc_location+1]<<8 |
 														content[pc_location+2];
-												dump('(got pc: ');
-												dump(pc.toString(16));
-												dump(')\n');
 										} else if (tag=='Stks') {
 												if (stks!=0) {
 														dump('fixme: error: multiple Stks\n');
 												}
 												stks = content.slice(iff_details[i][1],
 																						 iff_details[i][2]+iff_details[i][1]);
-										} else if (tag=='CMem') {
-												dump('*** CMem: can\'t handle this yet ***\n');
-										} else if (tag=='UMem') {
-												if (umem!=0) {
-														dump('fixme: error: multiple Umem\n');
+										} else if (tag=='CMem' || tag=='UMem') {
+
+												if (memory!=0) {
+														dump('fixme: error: multiple memory segments\n');
 												}
-												umem = content.slice(iff_details[i][1],
-																						 iff_details[i][2]+iff_details[i][1]);
+
+												memory_is_compressed = (tag=='CMem');
+
+												memory = content.slice(iff_details[i][1],
+																							 iff_details[i][2]+iff_details[i][1]);
 										}
 								}
 
-								if (umem==0) {
+								if (memory==0) {
 										dump('fixme: error: no memory in quetzal\n');
 								} else if (stks==0) {
 										dump('fixme: error: no stacks in quetzal\n');
@@ -185,7 +183,8 @@ Beret.prototype = {
 										dump('fixme: error: no header in quetzal\n');
 								} else {
 										this.m_filetype = 'ok saved quetzal z5';
-										this.m_engine.loadSavedGame(umem.length, umem,
+										this.m_engine.loadSavedGame(memory.length, memory,
+																								memory_is_compressed,
 																								stks.length, stks,
 																								pc);
 								}
