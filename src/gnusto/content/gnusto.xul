@@ -4,7 +4,7 @@
 
 <!--
 
-$Header: /cvs/gnusto/src/gnusto/content/gnusto.xul,v 1.63 2003/08/30 08:01:47 naltrexone42 Exp $
+$Header: /cvs/gnusto/src/gnusto/content/gnusto.xul,v 1.64 2003/09/24 00:25:35 marnanel Exp $
 
 Copyright (c) 2003 Thomas Thurman
 thomas@thurman.org.uk
@@ -51,7 +51,6 @@ function ensureHappiness() {
 
    var parts = [
       'MOZILLA_GLUE',
-      'GNUSTO_LIB',
       'TOSSIO',
       'UPPER',
       'VENKMAN_MSG',
@@ -61,6 +60,13 @@ function ensureHappiness() {
       'DATISI',
    ];
 
+   var components = [
+      '@gnusto.org/engine;1',
+   ];
+
+   var interfaces = [
+      'gnustoIEngine',
+   ];
 
    for (var i in parts) {
       var check = parts[i] + "_HAPPY";
@@ -73,6 +79,21 @@ function ensureHappiness() {
             complain(check+' / '+e.toString());
       }
    }
+
+   for (var i in interfaces) {
+	var subject = interfaces[i];
+	var result = (typeof Components.interfaces[subject]);
+	if (result!='object')
+            complain(subject+' interface is '+result);
+   }
+
+   for (var i in components) {
+	var subject = components[i];
+	var result = (typeof Components.classes[subject]);
+	if (result!='function')
+            complain(subject+' component is '+result);
+   }
+
 }
 
 ]]></script>
