@@ -1,6 +1,6 @@
 // install.js - installation script
 //   Heavily based on ForumZilla's install.js.
-// $Header: /cvs/gnusto/src/install.js,v 1.6 2003/08/05 06:32:13 naltrexone42 Exp $
+// $Header: /cvs/gnusto/src/install.js,v 1.7 2003/08/29 07:07:52 naltrexone42 Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -34,10 +34,11 @@ try {
     var chromeDir = getFolder("chrome");
 
     // Ask if the user wants to install to profile directory instead
-    if (newEnough() && confirm("Press OK if you want to install to your profile directory.  " +
+    if (newEnough() && confirm("Press OK if you want to install to your profile directory (BEST).\n" +
+        "CANCEL will install to the program directory (NON-PREFERRED).\n\n" +
         "NOTE:  This should allow non-admin users to install Gnusto in Linux and should cause Gnusto to " +
-        "persist across browser upgrades.   HOWEVER-- this should only be done on a clean install or " +
-        "after successfully uninstalling gnusto from the main chrome directory."))
+        "persist across browser upgrades.   An install of Gnusto to the profile directory will override " +
+        "and obscure any prior or subsequent installs of Gnusto to the program directory."))
     {
     	chromeType = PROFILE_CHROME;
     	chromeDir = getFolder("Profile", "chrome");
