@@ -10,22 +10,33 @@
 !
 Release 3814;
 
-Array terms -> 100;
-Array textbuffer -> 100;
+! We can't change the terminating chars list on the fly, because
+! some terps (e.g. Frotz) read the address out of the header on
+! startup and cache it. We have to set the buffer to be really
+! really long, and then store where Inform puts it.
+Zcharacter terminating 129 130 131 132 133 134 135 136 137 138 139 140
+    141 142 143 144 145 146 147 148 149 150;
 
+Array textbuffer -> 100;
+Global terms;
 Global termcount;
 
 
-[AddTerminator which;
-    print "Adding terminator ",which,".^";
-    terms -> termcount = which;
+[AddTerminator which banana;
+    print "Adding terminator ",which," at ",terms,"+",termcount,".^";
+    @storeb terms termcount which;
+    @loadb terms termcount -> banana;
+    print "(stored as ",banana,")^";
+    
     termcount++;
     
 ];
 
 
-[Main dummy i temp uselist;
+[Main keypressed i temp;
 
+    @loadw 46 0 -> terms;
+    
     while(1) 
     {
 
@@ -40,15 +51,13 @@ Global termcount;
 	    Z   = letter Z -- should not be honoured by the terp^
 	    UDLR= up, down, left, right cursor keys^
 	    M   = mouse click^
-	    X   = no table (not an empty table)^
 	    .   = quit this program^?";
     
 	
     	@storeb textbuffer 0 98;
     	@storeb textbuffer 1 0;
-    	@aread textbuffer 0 -> dummy;
+    	@aread textbuffer 0 -> keypressed;
 
-	uselist = 1;
 	termcount = 0;
 	
     	for (i=0: i<textbuffer->1: i++) 
@@ -68,26 +77,34 @@ Global termcount;
 	    else if (temp>=97 && temp<=99) { AddTerminator(temp+45); } !F10-F12
 	    else if (temp == 109) { AddTerminator(254); } !mouse click
 	    else if (temp ==  42) { AddTerminator(255); } !any F-key
-	    else if (temp == 120) { uselist = 0; } ! X = no list
 	    else { print "Sorry, I don't know the code ",temp,".^"; }
 	}
 	AddTerminator(0); ! end of the list
 
-	if (uselist) 
-	{
-	    @storew 0 46 terms;	    
-	}
-	else
-	{
-	    @storew 0 46 0;
-	}
-	
 	print "^^Now enter any string. The characters you chose should
 	    terminate it. (Newline still works too, of course.)^>";
 
     	@storeb textbuffer 0 98;
     	@storeb textbuffer 1 0;
-    	@aread textbuffer 0 -> dummy;
+    	@aread textbuffer 0 -> keypressed;
+
+	if (keypressed==10) 
+	{
+	    print "^You pressed Enter.^^";
+	}
+	else if (keypressed==13) 
+	{
+	    print "^You pressed Enter, and your Z-machine ignores the
+		recommendation that Enter is 10. Please LART the author.^^";
+	}
+	else
+	{
+	    print "^You pressed ",keypressed,".^";
+	}
+
+	print
+	    "^^================================================================^^";
+	
     }
     
 ];
