@@ -1,7 +1,7 @@
 // mozilla-glue.js || -*- Mode: Java; tab-width: 2; -*-
 // Interface between gnusto-lib.js and Mozilla. Needs some tidying.
 // Now uses the @gnusto.org/engine;1 component.
-// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.120 2003/11/17 19:43:56 marnanel Exp $
+// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.121 2003/11/18 04:59:43 marnanel Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -25,6 +25,7 @@
 var current_window = 0;
 var engine = 0;
 var beret = 0;
+var replayer = 0;
 
 // The effects. Defined more fully in the component.
 var GNUSTO_EFFECT_INPUT          = 'RS';
@@ -112,7 +113,9 @@ function glue__sound_effect(number, effect, volume, callback) {
 // Outputs to the screen, and the transcription file if necessary.
 function glue_print(text) {
 
-		win_chalk(current_window, text);
+		if (!('nowin' in glue__arguments)) {
+				win_chalk(current_window, text);
+		}
 
 		if (current_window==0) {
 
@@ -122,7 +125,8 @@ function glue_print(text) {
 
 				for (i in glue__transcription_streams) {
 
-						glue__transcription_streams[i].write(text, text.length);
+						glue__transcription_streams[i].write(text,
+																								 text.length);
 
 						try {
 								glue__transcription_streams[i].flush();
@@ -176,7 +180,7 @@ function command_exec(args) {
 
 				glue__reason_for_stopping = engine.effect(0);
 
-				// burin('effect', glue__reason_for_stopping.toString(16));
+				//burin('effect', glue__reason_for_stopping.toString(16));
 				var ct = engine.consoleText();
 				glue_print(ct);
 
@@ -201,16 +205,29 @@ function command_exec(args) {
 						break;
 
 				case GNUSTO_EFFECT_INPUT_CHAR:
-						// we know how to do this.
-						// Just bail out of here.
-						win_relax();
+						if (replayer.lineIsWaiting()) {
+								engine.answer(0, replayer.nextKeypress());
+								looping = 1;
+						} else {
+								// This'll be handled by the window's input routines.
+								win_relax();
+						}
 						break;
-
+								
 				case GNUSTO_EFFECT_INPUT:
-						win_relax();
-						glue__input_buffer_max_chars = engine.effect(2)*1;
-						win_set_input([win_recaps(engine.effect(1)*1), '']);
-						glue__command_history_position = -1;		
+						if (replayer.lineIsWaiting()) {
+
+								var line = replayer.nextLine().substring(0,engine.effect(2)*1);
+								engine.answer(0, line);
+								win_relax();
+								glue_print(line+'\n');
+								looping = 1;
+						} else {
+								win_relax();
+								glue__input_buffer_max_chars = engine.effect(2)*1;
+								win_set_input([win_recaps(engine.effect(1)*1), '']);
+								glue__command_history_position = -1;		
+						}
 						break;
 
 				case GNUSTO_EFFECT_SAVE:
@@ -581,6 +598,18 @@ function glue_init() {
 
 		beret = new Components.Constructor('@gnusto.org/beret;1',
 																			 'gnustoIBeret')();
+
+		replayer = new Components.Constructor('@gnusto.org/replayer;1',
+																					'gnustoIReplayer')();
+
+		if ('input' in glue__arguments) {
+				for (i in glue__arguments.input) {
+						var stream = new Components.Constructor('@mozilla.org/filespec;1',
+																										'nsIFileSpec')();
+						stream.nativePath = glue__arguments.input[i];
+						replayer.replay(stream);
+				}
+		}
 
 		document.onkeypress=gotInput;
 
