@@ -27,12 +27,32 @@ all.) The exception is if you installed Mozilla originally as a non-root user, i
 
 <p align="center"><a href="#" onclick="triggerURL('http://downloads.mozdev.org/gnusto/gnusto-0.2.0.xpi');"><img src="hand.png" width="187" height="190" alt="[ Install gnusto v0.2.0 ]" border="0"></a></p>
 
-<p>Then restart Mozilla (as an ordinary user) and choose "Interactive Fiction"
-from the Tools menu.</p>
+<h5>Starting gnusto</h5>
 
-<p><b><a href="nullbytes.html">You will also need the mz5 program</a></b> until the Mozilla null byte bug is fixed. Sorry. Follow the link to find out why, and where you can get the program.</p>
+<p>Then either:</p>
+<ul>
+<li>restart Mozilla (as an ordinary user) and choose "Interactive Fiction" from the Tools menu.</li>
+<li><b>or</b> start Mozilla from the command line thus:<blockquote><kbd>mozilla -chrome chrome://gnusto/content</kbd></blockquote></li>
+</ul>
+
+<h5>The crash in Mozilla v1.3b</h5>
+
+<p><b><a href="http://mozdev.org/bugs/show_bug.cgi?id=3191">Mozilla 1.3b has a known problem with both the above methods</a></b> which may crash the browser. We're looking into it. The Mozilla 1.0 branch does not have this problem. The workaround is:</p>
+<ol>
+<li>Restart Mozilla as an ordinary user</li>
+<li>Type the following into the location bar:<blockquote><kbd>chrome://gnusto/chrome</kbd></blockquote>You should see Gnusto load inside the Mozilla window.</li>
+<li>Close all Mozilla windows.</li>
+</ol>
+
+<p>You can then start Gnusto as described above.</p>
+
+<h5>The null byte problem</h5>
+
+<p><b><a href="nullbytes.html">Everyone will need the mz5 program</a></b> until the Mozilla null byte bug is fixed. Sorry. Follow the link to find out why, and where you can get the program.</p>
 
 <p>To begin your testing, you may download Dylan O'Donnell's game <a href="http://downloads.mozdev.org/gnusto/troll.mz5"><cite>A Troll's Eye View</cite> in mz5 encoding</a> from mozdev, all ready to play.</p>
+
+<h5>Finding stories to use</h5>
 
 <p>You can get other story files from the IF Archive-- try <a href="http://www.wurb.com/if/platform/1">searching <cite>Baf's Guide</cite> for Z-machine games</a>. (In the future, Gnusto will let you do this from within the program.) Please feed back on which games work and which don't by <a href="bugs.html">raising bugs</a>. Currently:</p>
 
