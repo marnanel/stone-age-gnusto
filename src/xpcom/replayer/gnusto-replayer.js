@@ -1,5 +1,5 @@
 // -*- Mode: Java; tab-width: 2; -*-
-// $Id: gnusto-replayer.js,v 1.1 2003/11/24 16:21:46 marnanel Exp $
+// $Id: gnusto-replayer.js,v 1.2 2003/12/12 02:07:02 marnanel Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -20,7 +20,7 @@
 
 ////////////////////////////////////////////////////////////////
 
-const CVS_VERSION = '$Date: 2003/11/24 16:21:46 $';
+const CVS_VERSION = '$Date: 2003/12/12 02:07:02 $';
 const REPLAYER_COMPONENT_ID = Components.ID("{cf559085-feaf-4e05-86ee-886452da8dc8}");
 const REPLAYER_DESCRIPTION  = "The replayer is in charge of playback files.";
 const REPLAYER_CONTRACT_ID  = "@gnusto.org/replayer;1";
@@ -45,14 +45,21 @@ Replayer.prototype = {
 
     playback_file.openStreamForReading();
 
-    this.m_playback_files.push(playback_file);
+    this.m_playback_queue.push(playback_file);
+
+  },
+
+  playString: function r_playString(str) {
+
+    this.m_playback_queue.push(str);
+
   },
 
   lineIsWaiting: function r_lineIsWaiting() {
 
     this._cull_files_at_eof();
 
-    return this.m_playback_files.length != 0;
+    return this.m_playback_queue.length != 0;
 
   },
 
@@ -63,7 +70,7 @@ Replayer.prototype = {
 
     this._cull_files_at_eof();
 
-    if (this.m_playback_files.length == 0) {
+    if (this.m_playback_queue.length == 0) {
 
       // Then you shouldn't have called us, but that's
       // no reason to crash.
@@ -72,7 +79,19 @@ Replayer.prototype = {
 
     } else {
 
-      this.m_playback_files[0].readLine(result, 1000000, dummy);
+				switch (typeof this.m_playback_queue[0]) {
+						case 'string':
+						result.value = this.m_playback_queue[0];
+						this.m_playback_queue.shift();
+						break;
+
+						case 'object':
+						this.m_playback_queue[0].readLine(result, 1000000, dummy);
+						break;
+
+						default:
+						throw "Weird stuff in the playback queue.";
+				}
 
       // TODO: Here we would replace [xxx], where xxx is a decimal number,
       // with its ZSCII character equivalent.
@@ -103,10 +122,15 @@ Replayer.prototype = {
   ////////////////////////////////////////////////////////////////
 
   _cull_files_at_eof: function r_cull_files_at_eof() {
-    while (this.m_playback_files.length!=0 &&
-	   this.m_playback_files[0].eof()) {
-      this.m_playback_files.shift();
-    }
+
+			while (this.m_playback_queue.length!=0 &&
+						 (typeof this.m_playback_queue[0])=='object' &&
+						 this.m_playback_queue[0].eof()) {
+
+								 this.m_playback_queue.shift();
+
+						 }
+
   },
 
   ////////////////////////////////////////////////////////////////
@@ -117,7 +141,7 @@ Replayer.prototype = {
   ////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////
 
-  m_playback_files: [],
+  m_playback_queue: [],
 
 };
 
