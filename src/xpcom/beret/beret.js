@@ -1,5 +1,5 @@
 // -*- Mode: Java; tab-width: 2; -*-
-// $Id: beret.js,v 1.9 2003/11/30 05:49:40 marnanel Exp $
+// $Id: beret.js,v 1.10 2003/12/03 23:52:43 marnanel Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -20,7 +20,7 @@
 
 ////////////////////////////////////////////////////////////////
 
-const CVS_VERSION = '$Date: 2003/11/30 05:49:40 $';
+const CVS_VERSION = '$Date: 2003/12/03 23:52:43 $';
 const BERET_COMPONENT_ID = Components.ID("{ed0618e3-8b2b-4bc8-b1a8-13ae575efc60}");
 const BERET_DESCRIPTION  = "Checks file magic and routes them accordingly";
 const BERET_CONTRACT_ID  = "@gnusto.org/beret;1";
@@ -115,9 +115,17 @@ Beret.prototype = {
 						// FIXME: This check is way too simple. We should look at
 						// some of the other fields as well for sanity-checking.
 
-						this.m_filetype = 'ok story naked z'+content[0];
+						this.m_filetype = 'ok story naked zcode';
 
-						this.m_engine = new Components.Constructor('@gnusto.org/engine;1',
+						this.m_engine = new Components.Constructor('@gnusto.org/engine;1?type=zcode',
+																											 'gnustoIEngine',
+																											 'loadStory')(content.length,
+																																		content);
+				} else if (content[0]==71 && content[1]==108 && content[2]==117 && content[3]==108) {
+						// "G, l, u, l". A Glulx file.
+						this.m_filetype = 'ok story naked glulx';
+
+						this.m_engine = new Components.Constructor('@gnusto.org/engine;1?type=glulx',
 																											 'gnustoIEngine',
 																											 'loadStory')(content.length,
 																																		content);
@@ -182,7 +190,7 @@ Beret.prototype = {
 								} else if (pc==0) {
 										dump('fixme: error: no header in quetzal\n');
 								} else {
-										this.m_filetype = 'ok saved quetzal z5';
+										this.m_filetype = 'ok saved quetzal zcode';
 										this.m_engine.loadSavedGame(memory.length, memory,
 																								memory_is_compressed,
 																								stks.length, stks,
@@ -197,14 +205,20 @@ Beret.prototype = {
 								this.m_filetype = 'invalid story blorb';
 
 								// OK, so go digging for it.	
-								// For the curious, the full list of executable
-								// formats is:
-								//    ZCOD: z-code,  GLUL: Glulx,  TADG: Tads,
-								//    ALAN: Alan,    HUGO: Hugo,   SAAI: Scott Adams,
-								//    MSRL: Magnetic Scrolls        (sometimes given as SAII)
-								//
-								// see: <news:82283c$uab$1@nntp9.atl.mindspring.net>
-								//
+								// The full list of executable formats, from
+								// <news:82283c$uab$1@nntp9.atl.mindspring.net>, is:
+
+								const blorb_formats = {
+										'ZCOD': 'zcode',
+										'GLUL': 'glulx',
+										'TADG': 'tads',
+										'ALAN': 'alan',
+										'HUGO': 'hugo',
+										'SAAI': 'scottadams', // Adventure International
+										'SAII': 'scottadams', // Possibly an old error
+										'MSRL': 'magneticscrolls',
+								};
+								
 								// FIXME: It's (obviously) technically invalid if
 								// a file's Blorb type signature doesn't match with its
 								// magic number in the code, but should we give an error?
@@ -213,14 +227,17 @@ Beret.prototype = {
 
 								for (var j=1; j<iff_details.length; j++) {
 
-										if (iff_details[j][0]=='ZCOD') {
+										if (iff_details[j][0] in blorb_formats) {
 												var start = iff_details[j][1];
 												var length = iff_details[j][2];
 
 												this.load(length,
 																	content.slice(start,
 																								start+length));
-												this.m_filetype = 'ok story blorb z5';
+												this.m_filetype = 'ok story blorb '+
+														blorb_formats[iff_details[j][0]];
+												
+												return;
 										}
 								}
 
