@@ -10,6 +10,8 @@ STDOUT = /dev/stdout
 STDERR = /dev/stdout
 
 BALANCES = ~/balances.z5
+ZORK1 = ~/zork1.z5
+
 STANDARDGAMES = ~/proj/gnusto/bug3481
 GAMESCRIPTS = gamescripts
 
@@ -30,6 +32,9 @@ marnrandom:
 
 balances:
 	$(MOZILLA) $(MOZARGS) -gnusto $(GNUSTOARGS),$(BALANCES),input=$(GAMESCRIPTS)/balances.playback
+
+zork1:
+	$(MOZILLA) $(MOZARGS) -gnusto $(GNUSTOARGS),$(ZORK1),input=$(GAMESCRIPTS)/zork1.playback
 
 ################################################################
 
