@@ -25,14 +25,13 @@ interface gnustoIEngine : nsISupports
   readonly attribute string signature;
   readonly attribute string cvsVersion;
 
-  string effect(in short which);
-  void answer(in short which, in string what);
+  AUTF8String effect(in short which);
+  void answer(in short which, in AUTF8String what);
 
   void run();
+  void walk();
 
-  void walk(in string answer);
-
-  string consoleText();
+  AUTF8String consoleText();
 
   readonly attribute string architecture;
 
