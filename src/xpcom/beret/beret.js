@@ -1,5 +1,5 @@
 // -*- Mode: Java; tab-width: 2; -*-
-// $Id: beret.js,v 1.4 2003/10/17 06:58:52 marnanel Exp $
+// $Id: beret.js,v 1.5 2003/10/18 05:50:21 marnanel Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -20,7 +20,7 @@
 
 ////////////////////////////////////////////////////////////////
 
-const CVS_VERSION = '$Date: 2003/10/17 06:58:52 $';
+const CVS_VERSION = '$Date: 2003/10/18 05:50:21 $';
 const BERET_COMPONENT_ID = Components.ID("{ed0618e3-8b2b-4bc8-b1a8-13ae575efc60}");
 const BERET_DESCRIPTION  = "Checks file magic and routes them accordingly";
 const BERET_CONTRACT_ID  = "@gnusto.org/beret;1";
@@ -92,32 +92,34 @@ Beret.prototype = {
 
 		load: function b_load(aLength, content) {
 
-				this.m_engine = null;
-
 				if (aLength==0) {
 						// An empty file was passed in; it's not really worth
 						// going any further.
 
+						this.m_engine = null;
 						this.m_filetype = 'error none given';
-						return;
-				}
 
-				// FIXME: One day it will be a good plan to ask the engines themselves
-				// whether the array is something they recognise. However, we
-				// have so few file types at present that it's easier and faster
-				// to do it all in-house. Add this when we add Glulx.
-				//
-				// (I'm imagining having to register with the beret when you register
-				// with the component manager. You tell it the file prefix and the
-				// Blorb signature of the files you want to be passed.)
-
-				if (content[0]==5 || content[0]==7 || content[0]==8) {
+						// FIXME: One day it will be a good plan to ask the engines themselves
+						// whether the array is something they recognise. However, we
+						// have so few file types at present that it's easier and faster
+						// to do it all in-house. Add this when we add Glulx.
+						//
+						// (I'm imagining having to register with the beret when you register
+						// with the component manager. You tell it the file prefix and the
+						// Blorb signature of the files you want to be passed.)
+				
+				} else if (content[0]==5 || content[0]==7 || content[0]==8) {
 						// Infocom file, naked.
 
 						// FIXME: This check is way too simple. We should look at
 						// some of the other fields as well for sanity-checking.
 
 						this.m_filetype = 'ok story naked z'+content[0];
+
+						this.m_engine = new Components.Constructor('@gnusto.org/engine;1',
+																											 'gnustoIEngine',
+																											 'loadStory')(content.length,
+																																		content);
 
 				} else if (content[0]==70 && content[1]==79 && content[2]==82 && content[3]==77) {
 						// "F, O, R, M". An IFF file, then...
@@ -134,7 +136,17 @@ Beret.prototype = {
 						
 								// Quetzal saved file.
 
+								// Currently, we require that a loaded Quetzal file
+								// is from the same story that's currently loaded.
+								// One day we'll have a way of getting the right
+								// story out of the registry.
+
+								// FIXME: We also don't check this yet. We should. We will.
+
 								this.m_filetype = 'ok saved quetzal z5';
+
+								this.m_engine.loadSavedGame(content.length,
+																						content);
 
 						} else if (iff_details[0]=='IFRS') {
 
