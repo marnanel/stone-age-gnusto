@@ -1,0 +1,90 @@
+<?xml version="1.0"?> <!-- -*- Mode: XML -*- --> 
+<?xml-stylesheet href="chrome://global/skin" type="text/css"?>
+<!--
+
+$Header: /cvs/gnusto/src/gnusto/content/guide-wizard.xul,v 1.1 2003/12/11 21:17:48 marnanel Exp $
+
+Copyright (c) 2003 Thomas Thurman
+thomas@thurman.org.uk
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of version 2 of the GNU General Public License
+as published by the Free Software Foundation.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have be able to view the GNU General Public License at 
+http://www.gnu.org/copyleft/gpl.html ; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
+-->
+
+  <wizard xmlns:html="http://www.w3.org/1999/xhtml"
+        xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+        buttons="back next"
+        id="guideGenreDialog"
+        title="Guide to Interactive Fiction"
+        width="600" height="450"> 
+
+    <script type="application/x-javascript" src="guide-wizard.js"/>
+
+  <wizardpage
+    label="Please choose the kind of game you're interested in."
+    onpageshow="populateGenreList()"
+    onpagehide="return checkGenreChosen();">
+      <hbox flex="9">
+	<listbox id="genrelist" onselect="selectFromGenreList()" flex="2">
+	</listbox>
+	<vbox flex="2">
+	  <description style="font-weight: bold;" id="genretitle">
+	    &#x00A0;
+	  </description>
+	  <description id="genredescription">
+	    &#x00A0;
+	  </description>
+	</vbox>
+      </hbox>
+
+      <description flex="1">
+	Most of the information in this wizard is based on&#x00A0;<html:cite><html:a href="http://wurb.com/if/" style="text-decoration:underline; color:#0000FF" target="_new">Baf's Guide to the Interactive Fiction Archive</html:a></html:cite>, copyright &#xA9; Carl Muckenhoupt. Used with permission.
+      </description>
+      
+    </wizardpage>
+
+
+  <wizardpage
+    label="Please choose the game you'd like to play."
+    onpageshow="populateGameList()">
+    <vbox flex="9">
+      <listbox id="gamelist" onselect="showStoryDetails()" flex="2">
+      </listbox>
+      <tabbox flex="5">
+	<tabs>
+	  <tab label="Review" />
+	  <tab label="Details" />
+	  <tab label="Links" />
+	</tabs>
+	<tabpanels flex="9">
+	  <tabpanel id="reviewtab">
+	    <iframe id="reviewbody" src="chrome://gnusto/content/review.html" flex="1" />
+	  </tabpanel>
+	  <tabpanel id="detailstab">
+	    <description>Foo</description>
+	  </tabpanel>
+	  <tabpanel id="linkstab">
+	    <description>Bar</description>
+	  </tabpanel>
+	</tabpanels>
+      </tabbox>
+    </vbox>
+  </wizardpage>
+
+    <wizardpage
+      label="That's all! Press Finish to load the game.">
+    </wizardpage>
+
+  </wizard>
+
+<!-- EOF guide-wizard.xul -->

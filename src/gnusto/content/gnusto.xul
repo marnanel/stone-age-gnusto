@@ -1,10 +1,10 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="utf-16"?>
 <?xml-stylesheet href="chrome://global/skin" type="text/css"?>
 <?xml-stylesheet href="chrome://gnusto/skin/gnusto.css" type="text/css"?>
 
 <!--
 
-$Header: /cvs/gnusto/src/gnusto/content/gnusto.xul,v 1.67 2003/12/03 23:49:42 marnanel Exp $
+$Header: /cvs/gnusto/src/gnusto/content/gnusto.xul,v 1.68 2003/12/11 21:17:48 marnanel Exp $
 
 Copyright (c) 2003 Thomas Thurman
 thomas@thurman.org.uk
@@ -64,6 +64,7 @@ function ensureHappiness() {
       '@gnusto.org/engine;1?type=zcode',
       '@gnusto.org/beret;1',
       '@gnusto.org/replayer;1',
+      '@gnusto.org/errorbox;1',
       '@mozilla.org/commandlinehandler/general-startup;1?type=gnusto',
    ];
 
@@ -137,7 +138,8 @@ function ensureHappiness() {
 <menu id="file-menu" label="File" accesskey="F">
 <menupopup>
 <menuitem label="New (restart)" accesskey="N" disabled="true" />
-<menuitem label="Open..." accesskey="O" oncommand="dispatch('open');"/>
+<menuitem label="Open Guide..." accesskey="G" oncommand="openDialog('guide-wizard.xul');"/>
+<menuitem label="Open file..." accesskey="O" oncommand="dispatch('open');"/>
 <menuitem label="Save" disabled="true" accesskey="S"/>
 <menuitem label="Save as..." disabled="true" accesskey="A"/>
 <menuseparator/>
