@@ -52,6 +52,18 @@
 }
 
 #main-content ul{
+
+/* font-size: smaller;
+ list-style-type: square; */
+
+ list-style-image: url("http://www.mozdev.org/sharedimages/bullet.gif");
+ list-style-position: inside;
+
+/* padding-left: 0;
+ margin-left: 0; */
+}
+
+ul.little {
  font-size: smaller;
  list-style-type: square;
  list-style-image: url("http://www.mozdev.org/sharedimages/bullet.gif");
@@ -60,10 +72,10 @@
  margin-left: 0;
 }
 
-#main-content li{
+
+li.little {
  padding-bottom: 15px;
 }
-
 
 .infoTab .infoItems{
   font-size: smaller;
