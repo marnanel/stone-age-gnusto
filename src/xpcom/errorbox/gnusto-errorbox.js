@@ -1,5 +1,5 @@
 // Gnusto: error dialogue control. -*- Mode: Java; tab-width: 2; -*-
-// $Id: gnusto-errorbox.js,v 1.2 2003/12/05 16:34:44 marnanel Exp $
+// $Id: gnusto-errorbox.js,v 1.3 2003/12/16 01:42:55 marnanel Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -20,7 +20,7 @@
 
 ////////////////////////////////////////////////////////////////
 
-const CVS_VERSION = '$Date: 2003/12/05 16:34:44 $';
+const CVS_VERSION = '$Date: 2003/12/16 01:42:55 $';
 const ERRORBOX_COMPONENT_ID = Components.ID("{ec3597d6-e302-437c-aeef-9880448dedca}");
 const ERRORBOX_DESCRIPTION  = "Displays error messages and does logging";
 const ERRORBOX_CONTRACT_ID  = "@gnusto.org/errorbox;1";
@@ -92,6 +92,11 @@ ErrorBox.prototype = {
 						message += '\n\n';
 
 						if (code in errorbook) {
+
+								if (errorbook[code].ignore) {
+										return;
+								}
+
 								message += errorbook[code].name+
 								           '\n\n'+
 								           errorbook[code].details;
