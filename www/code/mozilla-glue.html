@@ -2,16 +2,30 @@
 
 <p align="right"><a href="http://www.mozdev.org/source/browse/gnusto/src/gnusto/content/mozilla-glue.js">Read the code</a></p>
 
-<p><code>mozilla-glue.js</code> is the central JavaScript file in Gnusto. It has three purposes, which will probably be split up sooner or later:</p>
+<p><code>mozilla-glue.js</code> is the central JavaScript file in Gnusto. It currently has three purposes. They should be split up sooner or later.</p>
+
+<h2>It gives the engine what it needs to function.</h2>
+
+<p><b>Reason for the name:</b> The <a href="felapton.html">Gnusto engine</a> was designed to be usable in many circumstances: Mozilla apps, simple browser-independent web pages and command-line JavaScript shells (much of the original development was done on a machine without even an X server). This design called for the engine to be supplied with "glue" code wherever it was installed, to provide anything which was dependent on the local environment.</p>
+
+<p>mozilla-glue continues to supply many of the engine's needs, although the engine makes much less use of callbacks now. Eventually the engine will progress to the point where no callbacks are needed, and then this function will disappear.</p>
+
+<p>The identifier prefix for mozilla-glue is <code>glue</code>.</p>
+
+<h3>Functions which provide this</h3>
+<ul>
+<li><b>getbyte, setbyte</b>-- will be removed after the resolution of the <a href="/nullbytes.html">null bytes problem</a>; the story will be passed into the engine in an array.</li>
+<li><b>gnustoglue_</b>*-- vestiges of callbacks. (These were all originally callbacks from the engine; many are only now called by mozilla-glue's supporting code. They should all be renamed or put inline.)</li>
+</ul>
 
 <h2>It powers the user interface.</h2>
 
-<h2>It connects all the other sections.</h2>
+<p>Almost all the <code>on</code>-event handlers in the user interface call functions in mozilla-glue.
 
-<p><b>Reason for the name:</b> The <a href="felapton.html">Gnusto engine</a> was designed to be...</p>
+<p><b>The future:</b> With the advent of <a href="darii.html"><code>Darii</code></a>, all such functions should become Darii actions.
 
 <h2>It's a dumping ground for code that doesn't fit anywhere else.</h2>
 
-<p>This is a positively <strong>bad</strong> idea. Code like this should be moved to new sections soon.</p>
+<p>This is a positively <strong>bad</strong> idea: it has made this file into a big mess. Code like this should be moved to new sections soon.</p>
 
 <p align="right"><a href=".">Other bits of the code</a></p>
