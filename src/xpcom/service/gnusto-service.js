@@ -1,5 +1,5 @@
 // -*- Mode: Java; tab-width: 2; -*-
-// $Id: gnusto-service.js,v 1.5 2004/02/09 05:35:42 naltrexone42 Exp $
+// $Id: gnusto-service.js,v 1.6 2004/02/18 00:35:40 naltrexone42 Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -53,7 +53,7 @@ const mime_types = {
 
 ////////////////////////////////////////////////////////////////
 
-const CVS_VERSION = '$Date: 2004/02/09 05:35:42 $';
+const CVS_VERSION = '$Date: 2004/02/18 00:35:40 $';
 
 const CONTENT_HANDLER_CONTRACT_ID_PREFIX = // Only the start of it:
 		"@mozilla.org/uriloader/content-handler;1?type=";
@@ -431,35 +431,7 @@ Module.getClassObject = function m_getclassobj(compMgr,
 Module.canUnload = function m_canunload(compMgr) { return true; }
 function NSGetModule(compMgr, fileSpec) { return Module; }
 
-gnustoserviceInit(); // begin initialization
-
-// Initialization and registration
-function gnustoserviceInit() {
-
-        // this should only trigger when this js is being loaded as a subscript from within
-        // the profile... if it's stored in the components directory, the class will already
-        // be registered so this if will come back false
-	if (typeof(Components.classes[COMMAND_LINE_CONTRACT_ID ]) == 'undefined') {
-	
-		// Component registration
-		var compMgr = Components.manager.QueryInterface(Components.interfaces.nsIComponentRegistrar);
-	        var gnustoCommandLineService = new CommandLineService;
-		compMgr.registerFactory(COMMAND_LINE_COMPONENT_ID, COMMAND_LINE_DESCRIPTION, COMMAND_LINE_CONTRACT_ID, gnustoCommandLineService);
-
-		try {
-
-
-				var catman = Components.classes['@mozilla.org/categorymanager;1'].getService(Components.interfaces.nsICategoryManager);
-
-				catman.addCategoryEntry(COMMAND_LINE_CATEGORY,COMMAND_LINE_DESCRIPTION,	
-				    COMMAND_LINE_CONTRACT_ID,true, true);
-																
-		} catch (e) {
-		}
-	}
-
-}
-
+// Removed bootstrap code.  Should now be callable from profile via newer method.
 
 ////////////////////////////////////////////////////////////////
 

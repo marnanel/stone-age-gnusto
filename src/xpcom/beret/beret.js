@@ -1,5 +1,5 @@
 // -*- Mode: Java; tab-width: 2; -*-
-// $Id: beret.js,v 1.18 2004/02/09 08:21:28 naltrexone42 Exp $
+// $Id: beret.js,v 1.19 2004/02/18 00:35:40 naltrexone42 Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -19,7 +19,7 @@
 
 ////////////////////////////////////////////////////////////////
 
-const CVS_VERSION = '$Date: 2004/02/09 08:21:28 $';
+const CVS_VERSION = '$Date: 2004/02/18 00:35:40 $';
 const BERET_COMPONENT_ID = Components.ID("{ed0618e3-8b2b-4bc8-b1a8-13ae575efc60}");
 const BERET_DESCRIPTION  = "Checks file magic and routes them accordingly";
 const BERET_CONTRACT_ID  = "@gnusto.org/beret;1";
@@ -474,7 +474,7 @@ Factory.createInstance = function f_createinstance(outer, interface_id)
 		if (outer != null) throw Components.results.NS_ERROR_NO_AGGREGATION;
 
 		if (interface_id.equals(Components.interfaces.gnustoIBeret)) {
-				return new Beret;
+				return new Beret();
 		}
 
 		// otherwise...
@@ -513,24 +513,7 @@ Module.canUnload = function m_canunload(compMgr) { return true; }
 
 function NSGetModule(compMgr, fileSpec) {	return Module; }
 
-gnustoBeretInit(); // begin initialization
-
-// Initialization and registration
-function gnustoBeretInit() {
-
-        // this should only trigger when this js is being loaded as a subscript from within
-        // the profile... if it's stored in the components directory, the class will already
-        // be registered so this if will come back false
-	if (typeof(Components.classes[BERET_CONTRACT_ID]) == 'undefined') {
-	
-		// Component registration
-		var compMgr = Components.manager.QueryInterface(Components.interfaces.nsIComponentRegistrar);
-	        var gnustoBeret = new Beret();
-		compMgr.registerFactory(BERET_COMPONENT_ID, BERET_DESCRIPTION, BERET_CONTRACT_ID, gnustoBeret);
-	}
-
-}
-
+// Removed bootstrap code.  Should now be callable from profile via newer method.
 
 ////////////////////////////////////////////////////////////////
 

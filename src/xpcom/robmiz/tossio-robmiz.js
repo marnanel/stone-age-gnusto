@@ -1,5 +1,5 @@
 // -*- Mode: Java; tab-width: 2; -*-
-// $Id: tossio-robmiz.js,v 1.4 2004/02/09 08:21:29 naltrexone42 Exp $
+// $Id: tossio-robmiz.js,v 1.5 2004/02/18 00:35:40 naltrexone42 Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -20,7 +20,7 @@
 
 ////////////////////////////////////////////////////////////////
 
-const CVS_VERSION = '$Date: 2004/02/09 08:21:29 $';
+const CVS_VERSION = '$Date: 2004/02/18 00:35:40 $';
 const ROBMIZ_COMPONENT_ID = Components.ID("{e4064955-7fd1-493f-aa01-0f8ebde7c351}");
 const ROBMIZ_DESCRIPTION  = "Robmiz is a simple assembler.";
 const ROBMIZ_CONTRACT_ID  = "@gnusto.org/robmiz;1";
@@ -662,21 +662,7 @@ Module.canUnload = function m_canunload(compMgr) { return true; }
 
 function NSGetModule(compMgr, fileSpec) { return Module; }
 
-gnustoRobmizInit(); // begin initialization
-
-// Initialization and registration
-function gnustoRobmizInit() {
-
-	if (typeof(Components.classes[ROBMIZ_CONTRACT_ID ]) == 'undefined') {
-	
-		// Component registration
-		var compMgr = Components.manager.QueryInterface(Components.interfaces.nsIComponentRegistrar);
-	        var gnustoRobmiz = new Robmiz;
-		compMgr.registerFactory(ROBMIZ_COMPONENT_ID, ROBMIZ_DESCRIPTION, ROBMIZ_CONTRACT_ID, gnustoRobmiz);
-
-
-}
-
+// Removed bootstrap code.  Should now be callable from profile via newer method.
 
 ////////////////////////////////////////////////////////////////
 
