@@ -1,0 +1,106 @@
+<h5 class="page-header">Error codes</h5>
+
+<table border>
+<tr>
+<th>Number (decimal)</th>
+<th>Meaning</th>
+</tr>
+
+<tr><th>1xx</th><td>
+<b>Z-machine internal errors.</b> These are caused by bugs inside Gnusto's
+Z-machine itself. If you see one of these, <a href="/bugs.html">please check
+whether it's already been reported, and if it hasn't, report it</a>.
+</td></tr>
+
+<tr><th>100</th><td><b>Can't modify gosub.</b> The program passed a subroutine
+call into another function, but the call was too complicated for that function
+to be able to figure out how to insert a handler for the return value. </td></tr>
+
+<tr><th>101</th><td><b>Not implemented.</b> The story attempted to use an
+opcode, or a feature of an opcode, that really should exist but doesn't.
+You should report this as an enhancement request, if it hasn't already been
+reported.</td></tr>
+
+<tr><th>170<br>to<br>199</th><td>
+<b>"Impossible" errors</b>. These happen when control reaches a place it
+should logically never be able to reach. Obviously, this means the logic
+is broken.
+</td></tr>
+
+<tr><th>170</th><td> impossible-- code_for_varcode()</td></tr>
+<tr><th>171</th><td> impossible-- dissemble()</td></tr>
+<tr><th>172</th><td> impossible-- get_prop_len()</td></tr>
+<tr><th>173</th><td> impossible-- get_next_prop()</td></tr>
+<tr><th>174</th><td> impossible-- get_prop()</td></tr>
+<tr><th>175</th><td> impossible-- property_search()</td></tr>
+
+<tr><th>199</th><td><b>Extended opcode.</b> Opcode 190 is handled specially,
+and so shouldn't ever be treated as an ordinary opcode. If it is, this happens.
+</td></tr>
+
+<tr><th>2xx</th><td>
+<b>Fatal story errors.</b> These happen when Gnusto's Z-machine thinks it's found
+a fault in your story that means everything has to stop. It may be wrong; if it is,
+it should be <a href="/bugs.html">reported as a bug in Gnusto</a>.
+</td></tr>
+
+<tr><th>200</th><td><b>Unknown opcode.</b> The story used an opcode that
+Gnusto doesn't know. If the opcode is defined in the Z-spec, this should be
+reported as an enhancement request.</td></tr>
+
+<tr><th>201</th><td><b>Lost in space.</b> A special case of 200.
+There is no opcode zero, and zero is what you're most likely to find in
+odd places in memory. So opcode zero triggers this error.</td></tr>
+
+<tr><th>202</th><td><b>Too many memory streams.</b> A story can write
+a stream of data into its own memory. The spec says that a story may
+only have sixteen of these at once. If you try and open seventeen of
+them, you get this error.</td></tr>
+
+<tr><th>203</th><td><b>No more memory streams.</b> If a story attempts
+to stop writing a stream of data into its own memory, but there isn't one
+to stop, it will cause this error.</td></tr>
+
+<tr><th>204</th><td><b>Weird output stream number.</b> The spec defines
+four kinds of output streams, and the story attempted to use a number which
+didn't correspond to any of them.</td></tr>
+
+<tr><th>206</th><td><b>Unreal property.</b> The story asked what followed
+a particular property of an object, and there wasn't such a property.</td></tr>
+
+
+<tr><th>7xx</th><td>
+<b>Transient story errors.</b> These happen when Gnusto's Z-machine thinks it's found
+a fault in your story which can probably be worked around. It may be wrong in
+thinking that it's found a bug; if it is, the problem should be
+<a href="/bugs.html">reported as a bug in Gnusto</a>. Transient errors will be
+reported, but Gnusto will attempt to work around them.
+</td></tr>
+
+<tr><th>700</th><td><b>Spurious restore_undo.</b> The story attempted to
+restore_undo without first successfully save_undoing.
+</td></tr>
+
+<tr><th>701</th><td><b>Division by zero.</b> Gnusto will supply zero as
+the answer if asked to carry on.</td></tr>
+
+<tr><th>702</th><td><b>Illegal ZSCII code.</b> The story attempted to output
+a ZSCII character outside the permitted range, which is 0-1023. Gnusto will
+supply 42 ('*') as the answer if asked to carry on.</td></tr>
+
+<tr><th>703</th><td><b>Unknown ZSCII code.</b> The story attempted to output
+a ZSCII character which Gnusto didn't know how to handle. Gnusto will
+supply 42 ('*') as the answer if asked to carry on.</td></tr>
+
+<tr><th>704</th><td><b>Put undefined property.</b> The story attempted to
+set a property, but didn't tell Gnusto which one. You think we're mindreaders
+here?</td></tr>
+
+<tr><th>705</th><td><b>Property too long to put.</b> The put_prop opcode
+only works for properties with lengths less than three bytes.</td></tr>
+
+<tr><th>706</th><td><b>Property too long to get.</b> The get_prop opcode
+only works for properties with lengths already less than three bytes.
+(You can get at the data in other ways, just not with this opcode.)</td></tr>
+
+</table>
