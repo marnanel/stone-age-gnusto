@@ -1,7 +1,7 @@
 // barbara.js || -*- Mode: Java; tab-width: 2; -*-
 // Lightweight lower-window handler.
 //
-// $Header: /cvs/gnusto/src/gnusto/content/barbara.js,v 1.34 2004/09/30 22:54:12 naltrexone42 Exp $
+// $Header: /cvs/gnusto/src/gnusto/content/barbara.js,v 1.35 2004/10/01 00:10:55 naltrexone42 Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -283,9 +283,9 @@ function barbara_relax() {
 
 				var slippage = page_height - barbara__most_seen;
 
-				if (slippage > barbara__get_viewport_height()) {
+				if (slippage > (barbara__get_viewport_height()- bocardo_get_top_window_height()-5)) {
 						// More than a screenful. Scroll to the top...
-						barbara__set_viewport_top(barbara__most_seen);
+						barbara__set_viewport_top(barbara__most_seen-5);
 						barbara__set_more(1);
 				} else {
 						// Jump straight to the bottom. No problem.
