@@ -58,6 +58,9 @@ interface gnustoIEngine : nsISupports
   
   // Passes back a 'terp generated status line for pre-z5 games
   string getStatusLine(in short width);
+
+  // Resets the game state to the last load
+  void resetStory();
 };
 
 ////////////////////////////////////////////////////////////////
