@@ -1,0 +1,62 @@
+#!/usr/bin/perl
+# mz5 - program to encode files into mz5 encoding.
+# See http://gnusto.mozdev.org/nullbytes.html for why you'd want to.
+#
+# Many thanks to Cedric Knight for suggestions and modifications, especially
+# ones for using the script on Windows.
+#
+# $Header: /cvs/gnusto/src/tools/mz5,v 1.1 2003/09/02 16:27:54 marnanel Exp $
+#
+# Copyright (c) 2003 Thomas Thurman - thomas@thurman.org.uk
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have be able to view the GNU General Public License at
+# http://www.gnu.org/copyleft/gpl.html ; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
+
+
+use strict;
+undef $/; # slurp entire file
+
+$_=$ARGV[0];
+my $i=$_;
+s/\.z5/\.mz5/i;
+my $o=$_;
+if ($i eq $o)
+    {print "Expected one parameter, a z5 file.\n"; die;}
+
+open (INZ5, "<$i");
+open (OUTMZ5, ">$o");
+
+binmode (INZ5);  # for DOS/Windows
+binmode (OUTMZ5);
+
+my $file_with_nulls = <INZ5>;
+my $replaced = '';
+my $fixups = '';
+
+for (my $i=0; $i<length($file_with_nulls); $i++) {
+    my $candidate = substr($file_with_nulls, $i, 1);
+
+    if ($candidate eq "\000") {
+ $replaced = $replaced . "0";
+ $fixups = $fixups . 'Y';
+    } else {
+ $replaced = $replaced . $candidate;
+ $fixups = $fixups . 'n';
+    }
+}
+
+print OUTMZ5 $replaced.$fixups;  # print entire file
+
+# eof mz5
+
