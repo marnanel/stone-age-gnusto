@@ -1,15 +1,14 @@
 // mozilla-glue.js || -*- Mode: Java; tab-width: 2; -*-
 // Interface between gnusto-lib.js and Mozilla. Needs some tidying.
 // Now uses the @gnusto.org/engine;1 component.
-// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.133 2004/01/19 22:32:13 marnanel Exp $
+// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.134 2004/01/26 05:14:39 marnanel Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
 // 
 // This program is free software; you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation; either version 2 of the License, or
-// (at your option) any later version.
+// it under the terms of version 2 of the GNU General Public License
+// as published by the Free Software Foundation
 // 
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -23,12 +22,13 @@
 ////////////////////////////////////////////////////////////////
 
 var current_window = 0;
-var engine = 0;
+var engine = null;
 var beret = 0;
 var replayer = 0;
 var errorbox = 0;
 
 // The effects. Defined more fully in the component.
+// FIXME: These should be exported as constants from the IDL.
 var GNUSTO_EFFECT_INPUT          = 'RS';
 var GNUSTO_EFFECT_INPUT_CHAR     = 'RC';
 var GNUSTO_EFFECT_SAVE           = 'DS';
@@ -72,15 +72,6 @@ var glue__reason_for_stopping = GNUSTO_EFFECT_WIMP_OUT; // safe default
 // accept.
 var glue__input_buffer_max_chars = 255;
 
-// List of arguments to the program. These are created from
-// the main window's arguments. Each entry in this array is
-// a list of strings, one for each entry in the argument string.
-// For example, the argument string
-//     a=p,a=q,b=r,a=s
-// would set glue__arguments to
-//     {'a':['p','q','s'],'b':['r']}
-var glue__arguments = {};
-
 // Nonzero iff we're transcribing the output (as far as the game
 // knows). You can have multiple transcription files at once,
 // but only one that the story knows about. If this is nonzero,
@@ -103,6 +94,10 @@ var glue__transcription_saved_target = 0;
 // ZSCII code will terminate a string read. This set is populated
 // by glue__set_terminating_characters.
 var glue__terminating_characters = {};
+
+var prefs = null;
+
+var glue__is_printing = true;
 
 ////////////////////////////////////////////////////////////////
 
@@ -129,7 +124,7 @@ function glue__set_terminating_characters(terminators) {
 // Outputs to the screen, and the transcription file if necessary.
 function glue_print(text) {
 
-		if (!('nowin' in glue__arguments)) {
+		if (glue__is_printing) {
 				win_chalk(current_window, text);
 		}
 
@@ -327,7 +322,7 @@ function command_exec(args) {
 						break;
 
 				case GNUSTO_EFFECT_QUIT:
-						if ('gameoverquit' in glue__arguments) {
+						if (prefs.getBoolStackablePref('gnusto', '', 'gameoverquit')) {
 								window.close();
 						}
 
@@ -535,6 +530,34 @@ function glue__init_burin() {
 ////////////////////////////////////////////////////////////////
 
 function glue__parse_arguments() {
+
+		// Firstly, some definitions:
+
+		// Some parameters are booleans, some are integers and
+		// some are strings.
+		const TYPE_IS_BOOLEAN = 'b';
+		const TYPE_IS_INTEGER = 'i';
+		const TYPE_IS_STRING  = 's';
+
+		const parameter_types = {
+				// Name          Type
+				'nowin':        TYPE_IS_BOOLEAN,
+				'gameoverquit': TYPE_IS_BOOLEAN,
+				'open':         TYPE_IS_STRING,
+				'seed':         TYPE_IS_INTEGER,
+				'copper':       TYPE_IS_BOOLEAN,
+				'golden':       TYPE_IS_BOOLEAN,
+				'input':        TYPE_IS_STRING,
+				'output':       TYPE_IS_STRING,
+				'robmiz':       TYPE_IS_STRING,
+		};
+
+		prefs = Components.
+				classes["@gnusto.org/stackable-prefs;1"].
+				getService(Components.interfaces.gnustoIStackPrefs);
+
+		prefs.deleteBranch('gnusto.current');
+
 		// Do we have any arguments passed on the command-line?
 		if ('arguments' in window && 'length' in window.arguments &&
 				window.arguments.length>0 && typeof window.arguments[0]=='string') {
@@ -548,6 +571,8 @@ function glue__parse_arguments() {
 						args[0]=args[0].substring(7);
 				}
 
+				var collated={};
+
 				for (i in args) {
 						var arg=args[i];
 
@@ -558,49 +583,72 @@ function glue__parse_arguments() {
 								var middle = arg.indexOf('=');
 
 								if (middle==-1) {
-										field = 'open'; // the default
-										value = arg;
+										// no "=" sign, so it's an "open" instruction
+										command_open([0, arg], 1);
 								} else {
 										// split it up
 										field = arg.substring(0, middle);
 										value = arg.substring(middle+1);
 								}
-								
-								if (field in glue__arguments) {
-										glue__arguments[field].push(value);
+
+								if (field in collated) {
+										collated[field].push(value);
 								} else {
-										glue__arguments[field] = [value];
+										collated[field] = [value];
 								}
 						}
 				}
+
+				for (j in collated) {
+
+						var field = "gnusto.current."+j;
+						var value = collated[j].join(';');
+
+						if (j in parameter_types) {
+								switch(parameter_types[j]) {
+
+								case TYPE_IS_STRING:
+										prefs.setCharPref(field, value);
+										break;
+
+								case TYPE_IS_BOOLEAN:
+										prefs.setBoolPref(field, value=="1");
+										break;
+
+								case TYPE_IS_INTEGER:
+										value = parseInt(value);
+										if (!isNaN(value)) {
+												prefs.setIntPref(field, value);
+										}
+										break;
+
+								default:
+										throw "impossible: weird parameter type";
+								}
+						}
+						// else complain about unknown parameter?
+				}
 		}
+
+		glue__is_printing = !prefs.getBoolStackablePref('gnusto', '', 'nowin');
 }
 
 ////////////////////////////////////////////////////////////////
 
 function glue__set_up_engine_from_args() {
 
-		if ('open' in glue__arguments) {
-				var loadlist = glue__arguments['open'];
-				for (i in loadlist) {
-						var filename = loadlist[i];
-						command_open([0, filename], 1);
-				}
-		}
+		var seed = prefs.getIntStackablePref('gnusto', '', 'seed');
+		if (seed!=0) engine.setRandomSeed(seed);
 
-		if ('seed' in glue__arguments && glue__arguments.seed[0]*1!=NaN) {
-				engine.setRandomSeed(glue__arguments.seed * 1);
-		}
-
-		if ('copper' in glue__arguments) {
+		if (prefs.getBoolStackablePref('gnusto', '', 'copper')) {
 				engine.setCopperTrail(1);
 		}
 
-		if ('golden' in glue__arguments) {
+		if (prefs.getBoolStackablePref('gnusto', '', 'golden')) {
 				engine.setGoldenTrail(1);
 		}
 
-		if (engine!=0) {
+		if (engine!=null) {
 				glue_play();
 		}
 }
@@ -626,8 +674,17 @@ function output_stream(filename, mode, permissions) {
 
 function glue_init() {
 		try {
-		glue__parse_arguments();
 
+				beret = new Components.Constructor('@gnusto.org/beret;1',
+																					 'gnustoIBeret')();
+
+				replayer = new Components.Constructor('@gnusto.org/replayer;1',
+																							'gnustoIReplayer')();
+
+				glue__parse_arguments();
+
+		/*
+			FIXME: "output" suspended for now.
 		if ('output' in glue__arguments) {
 				// permissions (gleaned from prio.h)
 				var APPEND_AND_WRITE_ONLY = 0x12;
@@ -641,29 +698,12 @@ function glue_init() {
 																	 0));
 				}
 		}
+		*/
 
-		if ('robmiz' in glue__arguments) {
-				var robmiz = new Components.Constructor('@gnusto.org/robmiz;1',
-																								'gnustoIRobmiz')();
-				for (i in glue__arguments.robmiz) {
-						var stream = new Components.Constructor('@mozilla.org/filespec;1',
-																										'nsIFileSpec')();
-						stream.nativePath = glue__arguments.robmiz[i];
-						robmiz.assemble(stream);
-						robmiz.messages();
-				}
-				// Use of Robmiz implies quitting before anything starts...
-				window.close();
-		}
+		engine = null;
 
-		engine = 0;
-
-		beret = new Components.Constructor('@gnusto.org/beret;1',
-																			 'gnustoIBeret')();
-
-		replayer = new Components.Constructor('@gnusto.org/replayer;1',
-																					'gnustoIReplayer')();
-
+		/*
+			FIXME: "input" suspended for now.
 		if ('input' in glue__arguments) {
 				for (i in glue__arguments.input) {
 						var arg = glue__arguments.input[i];
@@ -690,6 +730,7 @@ function glue_init() {
 						}
 				}
 		}
+		*/
 
 		document.onkeypress=gotInput;
 
@@ -700,8 +741,7 @@ function glue_init() {
 
 		setTimeout("glue__set_up_engine_from_args();", 0);
 		}catch(ex) {
-				alert(ex);
-				errorbox.alert(999, String(ex));
+				gnusto_error(999, String(ex));
 		}
 }
 
@@ -1127,8 +1167,6 @@ function command_transcript() {
 // Loads a file into the engine.
 // WARNING: Under serious flux. Return values not well defined.
 // (Should ultimately be nonzero for successful loading.)
-// Does not reliably load anything but z[578] at the moment.
-// No Blorb, no Quetzal, or anything like that.
 //
 // |file| is an nsILocalFile.
 //
