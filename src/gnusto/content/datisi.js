@@ -1,7 +1,7 @@
 // datisi.js || -*- Mode: Java; tab-width: 2; -*-
 // Standard command library
 // 
-// $Header: /cvs/gnusto/src/gnusto/content/datisi.js,v 1.34 2004/01/29 19:57:45 marnanel Exp $
+// $Header: /cvs/gnusto/src/gnusto/content/datisi.js,v 1.35 2004/04/12 03:51:33 marnanel Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -362,7 +362,9 @@ function sys_update_recent_menu(recent) {
 				var n = parseInt(i)+1;
 
 				element.setAttribute('label', n+'. '+label);
-				element.setAttribute('oncommand', 'dispatch("'+command+'")');
+				// XXX FIXME: This was broken by the move away from dispatch().
+				// OTOH, it was broken anyway. Bug 3648 tracks.
+				element.setAttribute('oncommand', command);
 				if (n<10)
 						element.setAttribute('accesskey', n);
 				else if (n==10)
