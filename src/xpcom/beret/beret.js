@@ -1,5 +1,5 @@
 // -*- Mode: Java; tab-width: 2; -*-
-// $Id: beret.js,v 1.13 2004/01/26 05:25:29 marnanel Exp $
+// $Id: beret.js,v 1.14 2004/01/29 05:39:51 marnanel Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -19,7 +19,7 @@
 
 ////////////////////////////////////////////////////////////////
 
-const CVS_VERSION = '$Date: 2004/01/26 05:25:29 $';
+const CVS_VERSION = '$Date: 2004/01/29 05:39:51 $';
 const BERET_COMPONENT_ID = Components.ID("{ed0618e3-8b2b-4bc8-b1a8-13ae575efc60}");
 const BERET_DESCRIPTION  = "Checks file magic and routes them accordingly";
 const BERET_CONTRACT_ID  = "@gnusto.org/beret;1";
@@ -150,7 +150,6 @@ Beret.prototype = {
 																											 'gnustoIEngine',
 																											 'loadStory')(content.length,
 																																		content);
-
 				} else if (magic_number_is_string('Glul')) { // A Glulx file.
 
 						this.m_filetype = 'ok story naked glulx';
@@ -399,7 +398,7 @@ Beret.prototype = {
 												buf.close();
 
 												// And recur.
-												arguments.callee(new_contents.length, new_contents);
+												this.load(new_contents.length, new_contents);
 										}
 
 										break;
@@ -413,7 +412,7 @@ Beret.prototype = {
 								}
 						}
 
-						this.m_filetype = 'ok other grimoire';
+						this.m_filetype = 'ok grimoire dummy dummy'; // until bug 5653
 
 				} else if (magic_number_is_string('\t;; robmiz')) {
 
