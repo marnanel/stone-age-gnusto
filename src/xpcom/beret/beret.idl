@@ -1,5 +1,6 @@
 #include "nsISupports.idl"
 #include "xpcom/engine/gnusto-engine.idl"
+#include "xpcom/replayer/gnusto-replayer.idl"
 
 // The beret takes loaded files and decides where they should go.
 
@@ -55,6 +56,10 @@ interface gnustoIBeret : nsISupports
   // The engine remains available in this way, and the same engine will
   // be used for loading saved games into.
   readonly attribute string filetype;
+
+  // Temporary: Sets the replayer which grimoires feed into.
+  // Move this out when grimoire parsing has its own component.
+  void setReplayer(in gnustoIReplayer replayer);
 
   readonly attribute gnustoIEngine engine;
 };
