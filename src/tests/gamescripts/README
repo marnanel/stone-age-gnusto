@@ -1,0 +1,16 @@
+README
+	this file
+
+balances.playback
+	playback for Balances, based on solution by Gareth Rees
+	Known to work.
+zork1.playback
+	playback for Zork, based on solution by Jacob Gunness (sic)
+
+gntests.playback
+strictz.playback
+terpetude.playback
+	playbacks for standard tests for Z-compliance
+
+simplerestore.playback
+	playback for our own tests
