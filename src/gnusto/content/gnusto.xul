@@ -4,7 +4,7 @@
 
 <!--
 
-$Header: /cvs/gnusto/src/gnusto/content/gnusto.xul,v 1.71 2004/01/26 05:06:57 marnanel Exp $
+$Header: /cvs/gnusto/src/gnusto/content/gnusto.xul,v 1.72 2004/02/18 00:48:28 naltrexone42 Exp $
 
 Copyright (c) 2003 Thomas Thurman
 thomas@thurman.org.uk
@@ -34,6 +34,22 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
 	onload="ensureHappiness();start_up();">
 
 <script type="application/x-javascript"><![CDATA[
+
+     // load components if they aren't in the components dir and thus auto-loaded
+     try{
+        // check to see if our components are already loaded-- if they are, they're in the app dir
+        // and thus don't need to be loaded form a dir in the profile
+        if (typeof(Components.classes["@mozilla.org/commandlinehandler/general-startup;1?type=gnusto"]) == 'undefined') {         
+           var gnustoCompDir = Components.classes['@mozilla.org/file/directory_service;1'].
+	  				getService(Components.interfaces.nsIProperties).
+					get("UChrm", Components.interfaces.nsIFile);
+           gnustoCompDir.append('gnusto');
+           gnustoCompDir.append('components');
+           var compMgr = Components.manager.QueryInterface(Components.interfaces.nsIComponentRegistrar);
+           compMgr.autoRegister(gnustoCompDir);
+        }
+     } catch (e) { alert(e);}                               				
+
 
 // Function to check that all the parts of the program loaded.
 // Each source file defines FOO_HAPPY = 1 at the end; if there

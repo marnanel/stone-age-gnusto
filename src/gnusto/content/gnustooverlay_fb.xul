@@ -12,22 +12,15 @@
   <script>
   		<![CDATA[
 		
-			// load components if they aren't in the components dir and thus auto-loaded
-			
-			if (typeof(Components.classes["@mozilla.org/commandlinehandler/general-startup;1?type=gnusto"]) == 'undefined') {
-			        var appShell = Components.classes["@mozilla.org/appshell/appShellService;1"].getService(Components.interfaces.nsIAppShellService);
-				var wnd = appShell.hiddenDOMWindow;
-				wnd.setTimeout('Components.classes["@mozilla.org/moz/jssubscript-loader;1"].getService(Components.interfaces.mozIJSSubScriptLoader).loadSubScript("chrome://gnusto/content/gnusto-service.js")', 0);
-				wnd.setTimeout('Components.classes["@mozilla.org/moz/jssubscript-loader;1"].getService(Components.interfaces.mozIJSSubScriptLoader).loadSubScript("chrome://gnusto/content/beret.js")', 0); 
-				wnd.setTimeout('Components.classes["@mozilla.org/moz/jssubscript-loader;1"].getService(Components.interfaces.mozIJSSubScriptLoader).loadSubScript("chrome://gnusto/content/gnusto-engine.js")', 0); 
-				wnd.setTimeout('Components.classes["@mozilla.org/moz/jssubscript-loader;1"].getService(Components.interfaces.mozIJSSubScriptLoader).loadSubScript("chrome://gnusto/content/gnusto-errorbox.js")', 0); 
-				wnd.setTimeout('Components.classes["@mozilla.org/moz/jssubscript-loader;1"].getService(Components.interfaces.mozIJSSubScriptLoader).loadSubScript("chrome://gnusto/content/gnusto-replayer.js")', 0); 
-				wnd.setTimeout('Components.classes["@mozilla.org/moz/jssubscript-loader;1"].getService(Components.interfaces.mozIJSSubScriptLoader).loadSubScript("chrome://gnusto/content/tossio-robmiz.js")', 0); 
-				wnd.setTimeout('Components.classes["@mozilla.org/moz/jssubscript-loader;1"].getService(Components.interfaces.mozIJSSubScriptLoader).loadSubScript("chrome://gnusto/content/gnusto-baroco.js")', 0); 
-				                               				
-				Loaded = true;
-			}
-			else Loaded = true;			
+// Nixed most of the runtime component loading here to be done in a better fashion in gnusto.xul
+// However, left a bit of it here but commented out-- will eventually be modified so that support
+// for launching gnusto when clicking .z? files is installed when the browser comes up.  Phase 2 or something.
+
+//    if (typeof(Components.classes["@mozilla.org/commandlinehandler/general-startup;1?type=gnusto"]) == 'undefined') {
+//       var appShell = Components.classes["@mozilla.org/appshell/appShellService;1"].getService(Components.interfaces.nsIAppShellService);
+//       var wnd = appShell.hiddenDOMWindow;
+//       wnd.setTimeout('Components.classes["@mozilla.org/moz/jssubscript-loader;1"].getService(Components.interfaces.mozIJSSubScriptLoader).loadSubScript("chrome://gnusto/content/gnusto-service.js")', 0);
+//    }
 		]]>
   </script>
     
