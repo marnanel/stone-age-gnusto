@@ -1,8 +1,9 @@
-	;; Gnusto tests.  -*- asm -*-
+	;; robmiz  -*- asm -*-
+	;; Gnusto tests.	
 	;; Test for "verify"
 	
 	;; Copyright (c) 2003 Thomas Thurman. Distributed under v2 of the GNU GPL.
-	;; $Id: verify.robmiz,v 1.1 2003/11/24 16:36:39 marnanel Exp $
+	;; $Id: verify.robmiz,v 1.2 2004/01/26 05:17:05 marnanel Exp $
 
 	option arch "z5"
 	option output "verify.z5"
