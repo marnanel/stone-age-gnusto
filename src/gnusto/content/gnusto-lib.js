@@ -1,6 +1,6 @@
 // gnusto-lib.js || -*- Mode: Java; tab-width: 2; -*-
 // The Gnusto JavaScript Z-machine library.
-// $Header: /cvs/gnusto/src/gnusto/content/Attic/gnusto-lib.js,v 1.111 2003/08/29 20:21:19 naltrexone42 Exp $
+// $Header: /cvs/gnusto/src/gnusto/content/Attic/gnusto-lib.js,v 1.112 2003/08/29 20:45:08 naltrexone42 Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -1092,8 +1092,8 @@ var handlers = {
 		254: function Z_print_table(a) {
 				
 				// Jam in defaults:
-				if (a.length < 4) { a.push(1); } // default height
-				if (a.length < 5) { a.push(0); } // default skip
+				if (a.length < 3) { a.push(1); } // default height
+				if (a.length < 4) { a.push(0); } // default skip
 				//VERBOSE burin('print_table',"print_table("+a[0]+','+a[1]+','+a[2]+',' + a[3]+')');
 				return "pc="+pc+";engine__effect_parameters=engine__print_table("+a[0]+","+a[1]+","+a[2]+","+a[3]+");return "+GNUSTO_EFFECT_PRINTTABLE;
 		},
@@ -1485,7 +1485,7 @@ function zscii_char_to_ascii(zscii_code) {
 				// FIXME: It's not clear what to do if they request a character
 				// that's off the end of the table.
 		}	else {  //let's do nothing for the release-- we'll check the spec afterwards.
-				return " ";//gnusto_error(703, zscii_code); // unknown zscii code
+				return "*";//gnusto_error(703, zscii_code); // unknown zscii code
 		}
 
 		return String.fromCharCode(result);
