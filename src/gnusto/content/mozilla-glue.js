@@ -1,7 +1,7 @@
 // mozilla-glue.js || -*- Mode: Java; tab-width: 2; -*-
 // Interface between gnusto-lib.js and Mozilla. Needs some tidying.
 // Now uses the @gnusto.org/engine;1 component.
-// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.110 2003/10/03 12:56:58 marnanel Exp $
+// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.111 2003/10/15 05:06:42 marnanel Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -307,8 +307,21 @@ function command_exec(args) {
 
 				case GNUSTO_EFFECT_PRINTTABLE:
 						// FIXME: needs rethink
-						win_print_table(current_window,
-														engine_effect_parameters());
+
+						var temp = [];
+
+						temp.length = engine.effect(1)*1;
+
+						for (var i=0; i<temp.length; i++) {
+								var value = engine.effect(i+2);
+								if (value) {
+										temp[i] = value.toString();
+								} else {
+										temp[i] = '';
+								}
+						}
+
+						win_print_table(current_window, temp);
 						looping = 1;
 						break;
 						
@@ -1039,8 +1052,6 @@ function glue_save() {
 
 		var dummy = [];
 		var image = engine.saveGameData(engine.saveGame(), dummy);
-		alert(image);
-		alert(image.length);
 
 		binstream.writeByteArray(image, image.length);
 
