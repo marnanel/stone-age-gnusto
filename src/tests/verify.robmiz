@@ -1,0 +1,19 @@
+	;; Gnusto tests.  -*- asm -*-
+	;; Test for "verify"
+	
+	;; Copyright (c) 2003 Thomas Thurman. Distributed under v2 of the GNU GPL.
+	;; $Id: verify.robmiz,v 1.1 2003/11/24 16:36:39 marnanel Exp $
+
+	option arch "z5"
+	option output "verify.z5"
+	
+$main:	print	"*NAME verify\n"
+	verify	verok		; is it working?
+	print	"*FAIL Verification failed.\n" ; no
+	ret	255
+verok:	print	"*SUCC Verification succeeded.\n" ; yes
+	ret	0
+	endproc
+
+	;; EOF verify.robmiz
+	
