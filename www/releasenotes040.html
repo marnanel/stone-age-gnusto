@@ -70,6 +70,6 @@ this list.  If the issue is not on the list, please check <a href="http://gnusto
 
 <h4>Uninstalling</h4>
 
-<p>Currently, there is no automated way to uninstall Gnusto.  Simply deleting the gnusto directory under mozilla\chrome then restarting the browser does a fairly decent job of uninstalling the product.  But it leaves nasty residue behind, so purging all gnusto-related entries from chrome.rdf is probably wise also.  Yes, we're aware it's not a very good solution.  We'll try to work up something easier for 0.5.0.</p>
+<p>Currently, there is no automated way to uninstall Gnusto.  Simply deleting the gnusto directory under mozilla\chrome then restarting the browser will cause the browser to freeze on launch.  Close Mozilla completely, deleting any line with the word "gnusto" in it from chrome\overlayinfo\communicator\content\overlays.rdf and chrome\installed-chrome.txt (if you're extra-tidy and know what you're doing, optinally purge all gnusto references in chrome\chrome.rdf as well), restart the browser and you're good to go.  Yes, we're aware it's not a very good solution.  We'll try to work up something easier for 0.5.0.</p>
 
 <p align="right">Last Updated: 18 April 2003</p>
