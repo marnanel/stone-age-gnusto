@@ -1,4 +1,4 @@
-# $Id: jury-rig.py,v 1.2 2003/10/15 05:07:29 marnanel Exp $
+# $Id: jury-rig.py,v 1.3 2003/10/17 05:57:14 marnanel Exp $
 # Program to update all Gnusto components.
 # Licensed under the same terms as Gnusto itself.
 # Copyright (c) 2003, Thomas Thurman
@@ -192,6 +192,10 @@ def configuration():
 
 ################################################################
 
+class updated:
+    components = 0
+    interfaces = 0
+
 def stale(original, derivative):
     """Returns 1 if the file named |original| is newer than the
     file named |derivative|."""
@@ -210,7 +214,8 @@ def maybe_copy(settings, dir, source):
         output("Copying "+source+" to "+target+"... ")
         shutil.copy(source, target)
         output("done.\n")
-          
+        updated.components = 1
+
 def maybe_compile(settings, dir, source):
     components = settings.get('make', 'components')
     target = os.path.join(components, source[:-4]+'.xpt')
@@ -226,6 +231,8 @@ def maybe_compile(settings, dir, source):
         if result!=0:
             print "The XPIDL compiler returned a failure code: "+`result`+"."
             sys.exit(1)
+        else:
+            updated.interfaces = 1
 
 ################################################################
 
@@ -241,6 +248,24 @@ def walker(settings, dirname, filenames):
         elif name.endswith('.idl'):
             maybe_compile(settings, dirname, name)
 
+def delete_files_as_necessary(settings):
+    def deleter(filename):
+        if os.path.exists(filename):
+            os.remove(filename)
+            output('done.\n')
+        else:
+            output('didn\'t exist anyway.\n')
+        
+    components = settings.get('make', 'components')
+
+    if updated.components:
+        output('Deleting component cache... ')
+        deleter(os.path.join(components, 'compreg.dat'))
+
+    if updated.interfaces:
+        output('Deleting interface cache... ')
+        deleter(os.path.join(components, 'xpti.dat'))
+
 try:
     settings = configuration()
 
@@ -249,6 +274,7 @@ try:
     xpcom = os.path.join(xpcom, 'xpcom')
 
     os.path.walk(xpcom, walker, settings)
+    delete_files_as_necessary(settings)
     
 except KeyboardInterrupt:
     print
@@ -262,4 +288,5 @@ except:
 
     exception = sys.exc_info()
     sys.excepthook(exception[0], exception[1], exception[2])
+    sys.exit(255)
 
