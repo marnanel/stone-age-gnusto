@@ -1,7 +1,7 @@
 // baroco.js || -*- Mode: Java; tab-width: 2; -*-
 // Screen handler.
 //
-// $Header: /cvs/gnusto/src/gnusto/content/baroco.js,v 1.19 2004/09/30 18:22:48 naltrexone42 Exp $
+// $Header: /cvs/gnusto/src/gnusto/content/baroco.js,v 1.20 2004/10/01 21:16:45 naltrexone42 Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -71,7 +71,8 @@ var baroco__current_background = 1;
 
 // Called on startup.
 function win_init() {
-		barbara_init();
+	        //win_resize();
+		barbara_init();		
 }
 
 ////////////////////////////////////////////////////////////////
