@@ -64,7 +64,7 @@ trinityfrotz:
 	$(FROTZ) $(TRINITY) < $(GAMESCRIPTS)/trinity.playback
 
 trinitygnusto: jury-rig
-	$(GNUSTO),$(TRINITY),input=$(GAMESCRIPTS)/trinity.playback
+	$(GNUSTO) $(GAMESCRIPTS)/trinity.grimoire
 
 # Glulx support...
 
