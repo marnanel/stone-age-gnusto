@@ -1,0 +1,43 @@
+// $Id: gnusto-gparams.idl,v 1.1 2004/01/20 00:54:45 marnanel Exp $
+// Stores the [field]=[value] pairs known as gparams.
+// Each field can have multiple values associated with it.
+// This component would probably be useful to other projects.
+//
+// Copyright (c) 2004 Thomas Thurman
+// thomas@thurman.org.uk
+// 
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of version 2 of the GNU General Public License
+// as published by the Free Software Foundation.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// You should have be able to view the GNU General Public License at 
+// http://www.gnu.org/copyleft/gpl.html ; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
+
+#include "nsISupports.idl"
+
+[scriptable, uuid(be7d1f03-0b31-447c-8998-0c3ea92c9c38)]
+interface gnustoIGParams : nsISupports
+{
+
+  // Adds a new pair to the sequence.
+  void set(in ACString field, in ACString value);
+
+  // Returns how many pairs have field==|field|.
+  // This is equivalent to an "exists" function.
+  long count(in ACString field);
+
+  // Returns the |index|th pair with field name |field|.
+  // Returns an empty string if there are no pairs with field name |field|.
+  ACString get(in ACString field, in long index);
+
+  // Returns the first pair with field name |field|, and destroys it.
+  // Returns an empty string if there are no pairs with field name |field|.
+  ACString pop(in ACString field);
+
+};
