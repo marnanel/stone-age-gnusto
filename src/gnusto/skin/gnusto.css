@@ -23,6 +23,10 @@ description {
 	border-right: 1px solid #000000;
 }
 
+.bocardo { 
+  margin: 0 0 0 0;
+}
+
 /****************************************************************
 *
 * http://mozdev.org/bugs/show_bug.cgi?id=3657 has the original
