@@ -1,7 +1,7 @@
 // mozilla-glue.js || -*- Mode: Java; tab-width: 2; -*-
 // Interface between gnusto-lib.js and Mozilla. Needs some tidying.
 // Now uses the @gnusto.org/engine;1 component.
-// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.114 2003/11/15 22:30:56 marnanel Exp $
+// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.115 2003/11/16 18:31:02 marnanel Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -515,8 +515,7 @@ function glue_init() {
 		document.onkeypress=gotInput;
 
 		glue__init_burin();
-
-		glue__load_beret_from_args();
+		setTimeout("glue__load_beret_from_args();", 0);
 }
 
 ////////////////////////////////////////////////////////////////
