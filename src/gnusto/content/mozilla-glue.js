@@ -1,7 +1,7 @@
 // mozilla-glue.js || -*- Mode: Java; tab-width: 2; -*-
 // Interface between gnusto-lib.js and Mozilla. Needs some tidying.
 // Now uses the @gnusto.org/engine;1 component.
-// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.137 2004/01/29 06:07:19 marnanel Exp $
+// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.138 2004/01/29 06:11:39 marnanel Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -693,52 +693,20 @@ function glue_init() {
 
 				glue__parse_arguments();
 
-		/*
-			FIXME: "output" suspended for now.
-		if ('output' in glue__arguments) {
-				// permissions (gleaned from prio.h)
-				var APPEND_AND_WRITE_ONLY = 0x12;
-				var PERMISSIONS = 0600;
+				var output_target = prefs.getCharStackablePref('gnusto', '', 'output');
 
-				for (i in glue__arguments.output) {
+				if (output_target != '') {
+
+						// permissions (gleaned from prio.h)
+						var APPEND_AND_WRITE_ONLY = 0x12;
+						var PERMISSIONS = 0600;
+
 						glue__transcription_streams.
-								push(output_stream(glue__arguments.output[i],
+							  push(output_stream(output_target,
 																	 APPEND_AND_WRITE_ONLY,
 																	 PERMISSIONS,
 																	 0));
 				}
-		}
-		*/
-
-		/*
-			FIXME: "input" suspended for now.
-		if ('input' in glue__arguments) {
-				for (i in glue__arguments.input) {
-						var arg = glue__arguments.input[i];
-
-						if (arg[0]=='*') {
-								// Input arguments beginning with a star are
-								// literal strings. They may be separated by
-								// slashes.
-								var commands = arg.
-										substring(1).
-										replace('_',' ','g').
-										split('/');
-
-								for (i in commands) {
-										replayer.playString(commands[i]);
-								}
-						} else {
-								// Otherwise they're a filename.
-								var stream = new Components.
-										Constructor('@mozilla.org/filespec;1',
-																'nsIFileSpec')();
-								stream.nativePath = arg;
-								replayer.replay(stream);
-						}
-				}
-		}
-		*/
 
 		document.onkeypress=gotInput;
 
