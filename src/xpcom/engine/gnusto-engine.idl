@@ -1,0 +1,40 @@
+#include "nsISupports.idl"
+#include "nsIInputStream.idl"
+
+////////////////////////////////////////////////////////////////
+
+[scriptable, uuid(bf7a4808-211f-4c6c-827a-c0e5c51e27e1)]
+interface gnustoIEngine : nsISupports
+{
+  void loadStory(in nsIInputStream story);
+  void loadStoryMZ5(in string story);
+
+  void loadSavedGame(in nsIInputStream savedgame);
+  void loadSavedGameMZ5(in string story);
+
+  readonly attribute string signature;
+  readonly attribute string cvsVersion;
+
+  string effect(in short which);
+  void answer(in short which, in string what);
+
+  void run();
+
+  void walk(in string answer);
+
+  readonly attribute string architecture;
+
+  readonly attribute string status;
+};
+
+////////////////////////////////////////////////////////////////
+
+[scriptable, uuid(56852654-229f-4931-a8c3-942035a6eb1f)]
+interface gnustoIZMachine : gnustoIEngine
+{
+  attribute short piracy;
+  attribute short tandy;
+};
+
+////////////////////////////////////////////////////////////////
+// EOF gnusto-engine.idl
