@@ -5,14 +5,12 @@ The subdirectories here are:
 frotz         - Patches to Frotz
 gnusto        - The chrome for Gnusto installations: skin, locale
                 and basic code
-inform        - Inform code for testing Gnusto
+tests         - programs to test Gnusto
 install.js    - The installation script for gnusto-*.xpi
-tools         - Tools for debugging Gnusto from the commandline
+tools         - Tools for debugging Gnusto
 xpcom         - Gnusto's XPCOM components
 
 Files in this directory:
 
-Makefile      - makefile, now defunct; will probably become useful again
-                soon, now that we're using XPI
-
+Makefile      - makefile
 README        - this file
