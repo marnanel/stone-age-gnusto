@@ -1,7 +1,7 @@
 // mozilla-glue.js || -*- Mode: Java; tab-width: 2; -*-
 // Interface between gnusto-lib.js and Mozilla. Needs some tidying.
 // Now uses the @gnusto.org/engine;1 component.
-// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.148 2005/01/25 07:05:08 naltrexone42 Exp $
+// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.149 2005/01/28 01:33:04 naltrexone42 Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -1142,6 +1142,9 @@ function command_transcript() {
 // |file| is an nsILocalFile.
 //
 function load_from_file(file) {
+	
+		document.getElementById('gnbrowser').setAttribute('hidden','true');		
+		//document.getElementById('gamespace').setAttribute('hidden','false');	
 
 		try {
 
