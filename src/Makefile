@@ -1,6 +1,6 @@
 # Makefile - makefile for gnusto
 #
-# $Header: /cvs/gnusto/src/Makefile,v 1.15 2004/01/26 05:04:53 marnanel Exp $
+# $Header: /cvs/gnusto/src/Makefile,v 1.16 2004/08/01 02:52:45 marnanel Exp $
 #
 # Copyright (c) 2003 Thomas Thurman
 # thomas@thurman.org.uk
@@ -22,7 +22,7 @@ APPLICATION = gnusto
 VERSION = 0.6.0
 XPIFILE = ../downloads/${APPLICATION}-${VERSION}.xpi
 PYTHON = python
-MOZILLA = ~/MozillaFirebird/MozillaFirebird
+MOZILLA = ~/firefox/firefox
 MOZILLAARGS = -P smoke
 BALANCES_GAME = ~/balances.z5
 
