@@ -11,6 +11,7 @@ STDERR = /dev/stdout
 
 BALANCES = ~/balances.z5
 ZORK1 = ~/zork1.z5
+VERSION3GAME = random.z3
 
 STANDARDGAMES = ~/proj/gnusto/bug3481
 GAMESCRIPTS = gamescripts
@@ -47,4 +48,7 @@ strictz:
 terpetude:
 	$(MOZILLA) $(MOZARGS) -gnusto $(GNUSTOARGS),$(STANDARDGAMES)/terpetude.z5,input=$(GAMESCRIPTS)/terpetude.playback
 
+################################################################
 
+v3:
+	$(MOZILLA) $(MOZARGS) -gnusto $(GNUSTOARGS),$(VERSION3GAME)
