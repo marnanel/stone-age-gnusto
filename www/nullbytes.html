@@ -1,12 +1,22 @@
 <h5 class="page-header">The null bytes problem</h5>
 
-<p>In all current versions of Mozilla, JavaScript cannot reliably read a file which contains nulls. This includes all zcode story files. People are <a href="http://bugzilla.mozilla.org/show_bug.cgi?id=170585">working on fixing this</a>, and as soon as it's ready, Gnusto will be able to load story files directly. Of course, Gnusto can't reach v1.0 until this happens.</p>
+<p>In all current versions of Mozilla, JavaScript cannot reliably read a file which contains nulls. This includes all zcode story files. People are <a href="http://bugzilla.mozilla.org/show_bug.cgi?id=170585">working on fixing this</a>, and as soon as it's ready, Gnusto will be able to load story files directly. Of course, Gnusto can't reach v1.0 until this happens. [Update: It looks like this is fixed in the current tree, but it's not in any Mozilla releases yet. Looks good for the next release, though.]</p>
 
 <p>Meanwhile, if you're testing Gnusto, you still need to be able to load story files. I experimented with a few options (uuencoding the files, for example) but they all ran into the same problem: they required a lot of JavaScript processing in order to get the data out. This made loading games very slow (on the order of ten seconds to load a 60K file).</p>
 
-<p>In the end I devised a new encoding, mangled-z5 or "mz5", which doesn't suffer from this problem. The details are below, but if you just want to get going, download <a href="http://downloads.mozdev.org/gnusto/mz5">the encoder here</a> (you'll need <a href="http://www.perl.org">Perl</a> to run it). If you have a story file called, say, <code>curses.z5</code>, then you can convert it to mz5 by typing <blockquote><kbd>./mz5 curses.z5 &gt;curses.mz5</kbd></blockquote>at the $ or % prompt. (Apologies to Windows users for the lack of information for you: if someone gives me instructions on how to do this under Windows, I'll reproduce them here.)</p>
+<p>In the end I devised a new encoding, mangled-z5 or "mz5", which doesn't suffer from this problem.
 
-<p>You may also download Dylan O'Donnell's game <a href="http://downloads.mozdev.org/gnusto/troll.mz5"><cite>A Troll's Eye View</cite> in mz5 encoding</a>.</p>
+<p><b>Under Unix,</b> download <a href="http://downloads.mozdev.org/gnusto/mz5">the encoder here</a> (you'll need <a href="http://www.perl.org">Perl</a>, but you probably already have it). If you have a story file called, say, <code>curses.z5</code>, then you can convert it to mz5 by typing <blockquote><kbd>./mz5 curses.z5</kbd></blockquote>at the $ or % prompt.</p>
+
+<p><b>Under Windows,</b> you may either:</p>
+<ul>
+<li>Download <a href="http://downloads.mozdev.org/gnusto/mz5">the Perl encoder</a>, just as under Windows; type <blockquote><kbd>mz5 curses.z5</kbd></blockquote>at the Command Prompt to use it. Thanks to Cedric Knight for making the necessary changes to let this program run under Windows.</li>
+<li>You can also download <a href="http://www.batmantis.com/gnusto/">an mz5 conversion utility</a> for Windows which doesn't need Perl (I haven't tested this, but you might well find it useful). Thanks to Eric Liga for providing this.</li>
+</ul>
+
+<p>You may also download Dylan O'Donnell's game <a href="http://downloads.mozdev.org/gnusto/troll.mz5"><cite>A Troll's Eye View</cite> already encoded in mz5</a>.</p>
+
+<hr>
 
 <h6>The details of the mz5 encoding</h6>
 <p>The encoding had to</p>
