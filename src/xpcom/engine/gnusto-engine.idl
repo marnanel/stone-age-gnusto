@@ -6,7 +6,7 @@
 [scriptable, uuid(bf7a4808-211f-4c6c-827a-c0e5c51e27e1)]
 interface gnustoIEngine : nsISupports
 {
-  void loadStory(in nsIInputStream story);
+  void loadStory(in nsIInputStream story, in long length);
   void loadStoryMZ5(in string story);
 
   void loadSavedGame(in nsIInputStream savedgame);
