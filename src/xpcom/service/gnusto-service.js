@@ -1,5 +1,5 @@
 // -*- Mode: Java; tab-width: 2; -*-
-// $Id: gnusto-service.js,v 1.3 2003/12/16 01:44:06 marnanel Exp $
+// $Id: gnusto-service.js,v 1.4 2004/01/26 06:00:10 marnanel Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -53,7 +53,7 @@ const mime_types = {
 
 ////////////////////////////////////////////////////////////////
 
-const CVS_VERSION = '$Date: 2003/12/16 01:44:06 $';
+const CVS_VERSION = '$Date: 2004/01/26 06:00:10 $';
 
 const CONTENT_HANDLER_CONTRACT_ID_PREFIX = // Only the start of it:
 		"@mozilla.org/uriloader/content-handler;1?type=";
@@ -399,6 +399,7 @@ Module.unregisterSelf = function m_unregself(compMgr, fileSpec, location) {
 						reg.unregisterFactoryLocation(CONTENT_HANDLER_CONTRACT_ID_PREFIX + mime_type,
 																					fileSpec);
 				}
+				return true;
 		} catch (e) {
 				dump('FAIL: ');
 				dump(e);
