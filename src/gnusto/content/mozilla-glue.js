@@ -1,7 +1,7 @@
 // mozilla-glue.js || -*- Mode: Java; tab-width: 2; -*-
 // Interface between gnusto-lib.js and Mozilla. Needs some tidying.
 // Now uses the @gnusto.org/engine;1 component.
-// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.138 2004/01/29 06:11:39 marnanel Exp $
+// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.139 2004/01/31 23:16:51 marnanel Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -1351,68 +1351,120 @@ function zSetWord(value, address) { engine.setWord(value, address); }
 
 ////////////////////////////////////////////////////////////////
 
+function filename_from_replayer() {
+		if (!replayer.lineIsWaiting()) {
+				gnusto_error(999, "out of filenames");
+				return null;
+		}
+
+		var filename = replayer.nextLine();
+
+		if (filename[0] != '<') {
+				gnusto_error(999, "'act' filenames must be prefixed with '<'");
+				return null;
+		}
+
+		return filename.substring(1);
+}
+
 function glue_save() {
 
-		// FIXME: Should remember filenames and reuse them.
+		var file;
 
-		var ifp = Components.interfaces.nsIFilePicker;
-		var picker = Components.classes["@mozilla.org/filepicker;1"].
-				createInstance(ifp);
+		if (prefs.getBoolStackablePref('gnusto', '', 'actfilenames')) {
 
-		picker.init(window, "Save As", ifp.modeSave);
-		picker.appendFilter("Saved game", "*.sav; *.qtz");
-		picker.defaultExtension = '.sav'; // << doesn't work. Why not? FIXME
-				
-		if (picker.show()!=ifp.returnCancel) {
-						
-				var file = picker.file;
+				var filename = filename_from_replayer();
 
-				var stream = new Components.
-						Constructor("@mozilla.org/network/file-output-stream;1",
-												"nsIFileOutputStream",
-												"init")(file,
-																0x2C, // open flags: PR_TRUNCATE|PR_CREATE_FILE|PR_RDWR
-																0600, // mode flags: owner can read & write, no other perms
-																0);
+				if (filename) {
+						file = new Components.
+								Constructor("@mozilla.org/file/local;1",
+														"nsILocalFile",
+														"initWithPath")(filename);
+				} else {
+						return 0;
+				}
 
-				var binstream = new Components.
-						Constructor("@mozilla.org/binaryoutputstream;1",
-												"nsIBinaryOutputStream")();
-
-				binstream.setOutputStream(stream);
-
-				var dummy = [];
-				var image = engine.saveGameData(engine.saveGame(), dummy);
-				
-				binstream.writeByteArray(image, image.length);
-
-				binstream.close();
-				stream.close();
-
-				return 1;
 		} else {
-				return 0;
+
+				// FIXME: Should remember filenames and reuse them.
+
+				var ifp = Components.interfaces.nsIFilePicker;
+				var picker = Components.classes["@mozilla.org/filepicker;1"].
+						createInstance(ifp);
+
+				picker.init(window, "Save As", ifp.modeSave);
+				picker.appendFilter("Saved game", "*.sav; *.qtz");
+				picker.defaultExtension = '.sav'; // << doesn't work. Why not? FIXME
+				
+				if (picker.show()==ifp.returnCancel) return 0;
+
+				file = picker.file;
 		}
+
+
+		var stream = new Components.
+				Constructor("@mozilla.org/network/file-output-stream;1",
+										"nsIFileOutputStream",
+										"init")(file,
+														0x2C, // open flags: PR_TRUNCATE|PR_CREATE_FILE|PR_RDWR
+														0600, // mode flags: owner can read & write, no other perms
+														0);
+
+		var binstream = new Components.
+				Constructor("@mozilla.org/binaryoutputstream;1",
+										"nsIBinaryOutputStream")();
+
+		binstream.setOutputStream(stream);
+
+		var dummy = [];
+		var image = engine.saveGameData(engine.saveGame(), dummy);
+				
+		binstream.writeByteArray(image, image.length);
+
+		binstream.close();
+		stream.close();
+
+		return 1;
 }
 
 ////////////////////////////////////////////////////////////////
 
 function glue_restore() {
-		var ifp = Components.interfaces.nsIFilePicker;
-		var picker = Components.classes["@mozilla.org/filepicker;1"].
-				createInstance(ifp);
 
-		picker.init(window, "Open Saved Game", ifp.modeOpen);
-		picker.appendFilter("Saved game", "*.sav; *.qtz");
+		var file;
 
-		if (picker.show()!=ifp.returnCancel) {
-				load_from_file(picker.file);
-				glue_play();
-				return 1;
+		if (prefs.getBoolStackablePref('gnusto', '', 'actfilenames')) {
+
+				var filename = filename_from_replayer();
+
+				if (filename) {
+						file = new Components.
+								Constructor("@mozilla.org/file/local;1",
+														"nsILocalFile",
+														"initWithPath")(filename);
+				} else {
+						return 0;
+				}
+
 		} else {
-				return 0;
+
+				var ifp = Components.interfaces.nsIFilePicker;
+				var picker = Components.classes["@mozilla.org/filepicker;1"].
+						createInstance(ifp);
+
+				picker.init(window, "Open Saved Game", ifp.modeOpen);
+				picker.appendFilter("Saved game", "*.sav; *.qtz");
+
+				if (picker.show()==ifp.returnCancel) return 0;
+
+				file = picker.file;
 		}
+
+		load_from_file(file);
+		glue_play();
+		return 1;
 }
+
 ////////////////////////////////////////////////////////////////
 MOZILLA_GLUE_HAPPY = 1;
 ////////////////////////////////////////////////////////////////
