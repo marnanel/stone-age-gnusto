@@ -1,0 +1,15 @@
+#include "nsISupports.idl"
+#include "nsIFileSpec.idl"
+
+// Robmiz is a simple assembler.
+
+[scriptable, uuid(e4064955-7fd1-493f-aa01-0f8ebde7c351)]
+interface gnustoIRobmiz : nsISupports
+{
+  // Assembles a file.
+  short assemble(in nsIFileSpec asm_file);
+  
+  // Returns any error messages from assembly,
+  // all concatenated with carriage returns between.
+  string messages();
+};
