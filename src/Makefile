@@ -1,6 +1,6 @@
 # Makefile - makefile for gnusto
 #
-# $Header: /cvs/gnusto/src/Makefile,v 1.12 2003/11/17 02:55:03 marnanel Exp $
+# $Header: /cvs/gnusto/src/Makefile,v 1.13 2003/11/17 19:35:22 marnanel Exp $
 #
 # Copyright (c) 2003 Thomas Thurman
 # thomas@thurman.org.uk
@@ -41,7 +41,7 @@ xpi:
 	rm -f ${XPIFILE}
 	zip -9 -q ${XPIFILE} install.js `find ${APPLICATION}/|grep -v CVS`
 
-test:
+test: juryrig
 	cd tests && $(MAKE) test
 
 love:
