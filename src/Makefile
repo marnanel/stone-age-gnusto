@@ -1,6 +1,6 @@
 # Makefile - makefile for gnusto
 #
-# $Header: /cvs/gnusto/src/Makefile,v 1.13 2003/11/17 19:35:22 marnanel Exp $
+# $Header: /cvs/gnusto/src/Makefile,v 1.14 2004/01/10 02:45:27 marnanel Exp $
 #
 # Copyright (c) 2003 Thomas Thurman
 # thomas@thurman.org.uk
@@ -41,8 +41,16 @@ xpi:
 	rm -f ${XPIFILE}
 	zip -9 -q ${XPIFILE} install.js `find ${APPLICATION}/|grep -v CVS`
 
+robmiz: juryrig
+	$(MOZILLA) $(MOZILLAARGS) -gnusto robmiz=tests/robmiz.robmiz
+	txd /tmp/verify.z5
+
 test: juryrig
 	cd tests && $(MAKE) test
+
+# Strictly, this is a test. Figure out where best to put tests.
+playthrough: juryrig
+	python tools/playthrough.py
 
 love:
 	@echo "make: hardware upgrade required"
