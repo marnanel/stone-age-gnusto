@@ -8,9 +8,6 @@
         title="Settings"
         width="300" height="335">
 
-<!-- functions -->
-<script type="application/x-javascript" src="chrome://gnusto/content/exUnregisterer.js" />
-
     <groupbox flex="1">
         <caption label="Gnusto Options" />
 	  <description>
@@ -38,7 +35,6 @@
 	    </menupopup>
 	  </menulist>
 
-	  <button label="Uninstall" oncommand="cleanHouse();"/>             
     </groupbox>
 
 </dialog>
