@@ -2,15 +2,19 @@ Welcome to Gnusto's source directory.
 
 The subdirectories here are:
 
+bin           - Compiled binaries for things that need compiling;
+                their sources are elsewhere in the tree
 frotz         - Patches to Frotz
 gnusto        - The chrome for Gnusto installations: skin, locale
                 and basic code
-tests         - programs to test Gnusto
-install.js    - The installation script for gnusto-*.xpi
+tests         - Programs to test Gnusto
 tools         - Tools for debugging Gnusto
+registry      - Registry of known games; under construction
 xpcom         - Gnusto's XPCOM components
 
 Files in this directory:
 
-Makefile      - makefile
-README        - this file
+Makefile      - Makefile
+README        - This file
+install.js    - The installation script for gnusto-*.xpi
+install.rdf   - Installation settings
