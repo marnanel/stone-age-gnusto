@@ -12,6 +12,7 @@ interface gnustoIEngine : nsISupports
 
   void loadSavedGame(in PRUint32 UMemLength,
 		     [size_is(UMemLength), array] in PRUint8 UMem,
+		     in short mem_is_compressed,
 		     in PRUint32 StksLength,
 		     [size_is(StksLength), array] in PRUint8 Stks,
 		     in long pc);
