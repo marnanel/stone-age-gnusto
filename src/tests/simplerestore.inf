@@ -62,6 +62,6 @@ Global register;
     @je 0 0 ?top;
 
     .fail;
-    @print_ret "*FAIL Unexpected error: quitting";
+    @print_ret "^^*FAIL Unexpected error: quitting";
 ];
 
