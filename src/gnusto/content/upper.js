@@ -1,7 +1,7 @@
 // gnusto-lib.js || -*- Mode: Java; tab-width: 2; -*-
 // upper.js -- upper window handler.
 //
-// $Header: /cvs/gnusto/src/gnusto/content/upper.js,v 1.48 2003/08/08 08:21:38 naltrexone42 Exp $
+// $Header: /cvs/gnusto/src/gnusto/content/upper.js,v 1.49 2003/08/30 07:56:02 naltrexone42 Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -178,14 +178,18 @@ function bocardo_chalk(win, text) {
 
 						if (message.length > (bocardo__screen_width - bocardo__current_x[win])) {
 
+								//kludge for the moment -- really nobody should be writing off the edge of 
+								//the upper window anyway								
+								bocardo__current_x[win] -= ((bocardo__current_x[win] + message.length) - bocardo__screen_width);
+								var amount = message.length;
 								// The message is longer than the rest of this line.
 
-								var amount = bocardo__screen_width - bocardo__current_x[win];
+								//var amount = bocardo__screen_width - bocardo__current_x[win];
 								
 								// Fairly pathetic wordwrap. FIXME: replace later
 								// with a better dynamic programming algorithm.
-
-								while (amount!=0 && message[amount]!=' ') {
+								
+								/*while (amount!=0 && message[amount]!=' ') {
 										amount--;
 								}
 					
@@ -193,7 +197,7 @@ function bocardo_chalk(win, text) {
 										// ah, whatever, just put it back and forget the
 										// wordwrap.
 										amount = bocardo__screen_width - bocardo__current_x[win];
-								}
+								}*/
 
 								bocardo__subchalk(win, message.substring(0, amount));
 								
