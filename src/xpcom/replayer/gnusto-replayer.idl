@@ -1,0 +1,26 @@
+#include "nsISupports.idl"
+#include "nsIFile.idl"
+
+// The replayer is in charge of playback files.
+
+[scriptable, uuid(cf559085-feaf-4e05-86ee-886452da8dc8)]
+interface gnustoIReplayer : nsISupports
+{
+  // Adds a file to the replay list.
+  void replay(in nsIFile playback_file);
+
+  // Nonzero iff a line is available from a playback file.
+  // If this is zero and you want a line, you must take it
+  // from the keyboard.
+  readonly attribute short lineWaiting;
+
+  // Returns the next line from the current playback file.
+  // lineWaiting must be nonzero.
+  string nextLine();
+
+  // Returns the next keypress from the current playback file
+  // (i.e. the ZSCII code of the first character).
+  // lineWaiting must be nonzero.
+  long nextKeypress();
+
+};
