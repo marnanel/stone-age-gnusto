@@ -1,6 +1,6 @@
 // install.js - installation script
 //   Heavily based on ForumZilla's install.js.
-// $Header: /cvs/gnusto/src/install.js,v 1.3 2003/04/17 21:56:38 marnanel Exp $
+// $Header: /cvs/gnusto/src/install.js,v 1.4 2003/05/16 11:15:38 naltrexone42 Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -24,11 +24,11 @@ try {
     // initialize the install with the package name and version
     var err = initInstall("Gnusto Z-machine",
 			  "gnusto",
-			  "0.4.0");
+			  "0.5.0Alpha");
     if (err) throw ('initInstall: ' + err);
 
     // prepare to install package directory onto user's computer
-    var chromeDir = getFolder("Chrome");
+    var chromeDir = getFolder("chrome");
     err = addDirectory("" , "gnusto", chromeDir, "gnusto");
     if (err) throw ('addDirectory: ' + err);
 
@@ -53,13 +53,14 @@ try {
 
     err = registerChrome(SKIN | DELAYED_CHROME,
 			 chromeDir,
-			 "gnusto/skin/classic/");
+			 "gnusto/skin/");
     if (err) throw ('registerChrome: ' + err);
 
     ////////////////////////////////////////////////////////////////
     // install package
     err = performInstall();
     if (err) throw ('performInstall: ' + err);
+    alert("Gnusto will be available under the Tools Menu after you restart your browser.");
 
 } catch(e) {
 

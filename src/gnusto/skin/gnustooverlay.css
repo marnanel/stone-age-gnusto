@@ -1,0 +1,33 @@
+/* CSS for Gnusto */
+
+@namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
+
+/* toolbar buttons */
+
+#gnusto-button {
+  list-style-image: url("chrome://gnusto/skin/images/gnusto-icon.png");
+}
+
+#gnusto-button:hover {
+}
+
+#gnusto-button[disabled="true"] {
+}
+
+#gnusto-button:hover:active,
+#gnusto-button[checked="true"] {
+}
+
+toolbar[iconsize="small"] #gnusto-button {
+  list-style-image: url("chrome://gnusto/skin/images/gnusto-icon.png");
+}
+
+toolbar[iconsize="small"] #gnusto-button:hover {
+}
+
+toolbar[iconsize="small"] #gnusto-button[disabled="true"] {
+}
+
+toolbar[iconsize="small"] #gnusto-button:hover:active,
+toolbar[iconsize="small"] #gnusto-button[checked="true"] {
+}

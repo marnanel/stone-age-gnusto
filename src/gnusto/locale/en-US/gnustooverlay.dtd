@@ -1,0 +1,5 @@
+<!-- Gnusto overlay items -->
+<!ENTITY gnustoMenu.label "Gnusto">
+
+<!ENTITY gnustoButton.label "Gnusto">
+<!ENTITY gnustoButton.tooltip "Launch Gnusto">
