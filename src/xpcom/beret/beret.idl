@@ -46,7 +46,7 @@ interface gnustoIBeret : nsISupports
   //  For example, these are all possible results:
   //     ok story blorb glulx
   //     ok story naked z5
-  //     invalid saved quetzal z5
+  //     invalid saved quetzal
   //
   // In the case of successful "story" loads, the component will also
   // create an engine of the relevant type and load the story into it.
