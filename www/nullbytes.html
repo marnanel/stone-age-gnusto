@@ -1,6 +1,10 @@
-<h5 class="page-header">The null bytes problem</h5>
+<h1 class="page-header">The null bytes problem</h1>
 
-<p>In all current versions of Mozilla, JavaScript cannot reliably read a file which contains nulls. This includes all zcode story files. People are <a href="http://bugzilla.mozilla.org/show_bug.cgi?id=170585">working on fixing this</a>, and as soon as it's ready, Gnusto will be able to load story files directly. Of course, Gnusto can't reach v1.0 until this happens. [Update: It looks like this is fixed in the current tree, but it's not in any Mozilla releases yet. Looks good for the next release, though.]</p>
+<p><big><b>This problem has been solved in new versions of Mozilla</b>, and current CVS versions of Gnusto can reliably read binary files. All current released versions of Gnusto still expect the old .mz5s, though, so you might still want to know about how to deal with it.</big></p>
+
+<h2>For historical interest</h2>
+
+<p>In <del>all current</del> <ins>many older</ins> versions of Mozilla, JavaScript cannot reliably read a file which contains nulls. This includes all zcode story files. <del>People are <a href="http://bugzilla.mozilla.org/show_bug.cgi?id=170585">working on fixing this</a>, and as soon as it's ready,</del> <ins>This is now fixed, and</ins> Gnusto <del>will be</del> <ins>is</ins> able to load story files directly. <del>Of course, Gnusto can't reach v1.0 until this happens. [Update: It looks like this is fixed in the current tree, but it's not in any Mozilla releases yet. Looks good for the next release, though.]</del></p>
 
 <p>Meanwhile, if you're testing Gnusto, you still need to be able to load story files. I experimented with a few options (uuencoding the files, for example) but they all ran into the same problem: they required a lot of JavaScript processing in order to get the data out. This made loading games very slow (on the order of ten seconds to load a 60K file).</p>
 
@@ -16,9 +20,7 @@
 
 <p>You may also download Dylan O'Donnell's game <a href="http://downloads.mozdev.org/gnusto/troll.mz5"><cite>A Troll's Eye View</cite> already encoded in mz5</a>.</p>
 
-<hr>
-
-<h6>The details of the mz5 encoding</h6>
+<h2>The details of the mz5 encoding</h2>
 <p>The encoding had to</p>
 <ul>
 <li>guarantee that the file contained no nulls</li>
