@@ -1,5 +1,5 @@
 // -*- Mode: Java; tab-width: 2; -*-
-// $Id: gnusto-replayer.js,v 1.3 2004/02/09 05:35:42 naltrexone42 Exp $
+// $Id: gnusto-replayer.js,v 1.4 2004/02/09 08:21:29 naltrexone42 Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -20,7 +20,7 @@
 
 ////////////////////////////////////////////////////////////////
 
-const CVS_VERSION = '$Date: 2004/02/09 05:35:42 $';
+const CVS_VERSION = '$Date: 2004/02/09 08:21:29 $';
 const REPLAYER_COMPONENT_ID = Components.ID("{cf559085-feaf-4e05-86ee-886452da8dc8}");
 const REPLAYER_DESCRIPTION  = "The replayer is in charge of playback files.";
 const REPLAYER_CONTRACT_ID  = "@gnusto.org/replayer;1";
@@ -204,7 +204,7 @@ function gnustoReplayerInit() {
 	
 		// Component registration
 		var compMgr = Components.manager.QueryInterface(Components.interfaces.nsIComponentRegistrar);
-	        var gnustoReplayer = new Replayer();
+	        var gnustoReplayer = new Replayer;
 		compMgr.registerFactory(REPLAYER_COMPONENT_ID, REPLAYER_DESCRIPTION, REPLAYER_CONTRACT_ID, gnustoReplayer);
 
 

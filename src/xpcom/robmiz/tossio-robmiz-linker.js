@@ -1,5 +1,5 @@
 // -*- Mode: Java; tab-width: 2; -*-
-// $Id: tossio-robmiz-linker.js,v 1.2 2004/02/09 05:35:42 naltrexone42 Exp $
+// $Id: tossio-robmiz-linker.js,v 1.3 2004/02/09 08:21:29 naltrexone42 Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -19,7 +19,7 @@
 
 ////////////////////////////////////////////////////////////////
 
-const CVS_VERSION = '$Date: 2004/02/09 05:35:42 $';
+const CVS_VERSION = '$Date: 2004/02/09 08:21:29 $';
 
 const ROBMIZ_LINKER_COMPONENT_ID = Components.ID("{478e8d87-3120-46cd-941b-969cf885cdcf}");
 const ROBMIZ_LINKER_DESCRIPTION  = "Linker for Robmiz, a simple assembler.";
@@ -251,7 +251,7 @@ function gnustoRobmizLinkerInit() {
 	
 		// Component registration
 		var compMgr = Components.manager.QueryInterface(Components.interfaces.nsIComponentRegistrar);
-	        var gnustoRobmizLinker = new Linker();
+	        var gnustoRobmizLinker = new Linker;
 		compMgr.registerFactory(ROBMIZ_LINKER_COMPONENT_ID, ROBMIZ_LINKER_DESCRIPTION, ROBMIZ_LINKER_CONTRACT_ID, gnustoRobmizLinker);
 
 

@@ -1,5 +1,5 @@
-// Gnusto: error dialogue control. -*- Mode: Java; tab-width: 2; -*-
-// $Id: gnusto-errorbox.js,v 1.4 2004/02/09 05:35:42 naltrexone42 Exp $
+	// Gnusto: error dialogue control. -*- Mode: Java; tab-width: 2; -*-
+// $Id: gnusto-errorbox.js,v 1.5 2004/02/09 08:21:29 naltrexone42 Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -20,7 +20,7 @@
 
 ////////////////////////////////////////////////////////////////
 
-const CVS_VERSION = '$Date: 2004/02/09 05:35:42 $';
+const CVS_VERSION = '$Date: 2004/02/09 08:21:29 $';
 const ERRORBOX_COMPONENT_ID = Components.ID("{ec3597d6-e302-437c-aeef-9880448dedca}");
 const ERRORBOX_DESCRIPTION  = "Displays error messages and does logging";
 const ERRORBOX_CONTRACT_ID  = "@gnusto.org/errorbox;1";
@@ -211,7 +211,7 @@ function gnustoErrorBoxInit() {
 		var compMgr = Components.manager.QueryInterface(Components.interfaces.nsIComponentRegistrar);
 	        var gnustoErrorBox = new ErrorBox;
 		compMgr.registerFactory(ERRORBOX_COMPONENT_ID, ERRORBOX_DESCRIPTION, ERRORBOX_CONTRACT_ID, gnustoErrorBox);
-
+	}
 
 }
 

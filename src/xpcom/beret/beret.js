@@ -1,5 +1,5 @@
 // -*- Mode: Java; tab-width: 2; -*-
-// $Id: beret.js,v 1.17 2004/02/09 05:35:42 naltrexone42 Exp $
+// $Id: beret.js,v 1.18 2004/02/09 08:21:28 naltrexone42 Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -19,7 +19,7 @@
 
 ////////////////////////////////////////////////////////////////
 
-const CVS_VERSION = '$Date: 2004/02/09 05:35:42 $';
+const CVS_VERSION = '$Date: 2004/02/09 08:21:28 $';
 const BERET_COMPONENT_ID = Components.ID("{ed0618e3-8b2b-4bc8-b1a8-13ae575efc60}");
 const BERET_DESCRIPTION  = "Checks file magic and routes them accordingly";
 const BERET_CONTRACT_ID  = "@gnusto.org/beret;1";
@@ -474,7 +474,7 @@ Factory.createInstance = function f_createinstance(outer, interface_id)
 		if (outer != null) throw Components.results.NS_ERROR_NO_AGGREGATION;
 
 		if (interface_id.equals(Components.interfaces.gnustoIBeret)) {
-				return new Beret();
+				return new Beret;
 		}
 
 		// otherwise...
