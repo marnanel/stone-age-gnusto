@@ -1,7 +1,7 @@
 // datisi.js || -*- Mode: Java; tab-width: 2; -*-
 // Standard command library
 // 
-// $Header: /cvs/gnusto/src/gnusto/content/datisi.js,v 1.27 2003/08/31 23:28:29 naltrexone42 Exp $
+// $Header: /cvs/gnusto/src/gnusto/content/datisi.js,v 1.28 2003/09/24 00:26:50 marnanel Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -82,208 +82,83 @@ function iff_parse(s) {
 }
 
 ////////////////////////////////////////////////////////////////
-//
-// load_from_file
-//
-// Loads a file into a byte array and returns it.
-//
-// |file| is an nsILocalFile.
-//
-function load_from_file(file) {
 
-		// Based on test code posted by Robert Ginda <rginda@netscape.com> to
-		// bug 170585 on Mozilla's bugzilla.
-
-		var IOS_CTR = "@mozilla.org/network/io-service;1";
-		var nsIIOService = Components.interfaces.nsIIOService;
-
-		var BUFIS_CTR = "@mozilla.org/network/buffered-input-stream;1";
-		var nsIBufferedInputStream = Components.interfaces.nsIBufferedInputStream;
-
-		var BINIS_CTR = "@mozilla.org/binaryinputstream;1";
-		var nsIBinaryInputStream = Components.interfaces.nsIBinaryInputStream;
-		
-		var ios = Components.classes[IOS_CTR].getService(nsIIOService);
-
-		var uri = ios.newFileURI(file);
-		var is = ios.newChannelFromURI(uri).open();
-
-		// create a buffered input stream
-		var buf = Components.classes[BUFIS_CTR].createInstance(nsIBufferedInputStream);
-		buf.init(is, file.fileSize);
-
-		if (!(BINIS_CTR in Components.classes)) {
-		    // Fall back to slow-load method for pre-1.4 compatibility
-		    
-		    // But warn the user first...
-		    if (confirm("Loading binary files in javascript is extremely slow "+
-										"in Mozilla 1.3 and earlier.  Loading this file may take "+
-										"from 20 seconds to 2 minutes depending on the speed "+
-										"of your machine.  It is strongly recommended that you "+
-										"use Gnusto under Mozilla 1.4 or later. Gnusto "+
-										"(and Mozilla) will appear to lock up while the file "+
-										"is loading.")) {
-		    
-						var fc = Components.classes["@mozilla.org/network/file-input-stream;1"].createInstance(Components.interfaces.nsIFileInputStream);
-   		      fc.init(file, 1, 0, 0);
-
-						var sis = new Components.Constructor("@mozilla.org/scriptableinputstream;1", "nsIScriptableInputStream")();
-						sis.init(fc);
-
-						var fileContents = sis.read(file.fileSize);
-		
-	  	      var ss = fc.QueryInterface(Components.interfaces.nsISeekableStream);
-
-						// Due to the fact that the pre-1.4 method reads the contents of the file as a string,
-						// every time it hits a null, it thinks it's done.  So if we've stopped but aren't at
-						// the end of the file, tack on a null, seek past the null, keep reading.
-						// Lather, Rinse, Repeat.
-						while (fileContents.length!=file.fileSize) {
-								ss.seek(0, fileContents.length + 1);  
-								fileContents += "\0" + sis.read(file.fileSize);
-						}
-                      
-						// We just got a string but all our functions are expecting an array of bytes.
-						// So we do some faux-typecasting.  (I'd just like to take this opportunity to
-						// suggest that loosely-typed languages are a really, really stupid idea.)
-						var TransContents = [];
-						TransContents.length = fileContents.length;
-						for (var i=0; i < fileContents.length; i++){
-								TransContents[i] = fileContents[i].charCodeAt();
-						}
-						fc.close();
-						
-						returnTransContents;
-
-				} else {
-						// They bailed out; return a nonsensical flag value.
-						return 0;
-				}
-
-		}	else {
-				
-				// now wrap the buffered input stream in a binary stream
-				var bin = Components.classes[BINIS_CTR].
-						createInstance(nsIBinaryInputStream);
-				bin.setInputStream(buf);
-				
-				return bin.readByteArray(file.fileSize);
-		}
-		
-		// Eek.
-		gnusto_error(170);
-		return 0;
-}
 
 ////////////////////////////////////////////////////////////////
-
-function datisi__set_up_header(content) {
-
-		// We're required to modify some bits
-		// according to what we're able to supply.
-		content[0x01]  = 0x1D; // Flags 1
-		content[0x11] &= 0x47;
-
-		// It's not at all clear what architecture
-		// we should claim to be. We could decide to
-		// be the closest to the real machine
-		// we're running on (6=PC, 3=Mac, and so on),
-		// but the story won't be able to tell the
-		// difference because of the thick layers of
-		// interpreters between us and the metal.
-		// At least, we hope it won't.
-
-		content[0x1E] = 1;   // uh, let's be a vax.
-		content[0x1F] = 103; // little "g" for gnusto
-		
-		// Put in some default screen values here until we can
-		// set them properly later.
-		// For now, units are characters. Later they'll be pixels.
-
-		content[0x20] = 25; // screen height, characters
-		content[0x21] = 80; // screen width, characters
-		content[0x22] = 25; // screen width, units
-		content[0x23] = 0;
-		content[0x24] = 80; // screen height, units
-		content[0x25] = 0;
-		content[0x26] = 1; // font width, units
-		content[0x27] = 1; // font height, units
-
-		return content;
-}
-
-////////////////////////////////////////////////////////////////
-
-function dealWith(content) {
-
-		// Okay. Our task now is to find what kind of file we've been handed,
-		// and to deal with it accordingly.
-
-		if (content[0]==5 || content[0]==7 || content[0]==8) {
-				
-				// Looks like a Z-code file that we can play, so let's go ahead.
-				glue_play(datisi__set_up_header(content));
-
-				return 1;
-
-		} else if (content[0]==70 && content[1]==79 &&
-							 content[2]==82 && content[3]==77) {
-				// "F, O, R, M". An IFF file, then...
-
-				var iff_details = iff_parse(content);
-
-				if (iff_details[0]=='IFZS') {
-						
-						// Quetzal saved file.
-						// Can't deal with these yet.
-
-						alert("Sorry, Gnusto can't yet load saved games.");
-						return 0;
-
-				} else if (iff_details[0]=='IFRS') {
-
-						// Blorb resources file, possibly containing
-						// Z-code.
-
-						// OK, so go digging for it.
-						for (var j=1; j<iff_details.length; j++) {
-								if (iff_details[j][0]=='ZCOD') {
-										// This will work better once we have an
-										// example to test it against.
-										gnusto_error(101, "Should be able to read this... "+
-																 "still need to implement "+
-																 "scooping the middle out.");
-										return 0;
-								}
-						}
-
-						gnusto_error(310, "Sorry, that Blorb file doesn't contain "+
-												 "any Z-code, so Gnusto can't deal with it yet.");
-						return 0;
-				} else {
-						
-						// Some other IFF file type which we don't know.
-						
-						gnusto_error(309,'IFF '+iff_details[0]);
-						return 0;
-				}
-		} else if (content[0]<9) {
-				// Assume this is Z-code.
-				//
-				// (Icky test, but the only obvious one. Linux's /etc/magic
-				// has the test for Z-code commented out because it's just
-				// the same as this, and it's unacceptably weak. We should
-				// find a better one.)
-
-				gnusto_error(310, 'z'+content[0])
-
-		} else {
-				// Don't know. Complain.
-				gnusto_error(309);
-				return 0;
-		}
-}
-
+//
+// @@@FIXME: This needs to be merged with load_from_file,
+// and to read magic information from disk. (iff_parse likewise.)
+//
+//function dealWith(content) {
+//
+//		// Okay. Our task now is to find what kind of file we've been handed,
+//		// and to deal with it accordingly.
+//
+//		if (content[0]==5 || content[0]==7 || content[0]==8) {
+//				
+//				// Looks like a Z-code file that we can play, so let's go ahead.
+//				glue_play(datisi__set_up_header(content));
+//
+//				return 1;
+//
+//		} else if (content[0]==70 && content[1]==79 &&
+//							 content[2]==82 && content[3]==77) {
+//				// "F, O, R, M". An IFF file, then...
+//
+//				var iff_details = iff_parse(content);
+//
+//				if (iff_details[0]=='IFZS') {
+//						
+//						// Quetzal saved file.
+//						// Can't deal with these yet.
+//
+//						alert("Sorry, Gnusto can't yet load saved games.");
+//						return 0;
+//
+//				} else if (iff_details[0]=='IFRS') {
+//
+//						// Blorb resources file, possibly containing
+//						// Z-code.
+//
+//						// OK, so go digging for it.
+//						for (var j=1; j<iff_details.length; j++) {
+//								if (iff_details[j][0]=='ZCOD') {
+//										// This will work better once we have an
+//										// example to test it against.
+//										gnusto_error(101, "Should be able to read this... "+
+//																 "still need to implement "+
+//																 "scooping the middle out.");
+//										return 0;
+//								}
+//						}
+//
+//						gnusto_error(310, "Sorry, that Blorb file doesn't contain "+
+//												 "any Z-code, so Gnusto can't deal with it yet.");
+//						return 0;
+//				} else {
+//						
+//						// Some other IFF file type which we don't know.
+//						
+//						gnusto_error(309,'IFF '+iff_details[0]);
+//						return 0;
+//				}
+//		} else if (content[0]<9) {
+//				// Assume this is Z-code.
+//				//
+//				// (Icky test, but the only obvious one. Linux's /etc/magic
+//				// has the test for Z-code commented out because it's just
+//				// the same as this, and it's unacceptably weak. We should
+//				// find a better one.)
+//
+//				gnusto_error(310, 'z'+content[0])
+//
+//		} else {
+//				// Don't know. Complain.
+//				gnusto_error(309);
+//				return 0;
+//		}
+//}
+//
 ////////////////////////////////////////////////////////////////
 
 function command_open(a) {
@@ -344,83 +219,94 @@ function command_open(a) {
 		
 		local_game_file = localfile;
 
-		var content = load_from_file(localfile);
-		var result = dealWith(content);
+		// @@@FIXME: We are circumventing dealWith until we integrate it
+		// properly into the component system.
+		//
+		// var result = dealWith(content);
+		load_from_file(localfile);
+		//var result = dealWith(content);
 
-		if (filename && result==1) {
-				sys_notify_of_load(filename);
-				sys_show_story_title(filename);
-		}
+    // FIXME: and this (which isn't immediately necessary) depends on the
+		// result of dealWith, so we take this out too for now.
+		// It will return soon.
+		//if (filename && result==1) {
+		//		sys_notify_of_load(filename);
+		//		sys_show_story_title(filename);
+		//}
 }
 
 ////////////////////////////////////////////////////////////////
-
-var selftest_count_total;
-var selftest_count_pass;
-
-function command_openselftest(a) {
-		var selftest =
-				Components.classes['@mozilla.org/file/directory_service;1'].
-				getService(Components.interfaces.nsIProperties).
-				get("AChrom", Components.interfaces.nsIFile);
-
-		selftest.append('gnusto');
-		selftest.append('content');
-		selftest.append('otsung.z5');
-
-		if (!selftest.exists()) {
-				alert('error: no self test (FIXME: make this a proper error');
-		}
-
-		var content = datisi__set_up_header(load_from_file(selftest));
-
-		selftest_count_total = 0;
-		selftest_count_pass = 0;
-		window.special_instruction_EXT177 = selftest_generator;
-		content[0x32]  = 103; // Set the magic self-test value.
-
-		glue_play(content);
-}
-
-function selftest_generator(a) {
-	  return storer('selftest_handler('+a[0]+','+a[1]+')');
-}
-
-function selftest_handler(subfunc, stuff) {
-
-		switch(subfunc) {
-		case 1:
-				// ... alert(zscii_from(stuff*4, 65535)+' begins');	
-				selftest_count_total++;
-				return 0;
-
-		case 2:
-				if (stuff) {
-						selftest_count_pass++;
-				}
-				return 0;
-
-		case 3:
-				{
-						var r = eval(zscii_from(stuff*4));
-						if (r)
-								return r;
-						else
-								return 0;
-				}
-
-		default:
-				// FIXME: proper error number
-				alert('weird subfunc in self test - '+subfunc);
-				return 999;
-		}
-}
-
-function selftest_wrap_up(a) {
-		delete window.special_instruction_EXT177;
-		alert('Passed ' + selftest_count_pass + '/' + selftest_count_total);
-}
-
+//
+//   SELF TEST MODE
+//
+//   Disabled during component changeover.
+//
+//var selftest_count_total;
+//var selftest_count_pass;
+//
+//function command_openselftest(a) {
+//		var selftest =
+//				Components.classes['@mozilla.org/file/directory_service;1'].
+//				getService(Components.interfaces.nsIProperties).
+//				get("AChrom", Components.interfaces.nsIFile);
+//
+//		selftest.append('gnusto');
+//		selftest.append('content');
+//		selftest.append('otsung.z5');
+//
+//		if (!selftest.exists()) {
+//				alert('error: no self test (FIXME: make this a proper error');
+//		}
+//
+//		var content = datisi__set_up_header(load_from_file(selftest));
+//
+//		selftest_count_total = 0;
+//		selftest_count_pass = 0;
+//		window.special_instruction_EXT177 = selftest_generator;
+//		content[0x32]  = 103; // Set the magic self-test value.
+//
+//		glue_play(content);
+//}
+//
+//function selftest_generator(a) {
+//	  return storer('selftest_handler('+a[0]+','+a[1]+')');
+//}
+//
+//function selftest_handler(subfunc, stuff) {
+//
+//		switch(subfunc) {
+//		case 1:
+//				// ... alert(zscii_from(stuff*4, 65535)+' begins');	
+//				selftest_count_total++;
+//				return 0;
+//
+//		case 2:
+//				if (stuff) {
+//						selftest_count_pass++;
+//				}
+//				return 0;
+//
+//		case 3:
+//				{
+//						var r = eval(zscii_from(stuff*4));
+//						if (r)
+//								return r;
+//						else
+//								return 0;
+//				}
+//
+//		default:
+//				// FIXME: proper error number
+//				alert('weird subfunc in self test - '+subfunc);
+//				return 999;
+//		}
+//}
+//
+//function selftest_wrap_up(a) {
+//		delete window.special_instruction_EXT177;
+//		alert('Passed ' + selftest_count_pass + '/' + selftest_count_total);
+//}
+//
 ////////////////////////////////////////////////////////////////
 
 var sys__vault = null;
