@@ -2,15 +2,15 @@
 
 <p align="right"><a href="http://www.mozdev.org/source/browse/gnusto/src/gnusto/content/mozilla-glue.js">Read the code</a></p>
 
-<p><code>mozilla-glue.js</code> is the central JavaScript file in Gnusto. It currently has three purposes. They should be split up sooner or later.</p>
+<p><code>mozilla-glue.js</code> is the central JavaScript file in Gnusto. It currently has three purposes, which will be split up when the file is refactored; <strong>you are warned, however, that this file is currently a mess</strong>.</p>
+
+<p>The identifier prefix for mozilla-glue is <code>glue</code>.</p>
 
 <h2>It gives the engine what it needs to function.</h2>
 
 <p><b>Reason for the name:</b> The <a href="felapton.html">Gnusto engine</a> was designed to be usable in many circumstances: Mozilla apps, simple browser-independent web pages and command-line JavaScript shells (much of the original development was done on a machine without even an X server). This design called for the engine to be supplied with "glue" code wherever it was installed, to provide anything which was dependent on the local environment.</p>
 
 <p>mozilla-glue continues to supply many of the engine's needs, although the engine makes much less use of callbacks now. Eventually the engine will progress to the point where no callbacks are needed, and then this function will disappear.</p>
-
-<p>The identifier prefix for mozilla-glue is <code>glue</code>.</p>
 
 <h3>Functions which provide this</h3>
 <ul>
