@@ -1,6 +1,6 @@
 # Makefile - makefile for gnusto
 #
-# $Header: /cvs/gnusto/src/Makefile,v 1.9 2003/10/14 20:29:36 marnanel Exp $
+# $Header: /cvs/gnusto/src/Makefile,v 1.10 2003/10/17 05:35:19 marnanel Exp $
 #
 # Copyright (c) 2003 Thomas Thurman
 # thomas@thurman.org.uk
@@ -23,11 +23,16 @@ APPLICATION = gnusto
 VERSION = 0.4.0
 XPIFILE = ../downloads/${APPLICATION}-${VERSION}.xpi
 PYTHON = python
+MOZILLA = ~/MozillaFirebird/MozillaFirebird
+MOZILLAARGS = -P smoke
 
 # jury-rig should be the default, please.
 
 juryrig:
 	python tools/jury-rig.py
+
+run: juryrig
+	$(MOZILLA) $(MOZILLAARGS) chrome://gnusto/content
 
 xpi:
 	rm -f ${XPIFILE}
