@@ -1,0 +1,8 @@
+src/bin
+
+This directory holds compiled binaries which are useful
+to have around if you don't have a compiler. At present
+it holds only
+
+  src/bin/xpt  -  compiled .xpt files from the .idl files
+                  under src/xpcom.
