@@ -1,5 +1,5 @@
 // -*- Mode: Java; tab-width: 2; -*-
-// $Id: gnusto-service.js,v 1.2 2003/11/15 22:33:06 marnanel Exp $
+// $Id: gnusto-service.js,v 1.3 2003/12/16 01:44:06 marnanel Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -25,33 +25,35 @@
 const GNUSTO_MAIN_WINDOW_URL =
 		'chrome://gnusto/content/';
 
-// A list of MIME types to grab. Each of these will be passed to
+// A set of MIME types to grab. Each of these will be passed to
 // the beret when Mozilla sees them.
+//
+// The referents aren't meaningful currently; set them to 0 for now.
 
-const mime_types = [
+const mime_types = {
 
 		    // Story files:
 
-		    'application/x-zmachine',
-		    'application/x-blorb',
-		    // later: 'application/x-glulx',
+		    'application/x-zmachine': 0,
+		    'application/x-blorb': 0,
+		    // later: 'application/x-glulx': 0,
 
 		    // Debug information (MIME type invented;
 		    // these would be files of the format described
 		    // in section 12.5 of the _Technical Manual_):
-		    'application/x-infix',
+		    'application/x-infix': 0,
 
 		    // Save files (assumed):
 		    // (see <news:guqdnf4HrbUQEjCiRVn-hg@speakeasy.net>)
-		    'application/x-quetzal',
+		    'application/x-quetzal': 0,
 
 		    // Later:
 		    //  project files.
-		    ];
+		    };
 
 ////////////////////////////////////////////////////////////////
 
-const CVS_VERSION = '$Date: 2003/11/15 22:33:06 $';
+const CVS_VERSION = '$Date: 2003/12/16 01:44:06 $';
 
 const CONTENT_HANDLER_CONTRACT_ID_PREFIX = // Only the start of it:
 		"@mozilla.org/uriloader/content-handler;1?type=";
@@ -66,6 +68,9 @@ const COMMAND_LINE_COMPONENT_ID =
 		Components.ID("{328a6b88-ee6e-41fe-828c-8c71b807b46a}");
 const COMMAND_LINE_DESCRIPTION = 'Gnusto command-line service';
 const COMMAND_LINE_CATEGORY = 'command-line-argument-handlers';
+
+// I think this is the magic number we want:
+const NS_BINDING_ABORTED = 0x804B0002;
 
 ////////////////////////////////////////////////////////////////
 
@@ -103,12 +108,25 @@ CommandLineFactory.createInstance = function clf_createInstance(outer, iid) {
 
 ////////////////////////////////////////////////////////////////
 
-function openInNewWindow(url) {
+function cd_and_maybe_mkdir(nsifile, name) {
+		nsifile.append(name);
+		
+		if (!nsifile.exists()) {
+				nsifile.create(1, 0700);
+		}
+}
+
+////////////////////////////////////////////////////////////////
+
+function openInNewWindow(url, filename) {
 		try {
-				var ass = Components.classes['@mozilla.org/appshell/appShellService;1'].getService(Components.interfaces.nsIAppShellService);
-				ass.hiddenDOMWindow.open(url,
-																 '_blank',
-																 'chrome,all,dialog=no');
+				var ass = Components.
+						classes['@mozilla.org/appshell/appShellService;1'].
+						getService(Components.interfaces.nsIAppShellService);
+				ass.hiddenDOMWindow.openDialog(url,
+																			 '_blank',
+																			 'chrome,all,dialog=no',
+																			 filename);
 				
 		} catch (e) {
 				// FIXME: we want some proper error handling
@@ -119,14 +137,111 @@ function openInNewWindow(url) {
 }
 
 ////////////////////////////////////////////////////////////////
+
+function GnustoStreamListener() {}
+GnustoStreamListener.prototype = {
+
+    QueryInterface: function gsl_qi(iid) {
+				if (iid.equals(Components.interfaces.nsIStreamListener) ||
+						iid.equals(Components.interfaces.nsISupports))
+				{
+						// OK, we can do that.
+						return this;
+				}
+
+				// Else it's not something we can do.
+				throw Components.interfaces.NS_ERROR_NO_INTERFACE;
+		},
+
+    onDataAvailable: function gsl_oda(request, context, inputstream, offset, count) {
+				try {
+						var data = '';
+						var buffer = {};
+
+						if (! this.m_source) {
+
+								// nsIInputStreams aren't scriptable, so we can't
+								// read it directly-- but if we wrap it in an
+								// nsIScriptableInputStream, we can use that.
+								//
+								// FIXME: Check that |inputstream| is always the same! (How?)
+
+								this.m_source = Components.Constructor("@mozilla.org/binaryinputstream;1",
+																											 "nsIBinaryInputStream",
+																											 "setInputStream")(inputstream);
+						}
+
+					
+						data = this.m_source.readByteArray(count);
+
+						this.m_sink.writeByteArray(data, data.length);
+
+				} catch (e) {
+						dump('ERROR (oda): ');
+						dump(e);
+						dump('\n');
+				}
+		},
+
+    onStartRequest: function gsl_onstart(request, context) {
+				// We don't need to do anything here. All our
+				// setup is done in setTargetFile.
+		},
+
+    onStopRequest: function gsl_onstop(request, context, status) {
+				try {
+						if (Components.isSuccessCode(status)) {
+
+								openInNewWindow(GNUSTO_MAIN_WINDOW_URL, this.m_file.path);
+
+						} else {
+
+								dump('gnusto: download screwed up\n');
+								this.m_file.remove(false);
+
+						}								
+
+				} catch (e) {
+						dump('ERROR (osr): ');
+						dump(e);
+						dump('\n');
+				}
+		},
+
+		setTargetFile: function gsl_stf(file) {
+				with (Components) {
+						this.m_file = file;
+						var stream = Constructor('@mozilla.org/network/file-output-stream;1',
+																				 'nsIFileOutputStream',
+																				 'init')(
+																								 file,
+																								 10,
+																								 0600,
+																								 0);
+						this.m_sink = Constructor("@mozilla.org/binaryoutputstream;1",
+																			"nsIBinaryOutputStream",
+																			"setOutputStream")(stream);
+				}
+		},
+
+		// an nsIFile which is where we should put the downloaded file.
+		m_file: null,
+
+		// ...
+		m_source: null,
+
+		// an nsIFileOutputStream which is where the downloaded story goes.
+		m_sink: null,
+};
+
+////////////////////////////////////////////////////////////////
 //                       CONTENTHANDLER CLASS
 
 function ContentHandler() {}
 
 ContentHandler.prototype.QueryInterface = function ch_qi(iid) {
-		dump('--- contenthandler qi ---\n');
-		if (iid==Components.interfaces.nsIContentHandler ||
-				iid==Components.interfaces.nsISupports)
+		if (iid.equals(Components.interfaces.nsIContentHandler) ||
+				iid.equals(Components.interfaces.nsISupports))
 		{
 				// OK, we can do that.
 				return this;
@@ -136,12 +251,89 @@ ContentHandler.prototype.QueryInterface = function ch_qi(iid) {
 		throw Components.interfaces.NS_ERROR_NO_INTERFACE;
 }
 
-ContentHandler.prototype.handleContent = function ch_hc(contentType,
+// |contentType| for us should be one of the types in |mime_types|
+//    (e.g. "application/x-zmachine").
+// |command| seems to be "view".
+// |windowTarget|... um, I'm not sure. It's an nsISupports.
+// |request| is an nsIRequest, but it can be QId to an nsIChannel,
+//      whereupon you can get the URL out of it using ".URI.spec".
+ContentHandler.prototype.handleContent = function ch_hc(content_type,
 																												command,
-																												windowTarget,
+																												window_target,
 																												request)
 {
-		openInNewWindow(GNUSTO_MAIN_WINDOW);
+		try {
+
+				// Firstly, check for obviously stupid mistakes.
+
+				if (request==null) {
+						// We'd need that, so...
+						throw Components.results.NS_ERROR_NULL_POINTER;
+				}
+
+				// FIXME: Find value of NS_ERROR_WONT_HANDLE_CONTENT
+				//if (!(content_type in mime_types)) {
+				//		// Don't know how to handle stuff that isn't in |mime_types|.
+				//		throw Components.results.NS_ERROR_WONT_HANDLE_CONTENT;
+				//}
+
+				var chan = request.QueryInterface(Components.interfaces.nsIChannel);
+				var uri = chan.URI;
+
+				var path = uri.spec.split('/');
+
+				if (path.length>1 && path[path.length-1]=='') {
+						// There's a directory which is represented by an adventure game.
+						// This ranks for reconditeness at about the level of the
+						// Nethack code commented "boomerang falls on sink".
+						// Anyway, use the final part of the path as the name.
+						path.pop();
+				}
+
+				var filename = path[path.length-1];
+
+				var local_copy;
+				with (Components) {
+						local_copy = classes['@mozilla.org/file/directory_service;1'].
+								getService(interfaces.nsIProperties).
+								get("ProfD", interfaces.nsIFile);
+				}
+
+				cd_and_maybe_mkdir(local_copy, 'gnusto');
+				cd_and_maybe_mkdir(local_copy, 'downloads');
+				local_copy.append(filename);
+
+				// An ugly problem:
+				//
+				// * In order to read the document, we need to set a listener.
+				// * We can only set a listener before the request has started.
+				//   (No, I don't know why.)
+				// * This function won't be called until Moz knows the doc's
+				//   Content-Type.
+				// * Moz can't know the Content-Type until it's told by the server.
+				// * Therefore we can't read the document from this function.
+				//
+				// (nsIURIContentListener appears to have the same problem.)
+				// 
+				// The workaround is to grab the request's URL, stop the request,
+				// and make a new one to the same document. Ick, ick, ick on a stick.
+				// This is even what the XPI installer does:
+				// http://lxr.mozilla.org/seamonkey/source/xpinstall/src/nsInstallTrigger.cpp#118
+
+				request.cancel(NS_BINDING_ABORTED);
+
+				var newchan = Components.classes['@mozilla.org/network/io-service;1'].getService(Components.interfaces.nsIIOService).newChannelFromURI(uri);
+
+				var listener = new GnustoStreamListener();
+				listener.setTargetFile(local_copy);
+				newchan.asyncOpen(listener, this);
+		
+		} catch(e) {
+				dump('ERROR ');
+				dump(e);
+				dump('\n');
+				throw Components.results.NS_ERROR_FAILURE;
+		}
 }
 
 
@@ -151,7 +343,6 @@ ContentHandler.prototype.handleContent = function ch_hc(contentType,
 var ContentHandlerFactory = new Object();
 
 ContentHandlerFactory.createInstance = function chf_create(outer, iid) {
-		dump('--- createInstance ---\n');
 
 		if (outer!=null) { throw Components.results.NS_ERROR_NO_AGGREGATION; }
 
@@ -185,16 +376,15 @@ Module.registerSelf = function m_regself(compMgr, fileSpec, location, type) {
 																COMMAND_LINE_CONTRACT_ID,
 																true, true);
 																
-
-				for (i in mime_types) {
-						var mime_type = mime_types[i];
-						reg.registerFactoryLocation(CONTENT_HANDLER_COMPONENT_ID,
+				for (mime_type in mime_types) {
+					  reg.registerFactoryLocation(CONTENT_HANDLER_COMPONENT_ID,
 																				CONTENT_HANDLER_DESCRIPTION_PREFIX + mime_type,
 																				CONTENT_HANDLER_CONTRACT_ID_PREFIX + mime_type,
 																				fileSpec,
 																				location,
 																				type);
-				}
+																				}
+
 		} catch (e) {
 				dump('FAIL: ');
 				dump(e);
@@ -205,17 +395,10 @@ Module.registerSelf = function m_regself(compMgr, fileSpec, location, type) {
 Module.unregisterSelf = function m_unregself(compMgr, fileSpec, location) {
 		try {
 				reg = compMgr.QueryInterface(Components.interfaces.nsIComponentRegistrar);
-				for (i in mime_types) {
-						var mime_type = mime_types[i];
-
-						dump('registering ');
-						dump(mime_type);
-						dump('... ');
+				for (mime_type in mime_types) {
 						reg.unregisterFactoryLocation(CONTENT_HANDLER_CONTRACT_ID_PREFIX + mime_type,
 																					fileSpec);
-						dump('done.\n');
 				}
-		dump('all unregistering done.\n');
 		} catch (e) {
 				dump('FAIL: ');
 				dump(e);
@@ -249,5 +432,4 @@ function NSGetModule(compMgr, fileSpec) { return Module; }
 
 ////////////////////////////////////////////////////////////////
 
-// EOF beret.js //
-
+// EOF gnusto-service.js //
