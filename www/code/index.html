@@ -1,25 +1,69 @@
-<h1 class="page-header"><img src="lanterns/lantern.png" alt="" width="16" height="32"> A map of the code</h5>
+<h1 class="page-header"><img src="lanterns/lantern.png" alt="" width="32" height="64"> A tour of the code</h5>
+
+<p>This document describes the current architecture of Gnusto.</p>
+
+<p><b>Section names, and future growth:</b> We're in the process of identifying the logical sections of the code, to replace the current <i lang="la">ad hoc</i> growth; eventually each section will have its own file. Names of such sections are written thus: <code>Felapton</code>.</p>
+
+<p><b>Identifier naming:</b> A section should have a naming prefix, either its section name in lowercase or (in the case of sections which are intended to be drop-in replacements for other sections) a descriptive name. The names of identifiers exported from a section should begin with the prefix and one underscore; identifiers private to a section should begin with the prefix and two underscores. This convention is not yet followed in much of the code.</p>
+
+<p><small><b>Naming scheme:</b> Section names are taken from the ancient names of the twenty-four forms of the syllogism. The full list of possible names runs:
+<code>
+barbara
+barbarix
+baroco
+bocardo
+bramantip
+camenes
+camenop
+camestres
+camestrop
+celarent
+cesare
+cesarox
+darapti
+darii
+datisi
+dimaris
+disamis
+felapton
+feraxo
+ferio
+ferison
+fesapo
+festino
+fresison
+</code>.</small></p>
+
+<p>If you'd like to step through the file descriptions in a helpful order, follow the links that say "<a href="gnusto-lib.html">NEXT&gt;</a>".</p>
 
 <h2>Broken down by area</h2>
 
 <h3><img src="lanterns/heart.png" alt="" width="16" height="32"> Core</h3>
 <ul>
 <li>
-mozilla-glue
+<a href="mozilla-glue.html">mozilla-glue</a> - core, XUL interface, and general code dumping ground
 </li>
 </ul>
 
 <h3><img src="lanterns/engine.png" alt="" width="16" height="32"> Main engine</h3>
 <ul>
 <li>
-gnusto-lib
+<a href="felapton.html">gnusto-lib</a> (<code>Felapton</code>) - the Z-machine itself
 </li>
 </ul>
 
 <h3><img src="lanterns/screen.png" alt="" width="16" height="32"> Screen handlers</h3>
 <ul>
-<li><a href="bocardo.html"><code>Bocardo</code></a> - produces HTML to look like a text screen</li>
-<li><a href="barbarix.html"><code>Barbarix</code></a> - switches screens between <code>Bocardo</code> 
-and <code></li>
+<li><a href="bocardo.html">upper.js</a> (<code>Bocardo</code>) - produces HTML to look like a text screen</li>
+<li><a href="barbarix.html">barbarix.js</a> (<code>Barbarix</code>) - switches screens between Z-machine output and review data</li>
 <li><small><i>Historical:</i> <a href="barbara.html"><code>Barbara</code></a> - now replaced by <code>Bocardo</code></small></li>
 
+<h3><img src="lanterns/star.png" alt="" width="16" height="32"> Review information</h3>
+<ul>
+<li><a href="camenes.html">baf.js</a> (<code>Camenes</code> <i>and</i> <code>Camenop</code>) - integrates Baf's Guide information</a>
+</ul>
+
+<h3>Inform debugging (<i>Tossio</i>)</h3>
+<ul>
+<li><a href="tossio.html">tossio.js</a> (<code>Disamis</code> <i>and</i> <code>Darii</code>) - general-purpose Inform debugger; action handler</a>
+</ul>
