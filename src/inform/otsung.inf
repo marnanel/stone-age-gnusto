@@ -29,7 +29,9 @@ Constant MAGIC_EXECUTE_JAVASCRIPT    = 3;
 [Run_Tests;
 
     ! Say we're starting...
-    Magic(MAGIC_BEGIN_TEST, 0);    
+    Magic(MAGIC_BEGIN_TEST, "Initial test");
+    print Magic(MAGIC_EXECUTE_JAVASCRIPT, "alert('test!');return 2+2;");
+    Magic(MAGIC_END_TEST, 0);
 ];
 
 [Check_Interpreter;
