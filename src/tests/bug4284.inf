@@ -1,0 +1,61 @@
+! Gnusto tests: funky characters in dictionary words
+! Copyright (c) 2003 Thomas Thurman. Distributed under v2 of the GNU GPL.
+!
+! Note:
+!  This file can't be part of the final version of Gnusto, since
+!  (obviously) it depends on Inform, and Inform is nonfree, which
+!  will keep Gnusto out of the main parts of some distributions
+!  (notably Debian). I'm figuring out a solution to this, but for
+!  now this file can stay here.
+!
+Release 4284;
+
+Array textbuffer -> 100;
+Array parsebuffer -> 100;
+
+! The objects are;
+! A simple test with all A0 characters ("abacus")
+Object alpha "abacus" with name "abacus";
+! Two objects with A2 characters ("b3ta", "cas\sat")
+Object beta "beta" with name "b3ta";
+Object gamma "cassat" with name "cas@{005C}sat";
+! An object with a character outside the three alphabets ("d@abase")
+Object database "database" with name "d@{0040}abase";
+
+[Main dummy;
+
+    print "Welcome to the test for bug 4284.^Please enter a name, or
+	'.' to quit.^^>";
+
+    while (1) 
+    {
+    	textbuffer->0 = 100;
+    	textbuffer->1 = 0;
+    	parsebuffer->0 = 100;
+
+    	@aread textbuffer parsebuffer -> dummy;
+
+    	if (parsebuffer->1 == 0) 
+    	{
+	    print "No response given.";
+    	}
+ 	else if (textbuffer->2 == 46) 
+	{
+	    print "End of run.^^^";
+	    rtrue;
+	}
+	else if (parsebuffer-->1 == 0)
+	{
+	    print "Value given is not in my dictionary.";
+	}
+	else
+    	{
+	    print "Value given is ";
+	    print parsebuffer-->1;
+	    print ".";
+	
+    	}
+	print "^^>";
+    }
+    
+];
