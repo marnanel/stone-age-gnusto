@@ -1,6 +1,6 @@
 # Makefile - makefile for gnusto
 #
-# $Header: /cvs/gnusto/src/Makefile,v 1.8 2003/04/17 21:56:38 marnanel Exp $
+# $Header: /cvs/gnusto/src/Makefile,v 1.9 2003/10/14 20:29:36 marnanel Exp $
 #
 # Copyright (c) 2003 Thomas Thurman
 # thomas@thurman.org.uk
@@ -22,6 +22,12 @@
 APPLICATION = gnusto
 VERSION = 0.4.0
 XPIFILE = ../downloads/${APPLICATION}-${VERSION}.xpi
+PYTHON = python
+
+# jury-rig should be the default, please.
+
+juryrig:
+	python tools/jury-rig.py
 
 xpi:
 	rm -f ${XPIFILE}
