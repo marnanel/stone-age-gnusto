@@ -1,7 +1,7 @@
 // datisi.js || -*- Mode: Java; tab-width: 2; -*-
 // Standard command library
 // 
-// $Header: /cvs/gnusto/src/gnusto/content/datisi.js,v 1.40 2005/01/24 21:05:44 naltrexone42 Exp $
+// $Header: /cvs/gnusto/src/gnusto/content/datisi.js,v 1.41 2005/01/24 21:08:30 naltrexone42 Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -313,7 +313,7 @@ function sys_show_story_title(newname) {
 			        var gn_index2 = sys__story_name.lastIndexOf(".");
 			        if (gn_index2 < 0) { gn_index2 = sys__story_name.length - 1;}
 			        sys__story_name = sys__story_name.substring(gn_index1, gn_index2);
-				window.title = sys__story_name + " - Gnusto 0.7";
+				window.title = sys__story_name + "  (" + newname + ") - Gnusto 0.7";
 		}
 }
 
