@@ -7,8 +7,18 @@ GNUSTO.MAGIC.GRIMOIRE=1
 meta.name=Balances
 meta.success=*** You have won ***
 
-seed=1234
-open=balances.z5
+set.seed=1234
+set.nowin=1
+set.gameoverquit=1      # Currently the only way to stop; see bug 5657
+set.output=/dev/stdout
+
+# FIXME: Absolute paths are necessary here at present.
+# It's not an acceptable long-term solution.
+open=/home/marnanel/proj/gnusto/testrigs/balances.z5
+
+#
+# The actions:
+#
 
 act=inventory
 act=examine book
