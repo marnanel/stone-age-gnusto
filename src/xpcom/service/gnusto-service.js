@@ -1,5 +1,5 @@
 // -*- Mode: Java; tab-width: 2; -*-
-// $Id: gnusto-service.js,v 1.6 2004/02/18 00:35:40 naltrexone42 Exp $
+// $Id: gnusto-service.js,v 1.7 2005/02/10 08:15:34 naltrexone42 Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -30,6 +30,8 @@ const GNUSTO_MAIN_WINDOW_URL =
 //
 // The referents aren't meaningful currently; set them to 0 for now.
 
+//const z_machine_file_extensions = {'z1','z2','z3','z4','z5','z7','z8'};
+
 const mime_types = {
 
 		    // Story files:
@@ -53,7 +55,7 @@ const mime_types = {
 
 ////////////////////////////////////////////////////////////////
 
-const CVS_VERSION = '$Date: 2004/02/18 00:35:40 $';
+const CVS_VERSION = '$Date: 2005/02/10 08:15:34 $';
 
 const CONTENT_HANDLER_CONTRACT_ID_PREFIX = // Only the start of it:
 		"@mozilla.org/uriloader/content-handler;1?type=";
@@ -68,6 +70,9 @@ const COMMAND_LINE_COMPONENT_ID =
 		Components.ID("{328a6b88-ee6e-41fe-828c-8c71b807b46a}");
 const COMMAND_LINE_DESCRIPTION = 'Gnusto command-line service';
 const COMMAND_LINE_CATEGORY = 'command-line-argument-handlers';
+const EXTENSION_MAPPER_CATEGORY = 'ext-to-type-mapping';
+const Z_MACHINE_FILE_TYPE = 'Z5';
+const Z_MACHINE_MIME_TYPE ='application/x-zmachine';
 
 // I think this is the magic number we want:
 const NS_BINDING_ABORTED = 0x804B0002;
@@ -384,6 +389,11 @@ Module.registerSelf = function m_regself(compMgr, fileSpec, location, type) {
 																				location,
 																				type);
 																				}
+ 
+                              // now add mappings for the z? filetypes to the mime type for servers that serve it up wrong.
+				catman.addCategoryEntry(EXTENSION_MAPPER_CATEGORY,Z_MACHINE_FILE_TYPE,Z_MACHINE_MIME_TYPE,true, true);
+                              
+
 
 		} catch (e) {
 				dump('FAIL: ');
