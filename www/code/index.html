@@ -1,43 +1,39 @@
-<h1 class="page-header"><img src="http://gnusto.org/lanterns/lantern.png" alt="" width="32" height="64"> A tour of the code</h5>
+<h1 class="page-header"><img src="http://gnusto.org/lanterns/lantern.png" alt="The code" width="32" height="64"><br />A tour of the code</h1>
 
-<p align="center"><big>This part is still being written, so don't be surprised if some pages aren't available yet.</big></p>
+<p>This document describes the current architecture of Gnusto. The program is still changing rapidly, so parts of it may soon become out of date. We'll try to keep it updated, but it will often lag behind the code in times of flux.</p>
 
-<p>This document describes the current architecture of Gnusto.</p>
+<p>This, of course, is a time of flux. Gnusto is still growing towards v1.0. In addition, we're currently moving from the entirely
+<img src="http://gnusto.org/symbols/chrome" width="30" height="10" alt="" />chrome-based
+architecture of <a href="/releasenotes060.html">v0.6</a> into a mostly
+<img src="http://gnusto.org/symbols/component" width="30" height="10" alt="" />component-based 
+design. (<a href="component-vs-chrome.html">What's the difference between components and chrome?</a>) Large parts of this transition are not yet complete. Expect change. Watch <a href="/bugs.html">Bugzilla</a> and <a href="http://www.livejournal.com/community/gnusto/">Livejournal</a></p>
+
+<p><b>Below this line: under development</b></p><hr />
 
 <p><b>Section names, and future growth:</b> We're in the process of identifying the logical sections of the code, to replace the current <i lang="la">ad hoc</i> growth: eventually each section will have its own file. Newer files already do; older files are often shared by two or more logical sections. Names of sections are written thus: <code>Felapton</code>.</p>
 
 <p><b>Identifier naming:</b> A section should have a naming prefix, either its section name in lowercase or (in the case of sections which are intended to be drop-in replacements for other sections) a descriptive name. The names of identifiers exported from a section should begin with the prefix and one underscore; identifiers private to a section should begin with the prefix and two underscores. This convention is not yet followed in much of the code.</p>
 
-<p><small><b>Naming scheme:</b> Section names are taken from the ancient names of the twenty-four forms of the syllogism. The full list of possible names runs:
-<code>
-barbara
-barbarix
-baroco
-bocardo
-bramantip
-camenes
-camenop
-camestres
-camestrop
-celarent
-cesare
-cesarox
-darapti
-darii
-datisi
-dimaris
-disamis
-felapton
-feraxo
-ferio
-ferison
-fesapo
-festino
-fresison</code>.</small></p>
-
 <h2>Broken down by area</h2>
 
-<h3><img src="http://gnusto.org/lanterns/heart.png" alt="" width="16" height="32"> Core</h3>
+<p align="center"><table><tr>
+<td><img src="http://gnusto.org/lanterns/heart" alt="" width="64" height="128" /><br />
+Core
+</td>
+<td><img src="http://gnusto.org/lanterns/engine" alt="" width="64" height="128" /><br />
+Engine
+</td>
+<td><img src="http://gnusto.org/lanterns/screen" alt="" width="64" height="128" /><br />
+Screen
+</td>
+<td><img src="http://gnusto.org/lanterns/star" alt="" width="64" height="128" /><br />
+Registry
+</td>
+<td><img src="http://gnusto.org/lanterns/pineapple" alt="" width="64" height="128" /><br />
+Debugging
+</td>
+</tr></table></p>
+
 <ul>
 <li>
 <a href="mozilla-glue.html">mozilla-glue</a> - core, XUL interface, and general code dumping ground
