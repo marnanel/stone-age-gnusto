@@ -1,0 +1,71 @@
+#!/usr/bin/python
+
+"Tool to dump various statistics from various types of IF file."
+
+# $Header: /cvs/gnusto/src/tools/ifdump,v 1.1 2004/02/17 22:57:47 marnanel Exp $
+#
+# Copyright (c) 2004 Thomas Thurman - thomas@thurman.org.uk
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of version 2 of the GNU General Public License as
+# published by the Free Software Foundation.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have be able to view the GNU General Public License at
+# http://www.gnu.org/copyleft/gpl.html ; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
+
+import sys
+import os.path
+
+if len(sys.argv)<2:
+    print "Syntax: %s <filename>" % (sys.argv[0])
+    sys.exit(255)
+
+filename = sys.argv[1]
+infile = open(filename, 'rb')
+
+def getID(f):
+    result = ''
+    for i in range(4):
+        result += f.read(1)
+    return result
+
+def getint(f):
+    result = 0
+    for i in range(4):
+        result = (result<<8) | ord(f.read(1))
+    return result
+
+def handle_quetzal(f):
+    while 1:
+        id = getID(f)
+
+        if id=='':
+            return
+
+        length = getint(f)
+        contents = f.read(length)
+        if length%2==1:
+            f.read(1) # pad byte
+
+        print id, length
+
+if getID(infile) != 'FORM':
+    print "Not an IFF file; don't know how to continue."
+    sys.exit(255)
+
+if getint(infile)+8 != os.path.getsize(filename):
+    print "Warning: file length in header is wrong."
+
+subtype = getID(infile)
+
+if subtype == 'IFZS':
+    handle_quetzal(infile)
+else:
+    print "Not a Quetzal file; don't know how to continue."
+    sys.exit(255)
