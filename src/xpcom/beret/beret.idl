@@ -36,8 +36,9 @@ interface gnustoIBeret : nsISupports
   //                  and the third word is a keyword for
   //                  this (which will be "blorb" for Blorb).
   //                  Fourth word describes the architecture:
-  //                   * zX where X is the version number, e.g. z5
+  //                   * zcode
   //                   * glulx
+  //                   * ...
   //   saved        - it contained a saved game.
   //                  Third word is the game format:
   //                   * quetzal  - the only one defined for now
@@ -45,7 +46,7 @@ interface gnustoIBeret : nsISupports
   //
   //  For example, these are all possible results:
   //     ok story blorb glulx
-  //     ok story naked z5
+  //     ok story naked zcode
   //     invalid saved quetzal
   //
   // In the case of successful "story" loads, the component will also
