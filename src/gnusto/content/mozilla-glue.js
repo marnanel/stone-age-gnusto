@@ -1,7 +1,7 @@
 // mozilla-glue.js || -*- Mode: Java; tab-width: 2; -*-
 // Interface between gnusto-lib.js and Mozilla. Needs some tidying.
 // Now uses the @gnusto.org/engine;1 component.
-// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.130 2003/12/17 07:14:15 marnanel Exp $
+// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.131 2003/12/29 02:42:09 marnanel Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -50,6 +50,8 @@ var GNUSTO_EFFECT_SETBUFFERMODE  = 'SB';
 var GNUSTO_EFFECT_SETINPUTSTREAM = 'SI';
 var GNUSTO_EFFECT_GETCURSOR      = 'GC';
 var GNUSTO_EFFECT_PRINTTABLE     = 'PT';
+
+const READ_TIMED_OUT = -1;
 
 // Dictionary of Gnusto errors which should be ignored.
 // The keys are the error numbers; the values are ignored.
@@ -182,11 +184,14 @@ function timeout_commit() {
 				switch (glue__reason_for_stopping) {
 
 				case GNUSTO_EFFECT_INPUT: // Line at a time.
-						alert("Don't know how to deal with line-at-a-time input yet!");
+						engine.answer(0, READ_TIMED_OUT);
+						engine.answer(1, win_get_input());
+						// Should we send more information through? FIXME
+						dispatch('exec');
 						break;
 
 				case GNUSTO_EFFECT_INPUT_CHAR: // Char at a time.
-						engine.answer(0, 0);
+						engine.answer(0, READ_TIMED_OUT);
 						dispatch('exec');
 						break;
 
@@ -281,17 +286,33 @@ function command_exec(args) {
 				case GNUSTO_EFFECT_INPUT:
 						if (replayer.lineIsWaiting()) {
 
-								var line = replayer.nextLine().substring(0,engine.effect(2)*1);
-								engine.answer(0, line);
+								// FIXME: replayer should have a way to show the
+								// terminating keypress to use (including
+								// READ_TIMED_OUT). (This is part of bug 5066.)
+								var line = replayer.nextLine().substring(0,engine.effect(3)*1);
+								engine.answer(1, line);
+								engine.answer(0, 13);
 								win_relax();
 								glue_print(line+'\n');
 								looping = 1;
+
 						} else {
+
+								var timeout_deciseconds = engine.effect(1)*1;
+
+								if (timeout_deciseconds) {
+										win_show_status("Timed read: "+timeout_deciseconds+'ds');
+										timeout_begin(timeout_deciseconds);
+								} else {
+										win_show_status("Not a timed read. "+engine.effect(1));
+								}
+
 								win_relax();
-								glue__input_buffer_max_chars = engine.effect(2)*1;
-								win_set_input([win_recaps(engine.effect(1)*1), '']);
-								glue__set_terminating_characters(engine.effect(3));
-								glue__command_history_position = -1;		
+								glue__input_buffer_max_chars = engine.effect(3)*1;
+								win_set_input([win_recaps(engine.effect(2)*1), '']);
+								glue__set_terminating_characters(engine.effect(4));
+								glue__command_history_position = -1;
+								
 						}
 						break;
 
@@ -875,8 +896,8 @@ function gotInput(e) {
 
 						glue__command_history.unshift(result);
 								
-						engine.answer(0, result);
-						engine.answer(1, zscii_code);
+						engine.answer(0, zscii_code);
+						engine.answer(1, result);
 						dispatch('exec');
 
 				} else {
