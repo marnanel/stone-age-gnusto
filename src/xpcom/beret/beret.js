@@ -1,5 +1,5 @@
 // -*- Mode: Java; tab-width: 2; -*-
-// $Id: beret.js,v 1.8 2003/11/24 22:46:42 marnanel Exp $
+// $Id: beret.js,v 1.9 2003/11/30 05:49:40 marnanel Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -20,7 +20,7 @@
 
 ////////////////////////////////////////////////////////////////
 
-const CVS_VERSION = '$Date: 2003/11/24 22:46:42 $';
+const CVS_VERSION = '$Date: 2003/11/30 05:49:40 $';
 const BERET_COMPONENT_ID = Components.ID("{ed0618e3-8b2b-4bc8-b1a8-13ae575efc60}");
 const BERET_DESCRIPTION  = "Checks file magic and routes them accordingly";
 const BERET_CONTRACT_ID  = "@gnusto.org/beret;1";
@@ -59,6 +59,7 @@ function iff_parse(s) {
 
 				if (chunk_length<0 || (chunk_length+cursor)>s.length) {
 						// fixme: do something sensible here
+						dump('WEEBLE, panic\n');
 						return [];
 				}
 
@@ -120,7 +121,6 @@ Beret.prototype = {
 																											 'gnustoIEngine',
 																											 'loadStory')(content.length,
 																																		content);
-
 				} else if (content[0]==70 && content[1]==79 && content[2]==82 && content[3]==77) {
 						// "F, O, R, M". An IFF file, then...
 
@@ -214,11 +214,13 @@ Beret.prototype = {
 								for (var j=1; j<iff_details.length; j++) {
 
 										if (iff_details[j][0]=='ZCOD') {
-												this.m_filetype = 'nyi story blorb';
+												var start = iff_details[j][1];
+												var length = iff_details[j][2];
 
-												dump("Should be able to read this... "+
-														 "still need to implement "+
-														 "scooping the middle out.");
+												this.load(length,
+																	content.slice(start,
+																								start+length));
+												this.m_filetype = 'ok story blorb z5';
 										}
 								}
 
