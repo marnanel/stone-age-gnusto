@@ -1,7 +1,7 @@
 // datisi.js || -*- Mode: Java; tab-width: 2; -*-
 // Standard command library
 // 
-// $Header: /cvs/gnusto/src/gnusto/content/datisi.js,v 1.25 2003/08/29 02:21:03 marnanel Exp $
+// $Header: /cvs/gnusto/src/gnusto/content/datisi.js,v 1.26 2003/08/29 22:29:25 naltrexone42 Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -326,7 +326,15 @@ function command_open(a) {
 		}
 
 		default:
-				return 'Wrong number of parameters for open.';
+			for (var index = 2; index < a.length; index++) a[1] = a[1] + ' ' + a[index];
+			
+			localfile = new Components.Constructor("@mozilla.org/file/local;1",
+													 "nsILocalFile",
+													 "initWithPath")(a[1]);
+			filename = a[1];
+			filename = filename.replace('\\','\\\\', 'g');
+
+				break;
 		}
 
     if (!localfile.exists()) {
