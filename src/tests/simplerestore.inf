@@ -1,0 +1,55 @@
+! Gnusto tests: simple save/restore test
+! Copyright (c) 2003 Thomas Thurman. Distributed under v2 of the GNU GPL.
+!
+! Note:
+!  This file can't be part of the final version of Gnusto, since
+!  (obviously) it depends on Inform, and Inform is nonfree, which
+!  will keep Gnusto out of the main parts of some distributions
+!  (notably Debian). I'm figuring out a solution to this, but for
+!  now this file can stay here.
+!
+! This program accepts an infinite series of keystrokes. It keeps
+! a value stored in a variable. If the keystroke is:
+!    "."       it will print the contents of the variable
+!    "S"       it will save
+!    "R"       it will save
+!    Otherwise it will set the variable to the keystroke and print it.
+
+Release 177;
+
+Global v;
+
+[ Main keypress result;
+
+    .top;
+
+    @read_char keypress;
+
+    @je keypress 46 ?dofullstop;
+    @je keypress 83 ?dosave;
+    @je keypress 82 ?dorestore;
+    
+    @add keypress 0 -> v;
+    @print_num v;
+    @print_char 32;
+    
+    @je 0 0 ?top;
+
+    .dofullstop;
+    @print_num v;
+    @print_char 32;
+    @je 0 0 ?top;
+
+    .dosave;
+    @save -> result;
+    @je result 0 ?fail;
+    @je 0 0 ?top;
+    
+    .dorestore;
+    @restore -> result;
+    @je 0 0 ?fail;
+    
+    .fail;
+    @print_ret "*FAIL Unexpected error: quitting";
+];
+
