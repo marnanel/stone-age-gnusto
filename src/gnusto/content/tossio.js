@@ -622,14 +622,14 @@ function command_dis(a) {
 
 function command_step(a) {
 		single_step = 1;
-		dispatch('exec');
+		command_exec();
 }
 
 function command_run(a) {
 		// FIXME: This shouldn't work if we're stopped for, say,
 		// keyboard input.
 		single_step = 0;
-		dispatch('exec');
+		command_exec();
 }
 
 function command_context(a) {

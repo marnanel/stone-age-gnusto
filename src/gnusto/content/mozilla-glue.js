@@ -1,7 +1,7 @@
 // mozilla-glue.js || -*- Mode: Java; tab-width: 2; -*-
 // Interface between gnusto-lib.js and Mozilla. Needs some tidying.
 // Now uses the @gnusto.org/engine;1 component.
-// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.140 2004/02/17 06:28:54 marnanel Exp $
+// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.141 2004/04/12 03:49:10 marnanel Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -182,12 +182,12 @@ function timeout_commit() {
 						engine.answer(0, READ_TIMED_OUT);
 						engine.answer(1, win_get_input());
 						// Should we send more information through? FIXME
-						dispatch('exec');
+						command_exec();
 						break;
 
 				case GNUSTO_EFFECT_INPUT_CHAR: // Char at a time.
 						engine.answer(0, READ_TIMED_OUT);
-						dispatch('exec');
+						command_exec();
 						break;
 
 				default: // FIXME: proper error message
@@ -647,7 +647,7 @@ function glue__set_up_engine_from_args() {
 
 		if (engine!=null) {
 				glue_play();
-				dispatch('exec');
+				command_exec();
 		}
 }
 
@@ -910,7 +910,7 @@ function gotInput(e) {
 								
 						engine.answer(0, zscii_code);
 						engine.answer(1, result);
-						dispatch('exec');
+						command_exec();
 
 				} else {
 
@@ -1011,7 +1011,7 @@ function gotInput(e) {
 
 		case GNUSTO_EFFECT_INPUT_CHAR:
 				timeout_abort();
-				engine.answer(0, zscii_code); dispatch('exec');
+				engine.answer(0, zscii_code); command_exec();
 				return false;
 
 		}

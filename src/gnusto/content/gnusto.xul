@@ -4,7 +4,7 @@
 
 <!--
 
-$Header: /cvs/gnusto/src/gnusto/content/gnusto.xul,v 1.72 2004/02/18 00:48:28 naltrexone42 Exp $
+$Header: /cvs/gnusto/src/gnusto/content/gnusto.xul,v 1.73 2004/04/12 03:49:24 marnanel Exp $
 
 Copyright (c) 2003 Thomas Thurman
 thomas@thurman.org.uk
@@ -67,6 +67,7 @@ function ensureHappiness() {
    }
 
    var parts = [
+      'GNUSTO_BASE',
       'MOZILLA_GLUE',
       'TOSSIO',
       'UPPER',
@@ -120,6 +121,10 @@ function ensureHappiness() {
 
 ]]></script>
 
+<!-- Basic support for the UI. Much of this was originally in the files below,
+     and as that gets moved into gnusto-base.js the links below will disappear. -->
+<script type="application/x-javascript" src="chrome://gnusto/content/gnusto-base.js"/>
+
 <!-- String bundles, for property handling. -->
 <script type="application/x-javascript" src="chrome://global/content/strres.js"/>
 
@@ -156,13 +161,13 @@ function ensureHappiness() {
 <menupopup>
 <menuitem label="New (restart)" accesskey="N" disabled="true" />
 <menuitem label="Open Guide..." accesskey="G" oncommand="openDialog('guide-wizard.xul');"/>
-<menuitem label="Open file..." accesskey="O" oncommand="dispatch('open');"/>
+<menuitem label="Open file..." accesskey="O" oncommand="command_open();"/>
 <menuitem label="Save" disabled="true" accesskey="S"/>
 <menuitem label="Save as..." disabled="true" accesskey="A"/>
 <menuseparator/>
-<menuitem id="transcript" label="Start transcript..." accesskey="T" oncommand="dispatch('transcript');"/>
+<menuitem id="transcript" label="Start transcript..." accesskey="T" oncommand="command_transcript();"/>
 <menuseparator/>
-<menuitem label="Exit" accesskey="X" oncommand="dispatch('shutdown');"/> 
+<menuitem label="Exit" accesskey="X" oncommand="command_shutdown();"/> 
 </menupopup>
 </menu>
 
@@ -193,8 +198,8 @@ function ensureHappiness() {
 <menuitem label="Edit preferences" accesskey="P"
 	oncommand="window.open('about:config');"/>
 <menuitem label="Analyse screen" accesskey="Y"
-	oncommand="command_analysescreen(0);"/> <!-- dispatch('analysescreen');" -->
-<menuitem label="About Gnusto..." accesskey="A" oncommand="dispatch('about');"/>
+	oncommand="command_analysescreen(0);"/>
+<menuitem label="About Gnusto..." accesskey="A" oncommand="command_about();"/>
 </menupopup>
 </menu>
 
