@@ -24,6 +24,8 @@ interface gnustoIEngine : nsISupports
 
   readonly attribute string architecture;
 
+  attribute short goldenTrail;
+
   readonly attribute string status;
 };
 
