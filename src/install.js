@@ -1,6 +1,6 @@
 // install.js - installation script
 //   Heavily based on ForumZilla's install.js.
-// $Header: /cvs/gnusto/src/install.js,v 1.1 2003/02/04 02:43:10 marnanel Exp $
+// $Header: /cvs/gnusto/src/install.js,v 1.2 2003/02/04 02:45:13 marnanel Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -23,10 +23,10 @@
 
   // initialize the install with the package name and version
   var err = initInstall(
-    "Archangel RGTP client", // the name that will be displayed to the user
-    "archangel"  ,           // the path and name under which the software
+    "Gnusto Z-machine", // the name that will be displayed to the user
+    "gnusto"  ,           // the path and name under which the software
                              // will appear in the Mozilla/Netscape registry
-    "0.3.4"                  // version
+    "0.0.1"                  // version
   );
   if (err) throw ('initInstall: ' + err);
 
@@ -36,9 +36,9 @@
     "" ,                   // "The pathname in the Client Version Registry for the root 
                            // directory of the files that are to be installed." ???
                            // http://developer.netscape.com/docs/manuals/xpinstall/chap22.html
-    "archangel" ,          // path to source directory in XPI file
+    "gnusto" ,          // path to source directory in XPI file
     chromeDir ,            // target directory on user's computer
-    "archangel"            // subdirectory of target directory in which to install package
+    "gnusto"            // subdirectory of target directory in which to install package
   );
   if (err) throw ('addDirectory: ' + err);
 
@@ -46,7 +46,7 @@
   err = registerChrome(
     PACKAGE | DELAYED_CHROME,   // the kind of chrome to register
     chromeDir,                  // where the chrome is being installed into
-    "archangel/content/"        // the path to the contents.rdf file in the XPI
+    "gnusto/content/"        // the path to the contents.rdf file in the XPI
   );
   if (err) throw ('registerChrome: ' + err);
 
@@ -54,7 +54,7 @@
   err = registerChrome(
     LOCALE | DELAYED_CHROME,   // the kind of chrome to register
     chromeDir,                 // where the chrome is being installed into
-    "archangel/locale/"        // the path to the contents.rdf file in the XPI
+    "gnusto/locale/"        // the path to the contents.rdf file in the XPI
   );
   if (err) throw ('registerChrome: ' + err);
 
