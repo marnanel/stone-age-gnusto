@@ -1,7 +1,7 @@
 // mozilla-glue.js || -*- Mode: Java; tab-width: 2; -*-
 // Interface between gnusto-lib.js and Mozilla. Needs some tidying.
 // Now uses the @gnusto.org/engine;1 component.
-// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.136 2004/01/29 05:36:46 marnanel Exp $
+// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.137 2004/01/29 06:07:19 marnanel Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -676,7 +676,7 @@ function output_stream(filename, mode, permissions) {
 function glue_init() {
 		try {
 
-				engine = null;
+				engine = null; // The beret will make this for us
 
 				errorbox = Components.classes['@gnusto.org/errorbox;1'].
 						getService(Components.interfaces.gnustoIErrorBox);
@@ -686,6 +686,10 @@ function glue_init() {
 
 				replayer = new Components.Constructor('@gnusto.org/replayer;1',
 																							'gnustoIReplayer')();
+
+				// Temporary measure (grimoires will have their own component
+				// soon):
+				beret.setReplayer(replayer);
 
 				glue__parse_arguments();
 
