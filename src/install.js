@@ -1,6 +1,6 @@
 // install.js - installation script
 //   Heavily based on ForumZilla's install.js.
-// $Header: /cvs/gnusto/src/install.js,v 1.9 2003/12/06 02:06:48 naltrexone42 Exp $
+// $Header: /cvs/gnusto/src/install.js,v 1.10 2004/02/19 00:50:26 naltrexone42 Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -26,45 +26,61 @@ try {
     // initialize the install with the package name and version
     var err = initInstall("Gnusto Z-machine",
 			  "gnusto",
-			  "0.7.0Alpha");
+			  "0.7.0Beta");
     if (err) throw ('initInstall: ' + err);
 
     // prepare to install package directory onto user's computer
     var chromeType = DELAYED_CHROME;
-    var chromeDir = getFolder("chrome");
-    var profileChromeDir = getFolder("Profile", "chrome");
-    var baseDir = getFolder("Program");
-    var componentsDir = getFolder("Program","components");
+    var gnustoDir = getFolder("chrome/gnusto");
+    var componentsDir = getFolder("Components");
+    var xptDir1 = getFolder("Components");
+    var xptDir2 = getFolder("Components");
 
-    //(Hopefully) temporarily removing the install-to-profile option until we figure out a way to
-    //install components to the profile directory.  That may, however, be tilting at windmills.
-    
-    //Ask if the user wants to install to profile directory instead
-    //if (newEnough() && confirm("Press OK if you want to install to your profile directory (BEST).\n" +
-    //    "CANCEL will install to the program directory (NON-PREFERRED).\n\n" +
-    //    "NOTE:  This should allow non-admin users to install Gnusto in Linux and should cause Gnusto to " +
-    //    "persist across browser upgrades.   An install of Gnusto to the profile directory will override " +
-    //    "and obscure any prior or subsequent installs of Gnusto to the program directory."))
-    //{
-    //	chromeType = PROFILE_CHROME;
-    //	chromeDir = getFolder("Profile", "chrome");
-    //}
- 
-    //Clean up old installs of Gnusto
-//    deleteThisFolder("Program","chrome/gnusto");
+    //Clean up old installs of Gnusto   
+    deleteThisFolder("Program","chrome/gnusto");
     deleteThisFolder("Profile","chrome/gnusto");
     deleteThisFile("Program","components/compreg.dat");
     deleteThisFile("Program","components/xpti.dat");
-        
-    var GnustoDir = getFolder("Program", "chrome/gnusto");
-    err = File.dirCreate(GnustoDir);
+   
+   // Ask if the user wants to install to profile directory instead
+    if (newEnough() && confirm("Press OK if you want to install to your profile directory.\n" +
+        "CANCEL will install to the program directory.\n" +
+        "Command-line dev and testing use of Gnusto requires installation to the program\n" +
+        "directory, but a profile install is otherwise preferred.\n\n"))
+    {
+    	chromeType = PROFILE_CHROME;
+    	gnustoDir = getFolder("Profile", "chrome/gnusto");
+    	componentsDir = getFolder(gnustoDir, "components");
+    	xptDir1 = getMozProfilePluginDir();
+    	alert('Moz: ' + xptDir);
+    	xptDir2 = getNativeProfilePluginDir();
+    	alert('Native: ' + xptDir2);
+    	
+    	//create profile-only folders that may not exist
+        err = File.dirCreate(components);
+        if (err) throw ('dirCreate: ' + err);
+        err = File.dirCreate(xptDir1);
+        if (err) throw ('dirCreate: ' + err);
+        err = File.dirCreate(xptDir2);
+        if (err) throw ('dirCreate: ' + err);    	
+     }
+         
+    //create gnusto chrome folder (whether in profile or program dir)
+    err = File.dirCreate(gnustoDir);
     if (err) throw ('dirCreate: ' + err);
     
     err = addDirectory("" , "gnusto", chromeDir, "gnusto");
     if (err) throw ('addDirectory: ' + err);
-
     err = addDirectory("" , "components", componentsDir, "");
+    if (err) throw ('addDirectory: ' + err);   
+    err = addDirectory("" , "xpt", xptDir1, "");
     if (err) throw ('addDirectory: ' + err);
+    if (xptDir1 != xptDir2) {
+      err = addDirectory("" , "xpt", xptDir2, "");
+      if (err) throw ('addDirectory: ' + err);
+    }
+
+/*    
     ////////////////////////////////////////////////////////////////
     // register content's contents.rdf in chrome registry
 
@@ -88,7 +104,7 @@ try {
 			 chromeDir,
 			 "gnusto/skin/");
     if (err) throw ('registerChrome: ' + err);
-
+*/
     ////////////////////////////////////////////////////////////////
     // install package
     err = performInstall();
@@ -107,13 +123,13 @@ try {
     	"difficulty with the installation process: if the Gnusto screen is not white and "+
     	"the text is unformatted, you should run the installer a second time.  If the problem " +
     	"persists, you'll need to create a new FB / Moz profile and install under that.  Thanks!");
-
+*/
 } catch(e) {
 
     // write the error to Mozilla/bin/install.log
     logComment(e);
     // and warn the user...
-    alert(e);
+    alert('error:');
     // cancel the installation and return an error
     cancelInstall(err);
 }
@@ -170,3 +186,84 @@ function deleteThisFolder(dirKey, folder)
   }
 }
 
+function getPlatform( )
+{
+    var platformStr;
+    var platformNode;
+    if('platform' in Install)
+    {
+        platformStr = new String(Install.platform);
+        if (!platformStr.search(/^Macintosh/))
+            platformNode = 'mac';
+        else if (!platformStr.search(/^Win/))
+            platformNode = 'win';
+        else
+            platformNode = 'unix';
+    }
+    else
+    {
+        var fOSMac  = getFolder("Mac System");
+        var fOSWin  = getFolder("Win System");
+        if(fOSMac != null)
+            platformNode = 'mac';
+        else if(fOSWin != null)
+            platformNode = 'win';
+        else
+            platformNode = 'unix';
+    }
+    return platformNode;
+}
+
+function getBrowser( )
+{
+    var browserStr;
+    var profileStr = new String(getFolder("Current User"));
+    if (profileStr.search(/phoenix/gi) != -1)
+      browserStr = 'phoenix';
+    else if (profileStr.search(/mozilla/gi) != -1)
+      browserStr = 'mozilla';
+    else
+      browserStr = 'unknown';
+    return browserStr;
+}
+
+function getNativeProfilePluginDir( )
+{
+  var curBrowser = getBrowser();
+  var curPlatform  = getPlatform();
+  var curDir = getFolder("Current User");
+  var compDir = new String(curDir);
+  compDir = new String(compDir.toLowerCase());
+   	
+  while (compDir.indexOf(curBrowser) != -1) {
+    var previousDir = curDir;
+    curDir = File.dirGetParent(curDir);
+    compDir = new String(curDir);
+    compDir = new String(compDir.toLowerCase());
+  }   	
+  curDir = getFolder(previousDir, "plugins");
+  return curDir;
+}
+
+function getMozProfilePluginDir( )
+{
+  var curBrowser = getBrowser();
+  var curPlatform  = getPlatform();
+  var curDir = getFolder("Current User");
+  var compDir = new String(curDir);
+  compDir = new String(compDir.toLowerCase());
+   	
+  while (compDir.indexOf(curBrowser) != -1) {
+    var previousDir = curDir;
+    curDir = File.dirGetParent(curDir);
+    compDir = new String(curDir);
+    compDir = new String(compDir.toLowerCase());
+  }   	
+  
+  if (curPlatform == 'unix')
+    curDir = getFolder(curDir, ".mozilla/plugins");
+  else
+    curDir = getFolder(curDir, "mozilla/plugins");
+
+  return curDir;
+}
