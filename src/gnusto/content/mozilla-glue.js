@@ -1,7 +1,7 @@
 // mozilla-glue.js || -*- Mode: Java; tab-width: 2; -*-
 // Interface between gnusto-lib.js and Mozilla. Needs some tidying.
 // Now uses the @gnusto.org/engine;1 component.
-// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.111 2003/10/15 05:06:42 marnanel Exp $
+// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.112 2003/10/18 05:46:18 marnanel Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -24,6 +24,7 @@
 
 var current_window = 0;
 var engine = 0;
+var beret = 0;
 
 // The effects. Defined more fully in the component.
 var GNUSTO_EFFECT_INPUT          = 'RS';
@@ -380,12 +381,6 @@ function glue__verify() {
 }
 
 ////////////////////////////////////////////////////////////////
-
-function camenesbounce_catch(e) {
-		eval(e.target.toString().substring(13));
-}
-
-////////////////////////////////////////////////////////////////
 // Burin functions
 
 function burin(d1,d2) { }
@@ -450,12 +445,12 @@ function glue_init() {
 		engine = new Components.Constructor('@gnusto.org/engine;1',
 																				'gnustoIEngine')();
 
+		beret = new Components.Constructor('@gnusto.org/beret;1',
+																			 'gnustoIBeret')();
+
 		document.onkeypress=gotInput;
 
 		glue__init_burin();
-
-		window.addEventListener('camenesbounce',
-														camenesbounce_catch,	0);
 }
 
 ////////////////////////////////////////////////////////////////
@@ -902,6 +897,8 @@ function load_from_file(file) {
 		var buf = Components.classes[BUFIS_CTR].createInstance(nsIBufferedInputStream);
 		buf.init(is, file.fileSize);
 
+		var contents = [];
+
 		if (!(BINIS_CTR in Components.classes)) {
 
 				alert('--- WARNING --- This section has not been tested with the new component architecture. Proceed at your own risk.');
@@ -939,79 +936,104 @@ function load_from_file(file) {
 						// We just got a string but all our functions are expecting an array of bytes.
 						// So we do some faux-typecasting.  (I'd just like to take this opportunity to
 						// suggest that loosely-typed languages are a really, really stupid idea.)
-						var TransContents = [];
-						TransContents.length = fileContents.length;
+
+						contents.length = fileContents.length;
+
 						for (var i=0; i < fileContents.length; i++){
-								TransContents[i] = fileContents[i].charCodeAt();
+								contents[i] = fileContents[i].charCodeAt();
 						}
 						fc.close();
-						
-						returnTransContents;
 
 				} else {
-						// They bailed out; return a nonsensical flag value.
+					  // They bailed out.
+
 						return 0;
 				}
 
 		}	else {
 
-				// NEW:
+				// Load the file in the civilised way.
 
 				var binis = Components.Constructor("@mozilla.org/binaryinputstream;1",
 																					 "nsIBinaryInputStream",
 																					 "setInputStream")(buf);
 					
-				var memory = binis.readByteArray(file.fileSize);
+				contents = binis.readByteArray(file.fileSize);
 				buf.close();
-				engine.loadStory(memory.length, memory);
-
-				// We're required to modify some bits
-				// according to what we're able to supply.
-				engine.setByte(0x1D, 0x01); // Flags 1
-				// Flags 2:
-				//  0 LSB Transcript            leave
-				//    1   Fixed-pitch           leave
-				//    2   Redraw (v6 only)      leave
-				//    3   Want pictures         CLEAR
-				//    4   Want undo             leave
-				//    5   Want mouse            CLEAR
-				//    6   Want sound effects    CLEAR
-				//  7 MSB Want menus (v6 only)  leave  : AND with 0x57
-				engine.setByte(engine.getByte(0x11) & 0x57, 0x11);
-
-				// It's not at all clear what architecture
-				// we should claim to be. We could decide to
-				// be the closest to the real machine
-				// we're running on (6=PC, 3=Mac, and so on),
-				// but the story won't be able to tell the
-				// difference because of the thick layers of
-				// interpreters between us and the metal.
-				// At least, we hope it won't.
-
-				engine.setByte(  1, 0x1E); // uh, let's be a vax.
-				engine.setByte(103, 0x1F); // little "g" for gnusto
-		
-				// Put in some default screen values here until we can
-				// set them properly later.
-				// For now, units are characters. Later they'll be pixels.
-
-				engine.setByte( 25, 0x20); // screen height, characters
-				engine.setByte( 80, 0x21); // screen width, characters
-				engine.setByte( 25, 0x22); // screen width, units
-				engine.setByte(  0, 0x23);
-				engine.setByte( 80, 0x24); // screen height, units
-				engine.setByte(  0, 0x25);
-				engine.setByte(  1, 0x26); // font width, units
-				engine.setByte(  1, 0x27); // font height, units
-
-				glue_play();
-
-				return 1;
 		}
+
+		// Right. So now we have the contents of this file sitting in
+		// |contents|. What do we do with it? We can't easily tell, but
+		// we know a hat which can:
+
+		beret.load(contents.length, contents);
+
+		var result = beret.filetype.split(' ');
+
+		if (result[0]=='ok') {
+
+				// OK, that's good, then.
+
+				if (result[1]=='story') {
+						engine = beret.engine;
+
+						// We're required to modify some bits
+						// according to what we're able to supply.
+						// FIXME: This should probably be done somewhere else.
+
+						engine.setByte(0x1D, 0x01); // Flags 1
+						// Flags 2:
+						//  0 LSB Transcript            leave
+						//    1   Fixed-pitch           leave
+						//    2   Redraw (v6 only)      leave
+						//    3   Want pictures         CLEAR
+						//    4   Want undo             leave
+						//    5   Want mouse            CLEAR
+						//    6   Want sound effects    CLEAR
+						//  7 MSB Want menus (v6 only)  leave  : AND with 0x57
+						engine.setByte(engine.getByte(0x11) & 0x57, 0x11);
+								
+						// It's not at all clear what architecture
+						// we should claim to be. We could decide to
+						// be the closest to the real machine
+						// we're running on (6=PC, 3=Mac, and so on),
+						// but the story won't be able to tell the
+						// difference because of the thick layers of
+						// interpreters between us and the metal.
+						// At least, we hope it won't.
+								
+						engine.setByte(  1, 0x1E); // uh, let's be a vax.
+						engine.setByte(103, 0x1F); // little "g" for gnusto
+								
+						// Put in some default screen values here until we can
+						// set them properly later.
+						// For now, units are characters. Later they'll be pixels.
+								
+						engine.setByte( 25, 0x20); // screen height, characters
+						engine.setByte( 80, 0x21); // screen width, characters
+						engine.setByte( 25, 0x22); // screen width, units
+						engine.setByte(  0, 0x23);
+						engine.setByte( 80, 0x24); // screen height, units
+						engine.setByte(  0, 0x25);
+						engine.setByte(  1, 0x26); // font width, units
+						engine.setByte(  1, 0x27); // font height, units
+
+						glue_play();
+
+						return 1;
+
+				} else if (result[1]=='saved') {
+						alert(' --- fixme: quetzal hook! ---');
+				}
+
+		} else if (result[0]=='nyi') {
+				gnusto_error(101, '(from beret)');
+		} else {
+				gnusto_error(311, '(from beret)');
+		}
+
+		return 1;
 		
-		// Eek.
-		gnusto_error(170);
-		return 0;
 		} catch(e) {
 				alert('LFF error '+e);
 				return 0;
