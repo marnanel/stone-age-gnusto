@@ -1,0 +1,93 @@
+! Gnusto tests: terminating characters
+! Copyright (c) 2003 Thomas Thurman. Distributed under v2 of the GNU GPL.
+!
+! Note:
+!  This file can't be part of the final version of Gnusto, since
+!  (obviously) it depends on Inform, and Inform is nonfree, which
+!  will keep Gnusto out of the main parts of some distributions
+!  (notably Debian). I'm figuring out a solution to this, but for
+!  now this file can stay here.
+!
+Release 3814;
+
+Array terms -> 100;
+Array textbuffer -> 100;
+
+Global termcount;
+
+
+[AddTerminator which;
+    print "Adding terminator ",which,".^";
+    terms -> termcount = which;
+    termcount++;
+    
+];
+
+
+[Main dummy i temp uselist;
+
+    while(1) 
+    {
+
+    	@print "Welcome to the test for bug 3814. This test should run
+	    interactively.^^Please enter a string of characters
+	    representing the keys which should stop the next read
+	    (not this one). Choose from:^^^
+	    
+	    1-9 = F1 to F9^
+	    ABC = F10, F11, F12^
+	    *   = any F-key (wildcard)^
+	    Z   = letter Z -- should not be honoured by the terp^
+	    UDLR= up, down, left, right cursor keys^
+	    M   = mouse click^
+	    X   = no table (not an empty table)^
+	    .   = quit this program^?";
+    
+	
+    	@storeb textbuffer 0 98;
+    	@storeb textbuffer 1 0;
+    	@aread textbuffer 0 -> dummy;
+
+	uselist = 1;
+	termcount = 0;
+	
+    	for (i=0: i<textbuffer->1: i++) 
+    	{
+	    temp = textbuffer->(i+2);
+	    
+	    if (temp == 46) {
+		! full stop
+	    	rtrue;
+	    }
+	    else if (temp == 122) { AddTerminator( 90); } !letter Z
+	    else if (temp == 117) { AddTerminator(129); } !up
+	    else if (temp == 100) { AddTerminator(130); } !down
+	    else if (temp == 108) { AddTerminator(131); } !left
+	    else if (temp == 114) { AddTerminator(132); } !right
+	    else if (temp>=49 && temp<=57) { AddTerminator(temp+84); } !F1-F9
+	    else if (temp>=97 && temp<=99) { AddTerminator(temp+45); } !F10-F12
+	    else if (temp == 109) { AddTerminator(254); } !mouse click
+	    else if (temp ==  42) { AddTerminator(255); } !any F-key
+	    else if (temp == 120) { uselist = 0; } ! X = no list
+	    else { print "Sorry, I don't know the code ",temp,".^"; }
+	}
+	AddTerminator(0); ! end of the list
+
+	if (uselist) 
+	{
+	    @storew 0 46 terms;	    
+	}
+	else
+	{
+	    @storew 0 46 0;
+	}
+	
+	print "^^Now enter any string. The characters you chose should
+	    terminate it. (Newline still works too, of course.)^>";
+
+    	@storeb textbuffer 0 98;
+    	@storeb textbuffer 1 0;
+    	@aread textbuffer 0 -> dummy;
+    }
+    
+];
