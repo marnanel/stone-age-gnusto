@@ -1,7 +1,7 @@
 // barbara.js || -*- Mode: Java; tab-width: 2; -*-
 // Lightweight lower-window handler.
 //
-// $Header: /cvs/gnusto/src/gnusto/content/barbara.js,v 1.24 2003/08/05 01:41:54 marnanel Exp $
+// $Header: /cvs/gnusto/src/gnusto/content/barbara.js,v 1.25 2003/09/24 00:27:44 marnanel Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -356,11 +356,13 @@ function barbara_recaps(count) {
 				} else {
 						var barbLastText = barbLast.lastChild;
 
-						if (barbLastText.data.length==0) {
-								barbLast.removeChild(barbLastText);
-						} else {
-								result = barbLastText.data[barbLastText.data.length-1] + result;
-								barbLastText.data = barbLastText.data.substring(0, barbLastText.data.length-1);
+						if (barbLastText.data) {
+								if (barbLastText.data.length==0) {
+										barbLast.removeChild(barbLastText);
+								} else {
+										result = barbLastText.data[barbLastText.data.length-1] + result;
+										barbLastText.data = barbLastText.data.substring(0, barbLastText.data.length-1);
+								}
 						}
 				}
 		}
