@@ -1,7 +1,7 @@
 // mozilla-glue.js || -*- Mode: Java; tab-width: 2; -*-
 // Interface between gnusto-lib.js and Mozilla. Needs some tidying.
 // Now uses the @gnusto.org/engine;1 component.
-// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.122 2003/11/18 15:52:29 marnanel Exp $
+// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.123 2003/11/24 16:17:24 marnanel Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -37,7 +37,6 @@ var GNUSTO_EFFECT_RESTART        = 'NU';
 var GNUSTO_EFFECT_WIMP_OUT       = 'WO';
 var GNUSTO_EFFECT_BREAKPOINT     = 'BP';
 var GNUSTO_EFFECT_FLAGS_CHANGED  = 'XC';
-var GNUSTO_EFFECT_VERIFY         = 'CV';
 var GNUSTO_EFFECT_PIRACY         = 'CP';
 var GNUSTO_EFFECT_STYLE          = 'SS';
 var GNUSTO_EFFECT_SOUND          = 'FX';
@@ -261,11 +260,6 @@ function command_exec(args) {
 						// var result = dealWith(content);
 						break;
 
-				case GNUSTO_EFFECT_VERIFY:
-						engine.answer(0, glue__verify());
-						looping = 1;
-						break;
-
 				case GNUSTO_EFFECT_PIRACY:
 						// "Interpreters are asked to be gullible and
 						// to unconditionally branch."
@@ -394,47 +388,6 @@ function command_exec(args) {
 }
 
 ////////////////////////////////////////////////////////////////
-//
-// glue__verify
-//
-// Returns true iff the memory verifies correctly for @verify
-// in the original file of this game (that is, if all bytes
-// after the header total to the checksum given in the header).
-// Returns false if anything stops us finding out (like the
-// original file having been deleted). We use the value
-// in the orignal file's header for comparison, not the one in
-// the current header.
-function glue__verify() {
-		
-		var localfile = new Components.
-				Constructor("@mozilla.org/file/local;1",
-										"nsILocalFile",
-										"initWithPath")(sys_current_filename());
-
-		if (!localfile.exists())
-				return 0;
-		
-		// FIXME: This looks broken under the new architecture.
-		var original_content = load_from_file(localfile);
-
-		if (!original_content)
-				// Can't get the file, so we can't say for sure,
-				// so say no.
-				return 0;
-
-		var total = 0;
-		
-		for (var i=0x40; i<original_content.length; i++)
-				total += original_content[i];
-
-		// FIXME: Why isn't there a constant somewhere
-		// for the header word address?
-
-		return (total & 0xFFFF) == 
-				(original_content[0x1c]<<8 | original_content[0x1d]);
-}
-
-////////////////////////////////////////////////////////////////
 // Burin functions
 
 function burin(d1,d2) { }
@@ -549,11 +502,14 @@ function glue__set_up_engine_from_args() {
 
 		if ('seed' in glue__arguments && glue__arguments.seed[0]*1!=NaN) {
 				engine.setRandomSeed(glue__arguments.seed * 1);
-				engine.setRandomSeed(glue__arguments.seed * 1);
 		}
 
 		if ('copper' in glue__arguments) {
 				engine.setCopperTrail(1);
+		}
+
+		if ('golden' in glue__arguments) {
+				engine.setGoldenTrail(1);
 		}
 
 		if (engine!=0) {
@@ -595,7 +551,20 @@ function glue_init() {
 																	 PERMISSIONS,
 																	 0));
 				}
+		}
 
+		if ('robmiz' in glue__arguments) {
+				var robmiz = new Components.Constructor('@gnusto.org/robmiz;1',
+																								'gnustoIRobmiz')();
+				for (i in glue__arguments.robmiz) {
+						var stream = new Components.Constructor('@mozilla.org/filespec;1',
+																										'nsIFileSpec')();
+						stream.nativePath = glue__arguments.robmiz[i];
+						robmiz.assemble(stream);
+						robmiz.messages();
+				}
+				// Use of Robmiz implies quitting before anything starts...
+				window.close();
 		}
 
 		engine = 0;
