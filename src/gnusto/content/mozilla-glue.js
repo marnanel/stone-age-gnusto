@@ -1,7 +1,7 @@
 // mozilla-glue.js || -*- Mode: Java; tab-width: 2; -*-
 // Interface between gnusto-lib.js and Mozilla. Needs some tidying.
 // Now uses the @gnusto.org/engine;1 component.
-// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.119 2003/11/17 00:23:08 marnanel Exp $
+// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.120 2003/11/17 19:43:56 marnanel Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -237,6 +237,7 @@ function command_exec(args) {
 						start_up();
 						// FIXME: The beret needs to do this!
 						load_from_file(local_game_file);
+						glue_play();
 						// FIXME: We are circumventing dealWith until we integrate it
 						// properly into the component system.
 						//
@@ -395,7 +396,8 @@ function glue__verify() {
 
 		if (!localfile.exists())
 				return 0;
-
+		
+		// FIXME: This looks broken under the new architecture.
 		var original_content = load_from_file(localfile);
 
 		if (!original_content)
@@ -518,13 +520,23 @@ function glue__parse_arguments() {
 
 ////////////////////////////////////////////////////////////////
 
-function glue__load_beret_from_args() {
+function glue__set_up_engine_from_args() {
+
 		if ('open' in glue__arguments) {
 				var loadlist = glue__arguments['open'];
 				for (i in loadlist) {
 						var filename = loadlist[i];
-						command_open([0, filename]);
+						command_open([0, filename], 1);
 				}
+		}
+
+		if ('seed' in glue__arguments && glue__arguments.seed[0]*1!=NaN) {
+				engine.setRandomSeed(glue__arguments.seed * 1);
+				engine.setRandomSeed(glue__arguments.seed * 1);
+		}
+
+		if (engine!=0) {
+				glue_play();
 		}
 }
 
@@ -565,21 +577,16 @@ function glue_init() {
 
 		}
 
-		engine = new Components.Constructor('@gnusto.org/engine;1',
-																				'gnustoIEngine')();
+		engine = 0;
 
 		beret = new Components.Constructor('@gnusto.org/beret;1',
 																			 'gnustoIBeret')();
 
 		document.onkeypress=gotInput;
 
-		if ('seed' in glue__arguments && glue__arguments.seed[0]*1!=NaN) {
-				engine.setRandomSeed(glue__arguments.seed * 1);
-		}
-
 		glue__init_burin();
 
-		setTimeout("glue__load_beret_from_args();", 0);
+		setTimeout("glue__set_up_engine_from_args();", 0);
 }
 
 ////////////////////////////////////////////////////////////////
@@ -1148,8 +1155,6 @@ function load_from_file(file) {
 						engine.setByte(  1, 0x26); // font width, units
 						engine.setByte(  1, 0x27); // font height, units
 
-						glue_play();
-
 						return 1;
 
 				} else if (result[1]=='saved') {
@@ -1240,6 +1245,7 @@ function glue_restore() {
 
 		if (picker.show()!=ifp.returnCancel) {
 				load_from_file(picker.file);
+				glue_play();
 				return 1;
 		} else {
 				return 0;
