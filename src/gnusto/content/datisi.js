@@ -1,7 +1,7 @@
 // datisi.js || -*- Mode: Java; tab-width: 2; -*-
 // Standard command library
 // 
-// $Header: /cvs/gnusto/src/gnusto/content/datisi.js,v 1.31 2003/12/05 03:15:55 marnanel Exp $
+// $Header: /cvs/gnusto/src/gnusto/content/datisi.js,v 1.32 2004/01/29 04:03:21 marnanel Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -37,84 +37,6 @@ function command_shutdown(a) {
   window.close();  	
 }
 
-////////////////////////////////////////////////////////////////
-
-
-////////////////////////////////////////////////////////////////
-//
-// @@@FIXME: This needs to be merged with load_from_file,
-// and to read magic information from disk. (iff_parse likewise.)
-//
-//function dealWith(content) {
-//
-//		// Okay. Our task now is to find what kind of file we've been handed,
-//		// and to deal with it accordingly.
-//
-//		if (content[0]==5 || content[0]==7 || content[0]==8) {
-//				
-//				// Looks like a Z-code file that we can play, so let's go ahead.
-//				glue_play(datisi__set_up_header(content));
-//
-//				return 1;
-//
-//		} else if (content[0]==70 && content[1]==79 &&
-//							 content[2]==82 && content[3]==77) {
-//				// "F, O, R, M". An IFF file, then...
-//
-//				var iff_details = iff_parse(content);
-//
-//				if (iff_details[0]=='IFZS') {
-//						
-//						// Quetzal saved file.
-//						// Can't deal with these yet.
-//
-//						alert("Sorry, Gnusto can't yet load saved games.");
-//						return 0;
-//
-//				} else if (iff_details[0]=='IFRS') {
-//
-//						// Blorb resources file, possibly containing
-//						// Z-code.
-//
-//						// OK, so go digging for it.
-//						for (var j=1; j<iff_details.length; j++) {
-//								if (iff_details[j][0]=='ZCOD') {
-//										// This will work better once we have an
-//										// example to test it against.
-//										gnusto_error(101, "Should be able to read this... "+
-//																 "still need to implement "+
-//																 "scooping the middle out.");
-//										return 0;
-//								}
-//						}
-//
-//						gnusto_error(310, "Sorry, that Blorb file doesn't contain "+
-//												 "any Z-code, so Gnusto can't deal with it yet.");
-//						return 0;
-//				} else {
-//						
-//						// Some other IFF file type which we don't know.
-//						
-//						gnusto_error(309,'IFF '+iff_details[0]);
-//						return 0;
-//				}
-//		} else if (content[0]<9) {
-//				// Assume this is Z-code.
-//				//
-//				// (Icky test, but the only obvious one. Linux's /etc/magic
-//				// has the test for Z-code commented out because it's just
-//				// the same as this, and it's unacceptably weak. We should
-//				// find a better one.)
-//
-//				gnusto_error(310, 'z'+content[0])
-//
-//		} else {
-//				// Don't know. Complain.
-//				gnusto_error(309);
-//				return 0;
-//		}
-//}
-//
 ////////////////////////////////////////////////////////////////
 
 function command_open(a, nolaunch) {
