@@ -1,6 +1,6 @@
 // install.js - installation script
 //   Heavily based on ForumZilla's install.js.
-// $Header: /cvs/gnusto/src/install.js,v 1.11 2004/02/19 02:35:48 naltrexone42 Exp $
+// $Header: /cvs/gnusto/src/install.js,v 1.12 2004/04/05 00:35:35 naltrexone42 Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -33,7 +33,7 @@ try {
     var chromeType = DELAYED_CHROME;
     var gnustoDir = getFolder("Program", "chrome/gnusto");
     var chromeDir = getFolder("Program", "chrome");
-    var componentsDir = getFolder("Program", "Components");
+    var componentsDir = getFolder("Program", "components");
     var xptDir1 = componentsDir;
     var xptDir2 = componentsDir;
 
