@@ -12,7 +12,7 @@ meta.name=Hitchhiker's
 # FIXME: Absolute paths are necessary here at present.
 # It's not an acceptable long-term solution.
 
-open=gamescripts/stdspells.h
+open=stdspells.h
 
 open=/home/marnanel/proj/gnusto/testrigs/hhgg.z5
 
