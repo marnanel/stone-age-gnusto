@@ -1,0 +1,103 @@
+<h1 class="page-header">Gnusto 0.6.0 Release Notes</h1>
+
+<p>  The purpose of this document is to provide testers and end-users with the information they need to install and use the latest version of Gnusto.  It also provides a quick summary of new features, bugfixes, and known issues.  We'll do our best to update this document based on any feedback we may receive, so please report any errors or omissions to <a href="mailto:gnusto@mozdev.org">gnusto@mozdev.org</a>.  Please report any bugs you may find in <a href="http://gnusto.mozdev.org/bugs.html">bugzilla</a>.  Checking for duplicates before submitting a bug report is appreciated.</p>  
+
+<h4>What's New in Gnusto 0.6.0?</h4>
+
+<p>Gnusto 0.6.0 features major improvements over 0.5.0 (including many, many bugfixes). It should be usable to play and complete virtually all Version 5, 7, or 8 Z-Code games (see Known Issues for exceptions).  Here are the highlights:</p>
+
+<ul>
+  <li>Gnusto now supports z-code Version 7 and 8 game files.</li>
+  <li>Command History is now supported.  Use up and down arrow keys to access recent commands.</li>
+  <li>Larger default font-size for easier reading</li>
+  <li>Gnusto now allows you to install it to the profile directory.  This means that it will survive upgrades and reinstalls of
+      the browser and also that it can be installed by Linux users with non-admin permissions.</li>
+  <li>Gnusto has an uninstall feature available under Firebird. (Tools->Options->Extensions->Gnusto->Settings->Uninstall)</li>
+  <li>MANY significant bugfixes:
+    <ul><li>Problems printing garbage instead of proper text in many games has been resolved.</li>
+      <li>Failure to recognize known verbs and object names in some games has been resolved.</li>
+      <li>Several issues with the status bar (including white gaps, misplaced text, overwritten characters) have been fixed.</li>
+      <li>Many layout issues have been fixed.</li>
+      <li><i>Dr. Dumont's Wild P.A.R.T.I.</i> now responds to commands.</li>
+      <li>The Troll in <i>Zork I</i> no longer prevents you from leaving the room even though he is dead.</li>
+      <li>Trouble in some games with separator characters (commas, quotation marks, etc) has been resolved.</li>
+      <li>Recent Files list no longer breaks on paths which include spaces</li>
+      <li><a href="http://mozdev.org/bugs/buglist.cgi?&chfield=resolution&chfieldfrom=04-17-2003&chfieldto=07-25-2003&chfieldvalue=FIXED&product=gnusto">Many</a> bugfixes and enhancements that were documented in Bugzilla (and many others that weren't).</li>
+    </ul>
+  </li>
+</ul>
+The next release (0.7.0, barring any minor bugfix releases along the way) will natively support z-code versions 3 and 4 (hopefully also 1 and 2).  
+Testing is <i>always</i> greatly appreciated.  <a href="http://downloads.mozdev.org/gnusto/nightlies">Nighlies</a> (well "occasional-ies" might be more apt) are posted 
+as bugfixes and new features are checked in.  Joining up with the <a href="http://gnusto.mozdev.org/list.html">listserv</a>
+would be helpful if you're planning on testing.  For more dynamic interaction, participate or lurk at the <a href="http://www.livejournal.com/community/gnusto">LJ Gnusto Community</a>.
+
+<h4>Known Issues</h4>
+
+<p>Gnusto is a work in progress and some known issues remain.  If Gnusto is giving you trouble, it's a good idea to consult 
+this list.  If the issue is not on the list, please check <a href="http://gnusto.mozdev.org/bugs.html">bugzilla</a>.  If it's not in bugzilla, 
+please <a href="http://mozdev.org/bugs/enter_bug.cgi?product=gnusto">file a bug</a> and we really will see what we can do to help.</p>
+
+<ul>
+  <li>Z-code files of versions other than 5, 7 and 8 are not yet supported.  Most non-commercial games are Version 5, but many of the early Infocom
+      games were not.  Nearly all of these games were, however, re-released as Version 5 games at some point (the Solid Gold re-releases, for example).
+      If you have older versions, patches to upgrade them to v5 are available <a href="http://www.ifarchive.org/indexes/if-archiveXinfocomXpatches.html">here</a>.</li>
+  <li><i>Beyond Zork</i> has serious layout issues.</li>
+  <li>In <i>Phlegm</i> and a few other games, disambiguation questions ("To whom do you wish to say "hello"?") don't correctly handle responses.
+      Restating the command without ambiguity ("say "hello" to speaker") works fine.</li>
+  <li>Mozilla builds prior to 1.4Alpha load z-code files very slowly.  This is probably also true of pre-0.6 Phoenix/FB releases.</li>
+  <li>Firebird version 0.6 has a bug that causes layout problems in Gnusto.  Firebird 0.6.1 corrects this.</li>
+  <li>While the uninstaller unregisters all the skins, menu-items, localizations, and so forth, it doesn't actually delete the gnusto directory or its contents.</li>
+  <li>Now that Gnusto supports proper z-code, it no longer supports the mangled z-code format.</li>
+  <li>Copies of Mozilla / Firebird using older profiles may have installation issues.  The problem will manifest itself in one of two
+      ways: the Gnusto screen will be some color other than white, with no text coloring or formatting <i>or</i>
+      (in Firebird only) the gnusto icon will be invisible (but labeled) in the Customize Toolbar palette.  
+      The former issue can be resolved by running the installer a second time.  Both issues can be resolved by building a new profile 
+      (run Moz/FB with -p at the command line, create a new profile, optionally import bookmarks from old profile, reinstall extensions, etc).  
+</ul>
+
+<h4>Compatibility Info</h4>
+
+<p> Currently Gnusto only supports Version 5, 7, and 8 Z-code files.  Support for Versions 1-4 are slated for release in Gnusto 0.7.0.  
+    Beyond Zork has serious layout issues.  Some of the "abuse" z-machine games like Space Invaders and Nethack cause Gnusto to lock up.</p>
+
+<h4>Version History</h4>
+
+<ul>
+  <li>Gnusto 0.5.0 (26 July 2003): Ability to load unmangled z-code, Firebird support, support for all v5 opcodes, dynamic resizing. </li>
+  <li>Gnusto 0.4.0 (18 April 2003):  Improved screen-handler, color-handling, boxes. Support for more opcodes, BAF's Guide interface. </li>
+  <li>Gnusto 0.3.0 (23 March 2003):  Added support for Mozilla 1.3, improved error handling.</li>
+  <li>Gnusto 0.2.0 (04 March 2003):  Allowed the loading of arbitrary (mangled) z-code files.</li>
+  <li>Gnusto 0.1.0 (04 February 2003):  Hardcoded to run an embedded, mangled copy of "Troll's Eye View".</li>
+  <li>Blorple 0.0.2 (23 December 2002):  Proof of concept demo.</li>
+  <li>Blorple 0.0.1:  Proof of concept demo.</li>    
+</ul>
+            
+
+<h4>Installation Notes</h4>
+
+<p>Click on the install link on the <a href="http://gnusto.mozdev.org/installation.html">installation</a> page.  It will ask if you wish to install
+ to the profile or the program directory-- profile is preferred, but read the details carefully. Restart the browser once the installation is complete.  "Gnusto" will now show up in the Tool menu and will invoke Gnusto when selected.
+ Also, in Firebird, View->Toolbars->Customize allows the addition of a Gnusto button for the toolbar.
+  If the installation appears to have problems (improper colors, unformatted text) run the installer again (and see Known Issues for details).</p>
+
+<h4>Uninstalling</h4>
+
+<p>Gnusto now has an Uninstaller!  It works like a charm, but there are two caveats.  First, it's currently only available in Firebird.  Mozilla
+support will show up in the next release.  Second, while it unregisters all the skins, menu items, etc, it doesn't delete the gnusto directory or files.
+They won't cause any problems there, but it is a bit untidy.  Feel free to delete them after uninstalling.
+
+For non-Firebird users, there is a manual uninstall method for the moment.  Proceed at your own risk, though-- a new profile is the safest bet.  
+Close Mozilla completely.  Delete any line with the word "gnusto" in it from chrome\installed-chrome.txt.  
+Now delete the following files (Moz will rebuild them when it restarts):</p>
+<ul>
+  <li>chrome/chrome.rdf</li>
+  <li>chrome/overlayinfo/browser/content/overlays.rdf</li>
+  <li>chrome/overlayinfo/browser/skin/stylesheets.rdf</li>  
+  <li>chrome/overlayinfo/communicator/content/overlays.rdf</li>  
+  <li>chrome/overlayinfo/global/skin/stylesheets.rdf</li> 
+  <li>and the chrome/gnusto directory</li> 
+</ul>
+
+Restart the browser and Gnusto should be gone.
+ 
+<p align="right">Last Updated: 20 July 2003</p>
