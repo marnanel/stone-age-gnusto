@@ -1,0 +1,34 @@
+<h5 class="page-header">The null bytes problem</h5>
+
+<p>In all current versions of Mozilla, JavaScript cannot reliably read a file which contains nulls. This includes all zcode story files. People are <a href="http://bugzilla.mozilla.org/show_bug.cgi?id=170585">working on fixing this</a>, and as soon as it's ready, Gnusto will be able to load story files directly. Of course, Gnusto can't reach v1.0 until this happens.</p>
+
+<p>Meanwhile, if you're testing Gnusto, you still need to be able to load story files. I experimented with a few options (uuencoding the files, for example) but they all ran into the same problem: they required a lot of JavaScript processing in order to get the data out. This made loading games very slow (on the order of ten seconds to load a 60K file).</p>
+
+<p>In the end I devised a new encoding, mangled-z5 or "mz5", which doesn't suffer from this problem. The details are below, but if you just want to get going, download <a href="http://downloads.mozdev.org/gnusto/mz5">the encoder here</a> (you'll need <a href="http://www.perl.org">Perl</a> to run it). If you have a story file called, say, <code>curses.z5</code>, then you can convert it to mz5 by typing <blockquote><kbd>mz5 curses.z5 &gt;curses.mz5</kbd></blockquote>at the $ or % prompt. (Apologies to Windows users for the lack of information for you: if someone gives me instructions on how to do this under Windows, I'll reproduce them here.)</p>
+
+<p>You may also download <a href="http://downloads.mozdev.org/gnusto/troll.mz5"><cite>A Troll's Eye View</cite> in mz5 encoding</a>.</p>
+
+<h6>The details of the mz5 encoding</h6>
+<p>The encoding had to</p>
+<ul>
+<li>guarantee that the file contained no nulls</li>
+<li>be achievable using xpconnect calls as much as possible, rather than JS processing.</li>
+</ul>
+
+<p>The source file is considered as an array of bytes: <var>source[]</var>. The encoded file is the concatenation of two arrays <var>values[]</var> and <var>fixups[]</var>. Thus a file of size <var>n</var> will have size <var>2n</var> after encoding.</p>
+
+<p>For any byte offset <var>x</var> where 0 &lt;= <var>x</var> &lt; <var>n</var>:
+<ul>
+<li>if <var>source[x]</var>==0<ul>
+<li><var>values[x]</var> may have any nonzero value.<br>
+Canonically this should be <b>48</b> decimal (digit "0" in ASCII).</li>
+<li><var>fixups[x]</var>==<b>89</b> decimal (capital "Y" in ASCII)</li>
+</ul></li>
+<li>if <var>source[x]</var>!=0<ul>
+<li><var>values[x]</var>==<var>source[x]</var></li>
+<li><var>fixups[x]</var> may have any nonzero value other than 89 decimal.<br>
+Canonically this should be <b>156</b> decimal (little "n" in ASCII).</li>
+</ul></li>
+</ul></p>
+
+<p>This lets us load the entire file in one go using xpconnect, in return for a performance loss of having to look at two positions in the file every time we want to retrieve one character. (In fact, since the current read method in xpcom returns a string rather than a byte array, and we need to update it as if it were an array, we are already copying values out of the string into the array, so we need between one and three checks: three if the value has not yet been copied out, and one subsequently when it has.) The new null-safe interface is going to return results as a byte array, so we'll be able to do without all this.</p>
