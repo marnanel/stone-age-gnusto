@@ -1,7 +1,7 @@
 // mozilla-glue.js || -*- Mode: Java; tab-width: 2; -*-
 // Interface between gnusto-lib.js and Mozilla. Needs some tidying.
 // Now uses the @gnusto.org/engine;1 component.
-// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.112 2003/10/18 05:46:18 marnanel Exp $
+// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.113 2003/10/27 01:08:39 marnanel Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -181,15 +181,12 @@ function command_exec(args) {
 						break;
 
 				case GNUSTO_EFFECT_SAVE:
-						// nope
-						//gnusto_error(601, "Saving of games isn't implemented yet, MAYBE.");
-						glue_save();
+						engine.answer(0, glue_save());
 						looping = 1;
 						break;
 
 				case GNUSTO_EFFECT_RESTORE:
-						// nope here, too
-						gnusto_error(601, "Loading saved games isn't implemented yet.");
+						engine.answer(0, glue_restore());
 						looping = 1;
 						break;
 
@@ -201,6 +198,7 @@ function command_exec(args) {
 				case GNUSTO_EFFECT_RESTART:
 						win_relax();
 						start_up();
+						// FIXME: The beret needs to do this!
 						load_from_file(local_game_file);
 						// @@@FIXME: We are circumventing dealWith until we integrate it
 						// properly into the component system.
@@ -1023,7 +1021,10 @@ function load_from_file(file) {
 						return 1;
 
 				} else if (result[1]=='saved') {
-						alert(' --- fixme: quetzal hook! ---');
+
+						// By the time we see this, the game's been loaded.
+						// FIXME: We should clear the screen and all.
+
 				}
 
 		} else if (result[0]=='nyi') {
@@ -1053,32 +1054,64 @@ function zSetWord(value, address) { engine.setWord(value, address); }
 
 function glue_save() {
 
-		var file = new Components.
-				Constructor("@mozilla.org/file/local;1",
-										"nsILocalFile",
-										"initWithPath")('/tmp/GLUESAVE.qtz');
-		
-		var stream = new Components.
-				Constructor("@mozilla.org/network/file-output-stream;1",
-										"nsIFileOutputStream",
-										"init")(file,
-														0x2C, // open flags: PR_TRUNCATE|PR_CREATE_FILE|PR_RDWR
-														0600, // mode flags: owner can read & write, no other perms
-														0);
+		// FIXME: Should remember filenames and reuse them.
 
-		var binstream = new Components.
-				Constructor("@mozilla.org/binaryoutputstream;1",
-										"nsIBinaryOutputStream")();
+		var ifp = Components.interfaces.nsIFilePicker;
+		var picker = Components.classes["@mozilla.org/filepicker;1"].
+				createInstance(ifp);
 
-		binstream.setOutputStream(stream);
+		picker.init(window, "Save As", ifp.modeSave);
+		picker.appendFilter("Saved game", "*.sav; *.qtz");
+		picker.defaultExtension = '.sav'; // << doesn't work. Why not? FIXME
+				
+		if (picker.show()!=ifp.returnCancel) {
+						
+				var file = picker.file;
 
-		var dummy = [];
-		var image = engine.saveGameData(engine.saveGame(), dummy);
+				var stream = new Components.
+						Constructor("@mozilla.org/network/file-output-stream;1",
+												"nsIFileOutputStream",
+												"init")(file,
+																0x2C, // open flags: PR_TRUNCATE|PR_CREATE_FILE|PR_RDWR
+																0600, // mode flags: owner can read & write, no other perms
+																0);
 
-		binstream.writeByteArray(image, image.length);
+				var binstream = new Components.
+						Constructor("@mozilla.org/binaryoutputstream;1",
+												"nsIBinaryOutputStream")();
 
-		binstream.close();
-		stream.close();
+				binstream.setOutputStream(stream);
+
+				var dummy = [];
+				var image = engine.saveGameData(engine.saveGame(), dummy);
+				
+				binstream.writeByteArray(image, image.length);
+
+				binstream.close();
+				stream.close();
+
+				return 1;
+		} else {
+				return 0;
+		}
+}
+
+////////////////////////////////////////////////////////////////
+
+function glue_restore() {
+		var ifp = Components.interfaces.nsIFilePicker;
+		var picker = Components.classes["@mozilla.org/filepicker;1"].
+				createInstance(ifp);
+
+		picker.init(window, "Open Saved Game", ifp.modeOpen);
+		picker.appendFilter("Saved game", "*.sav; *.qtz");
+
+		if (picker.show()!=ifp.returnCancel) {
+				load_from_file(picker.file);
+				return 1;
+		} else {
+				return 0;
+		}
 }
 
 ////////////////////////////////////////////////////////////////
