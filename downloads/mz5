@@ -2,7 +2,7 @@
 # mz5 - program to encode files into mz5 encoding.
 # See http://gnusto.mozdev.org/nullbytes.html for why you'd want to.
 #
-# $Header: /cvs/gnusto/downloads/mz5,v 1.1 2003/02/24 13:29:41 marnanel Exp $
+# $Header: /cvs/gnusto/downloads/mz5,v 1.2 2003/02/24 15:44:41 marnanel Exp $
 #
 # Copyright (c) 2003 Thomas Thurman - thomas@thurman.org.uk
 # 
@@ -17,7 +17,7 @@
 # GNU General Public License for more details.
 # 
 # You should have be able to view the GNU General Public License at 
-# http:#www.gnu.org/copyleft/gpl.html ; if not, write to the Free Software
+# http://www.gnu.org/copyleft/gpl.html ; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
 
 use strict;
