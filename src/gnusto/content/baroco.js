@@ -1,7 +1,7 @@
 // baroco.js || -*- Mode: Java; tab-width: 2; -*-
 // Screen handler.
 //
-// $Header: /cvs/gnusto/src/gnusto/content/baroco.js,v 1.18 2003/08/02 00:34:30 naltrexone42 Exp $
+// $Header: /cvs/gnusto/src/gnusto/content/baroco.js,v 1.19 2004/09/30 18:22:48 naltrexone42 Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -132,6 +132,13 @@ function win_resize() {
 		reset_width_and_height_of('barbarabox', 1);
 		reset_width_and_height_of('barbara',    0);
 
+                calc_and_store_screen_size_in_chars();
+
+		// Re-scroll Barbara, as needed
+		barbara_resize_relax();
+}
+
+function calc_and_store_screen_size_in_chars() {
 		// Write to the the story file to tell it the correct width
 		// and height.
 
@@ -140,12 +147,8 @@ function win_resize() {
 		var height_in_chars = Math.floor(baroco__dimensions[1]/char_sizes[1]);
 
 		bocardo_set_screen_size(width_in_chars, height_in_chars);
-		glue_store_screen_size(width_in_chars, height_in_chars);
-
-		// Re-scroll Barbara, as needed
-		barbara_relax();
-}
-
+		glue_store_screen_size(width_in_chars, height_in_chars);	
+} 
 ////////////////////////////////////////////////////////////////
 
 function win_chalk(win, text) {

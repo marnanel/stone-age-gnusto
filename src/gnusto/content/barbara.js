@@ -1,7 +1,7 @@
 // barbara.js || -*- Mode: Java; tab-width: 2; -*-
 // Lightweight lower-window handler.
 //
-// $Header: /cvs/gnusto/src/gnusto/content/barbara.js,v 1.30 2004/09/29 23:49:59 naltrexone42 Exp $
+// $Header: /cvs/gnusto/src/gnusto/content/barbara.js,v 1.31 2004/09/30 18:22:48 naltrexone42 Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -74,6 +74,8 @@ function barbara_start_game() {
 		barbara__after_cursor = null;
 
 		barbara__most_seen = 0;
+		
+		
 }
 
 ////////////////////////////////////////////////////////////////
@@ -111,6 +113,19 @@ function barbara_clear() {
 
 		barbara__set_viewport_top(0);
 		barbara__most_seen = 0;
+		
+		// The pre v4 screen model starts at the bottom.
+		// So we should fill 
+	        var zVersion = engine.getByte(0);
+	        if (zVersion < 4) {  
+	          var lines_to_hop = engine.getByte(0x20);                
+	          for (var i=1; i <= lines_to_hop; i++){
+                    barbara_chalk('\n');	          	
+                  }
+                  var char_sizes = bocardo_get_font_metrics();  
+                  barbara__most_seen = lines_to_hop * char_sizes[1];		                    
+	        }
+		
 }
 
 ////////////////////////////////////////////////////////////////
@@ -156,7 +171,7 @@ function barbara_set_input(textlist) {
 
 
 function barbara_print_status() {
-	
+	  try {
 	        var zVersion = engine.getByte(0);
 	        if (zVersion < 4) {                  
 	          win_clear(1);
@@ -165,7 +180,8 @@ function barbara_print_status() {
                   win_set_text_style(1,0,0);
                   bocardo_chalk(1,engine.getStatusLine(bocardo_get_screen_size()[0]));                  
                   win_set_text_style(0,0,0);
-	        }	
+	        }
+	  } catch(e) { }	
 }
 function barbara_get_input() {
  	        //barbara_print_status();
@@ -246,9 +262,6 @@ function barbara_relax() {
 				// barbara__most_seen is now the page height, of course.
 
 				barbara__most_seen = page_height;
-				
-				// reset more to prevent lockup if this was 
-				// triggered by a resize event
 				barbara__set_more(0);
 
 		} else {
@@ -272,6 +285,43 @@ function barbara_relax() {
 		}
 }
 
+
+function barbara_resize_relax() {
+
+		var page_height = barbara__get_page_height();
+
+		if (page_height < barbara__get_viewport_height()) {
+				// Then we haven't started scrolling yet.
+				// barbara__most_seen is now the page height, of course.
+				barbara__most_seen = page_height;
+				
+				// Make the top of the page stick to the top of the
+				// viewport just below the upper window		
+				barbara_print_status();
+				
+				// reset more to prevent lockup
+				barbara__set_more(0);
+
+		} else {
+				// The lower screen is adjusted by some amount
+
+				var slippage = page_height - barbara__most_seen;
+
+				if (slippage > barbara__get_viewport_height()) {
+						// More than a screenful. Scroll to the top...
+						barbara__set_viewport_top(barbara__most_seen);
+						barbara__set_more(1);
+				} else {
+						// Jump straight to the bottom. No problem.
+						barbara__set_viewport_top(page_height);
+						barbara__set_more(0);
+				}
+
+				// This implies collapsing the upper screen (see bug 4050).
+				bocardo_collapse();
+				barbara_print_status();
+		}
+}
 ////////////////////////////////////////////////////////////////
 
 var barbara__more_waiting = false;
