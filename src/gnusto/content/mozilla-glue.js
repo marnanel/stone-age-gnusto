@@ -1,6 +1,7 @@
 // mozilla-glue.js || -*- Mode: Java; tab-width: 2; -*-
 // Interface between gnusto-lib.js and Mozilla. Needs some tidying.
-// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.105 2003/08/30 07:56:02 naltrexone42 Exp $
+// Now uses the @gnusto.org/engine;1 component.
+// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.106 2003/09/24 00:24:36 marnanel Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -22,6 +23,31 @@
 ////////////////////////////////////////////////////////////////
 
 var current_window = 0;
+var engine = 0;
+
+// The effects. Defined more fully in the component.
+var GNUSTO_EFFECT_INPUT          = 'RS';
+var GNUSTO_EFFECT_INPUT_CHAR     = 'RC';
+var GNUSTO_EFFECT_SAVE           = 'DS';
+var GNUSTO_EFFECT_RESTORE        = 'DR';
+var GNUSTO_EFFECT_QUIT           = 'QU';
+var GNUSTO_EFFECT_RESTART        = 'NU';
+var GNUSTO_EFFECT_WIMP_OUT       = 'WO';
+var GNUSTO_EFFECT_BREAKPOINT     = 'BP';
+var GNUSTO_EFFECT_FLAGS_CHANGED  = 'XC'; // obsolescent
+var GNUSTO_EFFECT_VERIFY         = 'CV';
+var GNUSTO_EFFECT_PIRACY         = 'CP';
+var GNUSTO_EFFECT_STYLE          = 'SS';
+var GNUSTO_EFFECT_SOUND          = 'FX';
+var GNUSTO_EFFECT_SPLITWINDOW    = 'TW';
+var GNUSTO_EFFECT_SETWINDOW      = 'SW';
+var GNUSTO_EFFECT_ERASEWINDOW    = 'YW';
+var GNUSTO_EFFECT_ERASELINE      = 'YL';
+var GNUSTO_EFFECT_SETCURSOR      = 'SC';
+var GNUSTO_EFFECT_SETBUFFERMODE  = 'SB';
+var GNUSTO_EFFECT_SETINPUTSTREAM = 'SI';
+var GNUSTO_EFFECT_GETCURSOR      = 'GC';
+var GNUSTO_EFFECT_PRINTTABLE     = 'PT';
 
 // Dictionary of Gnusto errors which should be ignored.
 // The keys are the error numbers; the values are ignored.
@@ -37,10 +63,6 @@ var ignore_transient_errors = false;
 // global because other parts of the program might want to know--
 // for example, to disable input boxes.
 var glue__reason_for_stopping = GNUSTO_EFFECT_WIMP_OUT; // safe default
-
-// Answer to glue__reason_for_stopping, which will be supplied to
-// Felapton next pass.
-var glue__answer_for_next_run = 0;
 
 // The maximum number of characters that the input buffer can currently
 // accept.
@@ -83,21 +105,10 @@ function glue_print(text) {
 // glue_effect_code
 //
 // Returns the reason the Z-machine engine (Felapton) stopped
-// last time. This may require answering with glue_set_answer()
-// before the next call to command_exec().
+// last time.
 
 function glue_effect_code() {
 		return glue__reason_for_stopping;
-}
-
-////////////////////////////////////////////////////////////////
-//
-// glue_set_answer
-//
-// Supplies the answer to the most recent effect code.
-
-function glue_set_answer(answer) {
-		glue__answer_for_next_run = answer;
 }
 
 ////////////////////////////////////////////////////////////////
@@ -109,32 +120,36 @@ function glue_set_answer(answer) {
 // Felapton is designed so that we can call it and it'll only
 // return when it needs our help. The reason it returned is
 // encoded in an "effect code", which can be discovered by
-// calling glue_effect_code(). Many effect codes are requests
+// calling glue_effect_code(). [[[Many effect codes are requests
 // for information, which must be supplied to the next call
 // to Felapton by calling glue_set_answer() before calling
-// this function.
+// this function. NOT ANY MORE-- REWRITE]]]
 
 function command_exec(args) {
 
-		// If we stopped on a breakpoint last time, fix it up.
-		if (glue__reason_for_stopping == GNUSTO_EFFECT_BREAKPOINT && breakpoints[pc]) {
-				breakpoints[pc]=2; // So it won't trigger immediately we run.
-		}
+		try {
+		// FIXME: This belongs inside the engine.
+		//// If we stopped on a breakpoint last time, fix it up.
+		//if (glue__reason_for_stopping == GNUSTO_EFFECT_BREAKPOINT && breakpoints[pc]) {
+		//		breakpoints[pc]=2; // So it won't trigger immediately we run.
+		//}
 
 		var looping;
 		do {
 				looping = 0;
 
-				glue__reason_for_stopping = engine_run(glue__answer_for_next_run);
+		  	engine.run();
+
+				glue__reason_for_stopping = engine.effect(0);
 
 				// burin('effect', glue__reason_for_stopping.toString(16));
-
-				glue_print(engine_console_text());
+				var ct = engine.consoleText();
+				glue_print(ct);
 
 				switch (glue__reason_for_stopping) {
 
 				case GNUSTO_EFFECT_WIMP_OUT:
-						if (!single_step) looping = 1; // Well, just go round again.
+						looping = 1; // Well, just go round again.
 						break;
 
 				case GNUSTO_EFFECT_FLAGS_CHANGED:
@@ -148,7 +163,7 @@ function command_exec(args) {
 
 						win_force_monospace(flags & 2);
 
-						if (!single_step) looping = 1;
+						looping = 1;
 						break;
 
 				case GNUSTO_EFFECT_INPUT_CHAR:
@@ -159,10 +174,9 @@ function command_exec(args) {
 
 				case GNUSTO_EFFECT_INPUT:
 						win_relax();
-						var eep = engine_effect_parameters();
-						glue__input_buffer_max_chars = eep.maxchars;
-						win_set_input([win_recaps(eep.recaps), '']);
-						glue__command_history_position = -1;
+						glue__input_buffer_max_chars = engine.effect(2)*1;
+						win_set_input([win_recaps(engine.effect(1)*1), '']);
+						glue__command_history_position = -1;		
 						break;
 
 				case GNUSTO_EFFECT_SAVE:
@@ -185,12 +199,15 @@ function command_exec(args) {
 				case GNUSTO_EFFECT_RESTART:
 						win_relax();
 						start_up();
-						var content = load_from_file(local_game_file);
-						var result = dealWith(content);				
+						load_from_file(local_game_file);
+						// @@@FIXME: We are circumventing dealWith until we integrate it
+						// properly into the component system.
+						//
+						// var result = dealWith(content);
 						break;
 
 				case GNUSTO_EFFECT_VERIFY:
-						glue_set_answer(glue__verify());
+						engine.answer(0, glue__verify());
 						looping = 1;
 						break;
 
@@ -209,24 +226,28 @@ function command_exec(args) {
 						break;
 
 				case GNUSTO_EFFECT_STYLE:
-						var eep = engine_effect_parameters();
-						win_set_text_style(eep[0], eep[1], eep[2]);
+						win_set_text_style(engine.effect(1)*1,
+															 engine.effect(2)*1,
+															 engine.effect(3)*1);
 						looping = 1;
 						break;
 
 				case GNUSTO_EFFECT_SOUND:
-						var eep = engine_effect_parameters();
-						glue__sound_effect(eep[0], eep[1], eep[2], eep[3], eep[4]);
+						glue__sound_effect(engine.effect(1)*1,
+															 engine.effect(2)*1,
+															 engine.effect(3)*1,
+															 engine.effect(4)*1,
+															 engine.effect(5)*1);
 						looping = 1;
 						break;
 
 				case GNUSTO_EFFECT_SPLITWINDOW:
-						win_set_top_window_size(engine_effect_parameters());
+						win_set_top_window_size(engine.effect(1)*1);
 						looping = 1;
 						break;
 
 				case GNUSTO_EFFECT_SETWINDOW:
-						current_window = engine_effect_parameters();
+						current_window = engine.effect(1)*1;
 						
 						// reset the css style variable to reflect the current
 						// state of text in the new window
@@ -239,7 +260,7 @@ function command_exec(args) {
 						break;
 
 				case GNUSTO_EFFECT_ERASEWINDOW:
-						win_clear(engine_effect_parameters());
+						win_clear(engine.effect(1)*1);
 						looping = 1;
 						break;
 						
@@ -251,14 +272,14 @@ function command_exec(args) {
 						break;
 
 				case GNUSTO_EFFECT_SETCURSOR:
-						
 						// FIXME: this looks prehistoric
 						if (current_window==1) {
 								
 								// @set_cursor has no effect on the lower window.
 								
-								eep = engine_effect_parameters();
-								win_gotoxy(current_window, eep[1]-1, eep[0]-1);
+								win_gotoxy(current_window,
+													 engine.effect(2)*1-1,
+													 engine.effect(1)*1-1);
 						}
 						
 						looping = 1;
@@ -284,6 +305,7 @@ function command_exec(args) {
 						break;
 
 				case GNUSTO_EFFECT_PRINTTABLE:
+						// FIXME: needs rethink
 						win_print_table(current_window,
 														engine_effect_parameters());
 						looping = 1;
@@ -291,14 +313,16 @@ function command_exec(args) {
 						
 				default:
 						// give up: it's nothing we know
-						gnusto_error(304, "0x"+glue__reason_for_stopping.toString(16));
+						gnusto_error(304, glue__reason_for_stopping);
 				}
 
 		} while (looping);
 		
-		if (debug_mode) {
-				tossio_debug_instruction(['status']);
-		}
+		// Commented out during switch to component architecture.
+		//if (debug_mode) {
+		//		tossio_debug_instruction(['status']);
+		//}
+		} catch (e) { alert('C_E ERROR '+e); }
 }
 
 ////////////////////////////////////////////////////////////////
@@ -408,6 +432,10 @@ function glue__init_burin() {
 ////////////////////////////////////////////////////////////////
 
 function glue_init() {
+
+		engine = new Components.Constructor('@gnusto.org/engine;1',
+																				'gnustoIEngine')();
+
 		document.onkeypress=gotInput;
 
 		glue__init_burin();
@@ -462,17 +490,14 @@ function start_up() {
 
 }
 
-function glue_play(memory) {
+function glue_play() {
 
-                engine_start_game(memory);
 		win_start_game();
 		barbara_start_game();
 		bocardo_start_game();
-                win_clear(-1);
+    win_clear(-1);
 
-		if (!single_step) {
-				dispatch('exec');
-		}
+		dispatch('exec');
 }
 
 var glue__command_history = [];
@@ -512,7 +537,7 @@ function gotInput(e) {
 
 						glue__command_history.unshift(result);
 
-						glue_set_answer(result);
+						engine.answer(0, result);
 						dispatch('exec');
 
 				} else if (e.keyCode==0) {
@@ -593,17 +618,17 @@ function gotInput(e) {
 
 						if (code>=32 && code<=126) {
 								// Regular ASCII; just pass it straight through
-								glue_set_answer(code); dispatch('exec');
+								engine.answer(0, code); dispatch('exec');
 						}
 
 				}	else {
 						switch (e.keyCode) {
 
 								// Arrow keys
-						case  37 : glue_set_answer(131); dispatch('exec'); break;
-						case  38 : glue_set_answer(129); dispatch('exec'); break;
-						case  39 : glue_set_answer(132); dispatch('exec'); break;
-						case  40 : glue_set_answer(130); dispatch('exec'); break;
+						case  37 : engine.answer(0, 131); dispatch('exec'); break;
+						case  38 : engine.answer(0, 129); dispatch('exec'); break;
+						case  39 : engine.answer(0, 132); dispatch('exec'); break;
+						case  40 : engine.answer(0, 130); dispatch('exec'); break;
 
 								// Function keys
 								// Note: WinFrotz requires the user to
@@ -611,27 +636,27 @@ function gotInput(e) {
 								// be used for their usual Windows functions
 								// (in particular, so that F1 can still
 								// invoke help).
-						case 112 : glue_set_answer(133); dispatch('exec'); break;
-						case 113 : glue_set_answer(134); dispatch('exec'); break;
-						case 114 : glue_set_answer(135); dispatch('exec'); break;
-						case 115 : glue_set_answer(136); dispatch('exec'); break;
-						case 116 : glue_set_answer(137); dispatch('exec'); break;
-						case 117 : glue_set_answer(138); dispatch('exec'); break;
-						case 118 : glue_set_answer(139); dispatch('exec'); break;
-						case 119 : glue_set_answer(140); dispatch('exec'); break;
-						case 120 : glue_set_answer(141); dispatch('exec'); break;
-						case 121 : glue_set_answer(142); dispatch('exec'); break;
+						case 112 : engine.answer(0, 133); dispatch('exec'); break;
+						case 113 : engine.answer(0, 134); dispatch('exec'); break;
+						case 114 : engine.answer(0, 135); dispatch('exec'); break;
+						case 115 : engine.answer(0, 136); dispatch('exec'); break;
+						case 116 : engine.answer(0, 137); dispatch('exec'); break;
+						case 117 : engine.answer(0, 138); dispatch('exec'); break;
+						case 118 : engine.answer(0, 139); dispatch('exec'); break;
+						case 119 : engine.answer(0, 140); dispatch('exec'); break;
+						case 120 : engine.answer(0, 141); dispatch('exec'); break;
+						case 121 : engine.answer(0, 142); dispatch('exec'); break;
 
 								// delete / backspace
-						case  46 : glue_set_answer(8); dispatch('exec'); break;
-						case   8 : glue_set_answer(8); dispatch('exec'); break;
+						case  46 : engine.answer(0, 8); dispatch('exec'); break;
+						case   8 : engine.answer(0, 8); dispatch('exec'); break;
 
 								// newline / return
-						case  10 : glue_set_answer(13); dispatch('exec'); break;
-						case  13 : glue_set_answer(13); dispatch('exec'); break;
+						case  10 : engine.answer(0, 13); dispatch('exec'); break;
+						case  13 : engine.answer(0, 13); dispatch('exec'); break;
 
 								// escape
-						case  27 : glue_set_answer(27); dispatch('exec'); break;
+						case  27 : engine.answer(0, 27); dispatch('exec'); break;
 						}
 				}
 
@@ -822,6 +847,153 @@ function command_transcript() {
 				glue__set_transcription(1);
 		}
 }
+
+////////////////////////////////////////////////////////////////
+//
+// load_from_file
+//
+// Loads a file into the engine.
+// WARNING: Under serious flux. Return values not well defined.
+// (Should ultimately be nonzero for successful loading.)
+// Does not reliably load anything but z[578] at the moment.
+// No Blorb, no Quetzal, or anything like that.
+//
+// |file| is an nsILocalFile.
+//
+function load_from_file(file) {
+
+		try {
+
+		// Based on test code posted by Robert Ginda <rginda@netscape.com> to
+		// bug 170585 on Mozilla's bugzilla.
+
+		var IOS_CTR = "@mozilla.org/network/io-service;1";
+		var nsIIOService = Components.interfaces.nsIIOService;
+
+		var BUFIS_CTR = "@mozilla.org/network/buffered-input-stream;1";
+		var nsIBufferedInputStream = Components.interfaces.nsIBufferedInputStream;
+
+		var BINIS_CTR = "@mozilla.org/binaryinputstream;1";
+		var nsIBinaryInputStream = Components.interfaces.nsIBinaryInputStream;
+		
+		var ios = Components.classes[IOS_CTR].getService(nsIIOService);
+
+		var uri = ios.newFileURI(file);
+		var is = ios.newChannelFromURI(uri).open();
+
+		// create a buffered input stream
+		var buf = Components.classes[BUFIS_CTR].createInstance(nsIBufferedInputStream);
+		buf.init(is, file.fileSize);
+
+		if (!(BINIS_CTR in Components.classes)) {
+
+				alert('--- WARNING --- This section has not been tested with the new component architecture. Proceed at your own risk.');
+
+		    // Fall back to slow-load method for pre-1.4 compatibility
+		    
+		    // But warn the user first...
+		    if (confirm("Loading binary files in javascript is extremely slow "+
+										"in Mozilla 1.3 and earlier.  Loading this file may take "+
+										"from 20 seconds to 2 minutes depending on the speed "+
+										"of your machine.  It is strongly recommended that you "+
+										"use Gnusto under Mozilla 1.4 or later. Gnusto "+
+										"(and Mozilla) will appear to lock up while the file "+
+										"is loading.")) {
+		    
+						var fc = Components.classes["@mozilla.org/network/file-input-stream;1"].createInstance(Components.interfaces.nsIFileInputStream);
+   		      fc.init(file, 1, 0, 0);
+
+						var sis = new Components.Constructor("@mozilla.org/scriptableinputstream;1", "nsIScriptableInputStream")();
+						sis.init(fc);
+
+						var fileContents = sis.read(file.fileSize);
+		
+	  	      var ss = fc.QueryInterface(Components.interfaces.nsISeekableStream);
+
+						// Due to the fact that the pre-1.4 method reads the contents of the file as a string,
+						// every time it hits a null, it thinks it's done.  So if we've stopped but aren't at
+						// the end of the file, tack on a null, seek past the null, keep reading.
+						// Lather, Rinse, Repeat.
+						while (fileContents.length!=file.fileSize) {
+								ss.seek(0, fileContents.length + 1);  
+								fileContents += "\0" + sis.read(file.fileSize);
+						}
+                      
+						// We just got a string but all our functions are expecting an array of bytes.
+						// So we do some faux-typecasting.  (I'd just like to take this opportunity to
+						// suggest that loosely-typed languages are a really, really stupid idea.)
+						var TransContents = [];
+						TransContents.length = fileContents.length;
+						for (var i=0; i < fileContents.length; i++){
+								TransContents[i] = fileContents[i].charCodeAt();
+						}
+						fc.close();
+						
+						returnTransContents;
+
+				} else {
+						// They bailed out; return a nonsensical flag value.
+						return 0;
+				}
+
+		}	else {
+
+				// NEW:
+
+				engine.loadStory(buf, file.fileSize);
+
+				// We're required to modify some bits
+				// according to what we're able to supply.
+				engine.setByte(0x1D, 0x01); // Flags 1
+				engine.setByte(engine.getByte(0x11) & 0x47, 0x11);
+
+				// It's not at all clear what architecture
+				// we should claim to be. We could decide to
+				// be the closest to the real machine
+				// we're running on (6=PC, 3=Mac, and so on),
+				// but the story won't be able to tell the
+				// difference because of the thick layers of
+				// interpreters between us and the metal.
+				// At least, we hope it won't.
+
+				engine.setByte(  1, 0x1E); // uh, let's be a vax.
+				engine.setByte(103, 0x1F); // little "g" for gnusto
+		
+				// Put in some default screen values here until we can
+				// set them properly later.
+				// For now, units are characters. Later they'll be pixels.
+
+				engine.setByte( 25, 0x20); // screen height, characters
+				engine.setByte( 80, 0x21); // screen width, characters
+				engine.setByte( 25, 0x22); // screen width, units
+				engine.setByte(  0, 0x23);
+				engine.setByte( 80, 0x24); // screen height, units
+				engine.setByte(  0, 0x25);
+				engine.setByte(  1, 0x26); // font width, units
+				engine.setByte(  1, 0x27); // font height, units
+
+				glue_play();
+
+				return 1;
+		}
+		
+		// Eek.
+		gnusto_error(170);
+		return 0;
+		} catch(e) {
+				alert('LFF error '+e);
+				return 0;
+		}
+}
+
+////////////////////////////////////////////////////////////////
+
+// These are here to ease transition to the component architecture.
+function zGetByte(address) { return engine.getByte(address); }
+function zGetWord(address) { return engine.getWord(address); }
+function zGetUnsignedWord(address) { return engine.getUnsignedWord(address); }
+function zSetByte(value, address) { engine.setByte(value, address); }
+function zSetWord(value, address) { engine.setWord(value, address); }
 
 ////////////////////////////////////////////////////////////////
 MOZILLA_GLUE_HAPPY = 1;
