@@ -10,13 +10,14 @@ STDOUT = /dev/stdout
 STDERR = /dev/stdout
 
 BALANCES = ~/balances.z5
-ZORK1 = ~/zork1.z5
+ZORK1Z5 = ~/zork1.z5
+ZORK1Z3 = ~/zork1.z3
 VERSION3GAME = random.z3
 
 STANDARDGAMES = ~/proj/gnusto/bug3481
 GAMESCRIPTS = gamescripts
 
-GNUSTOARGS = nowin=1,gameoverquit=1,seed=1,output=$(STDOUT)
+GNUSTOARGS = nowin=1,gameoverquit=1,seed=1234,output=$(STDOUT)
 
 test: marnrandom standards
 
@@ -31,11 +32,20 @@ standards: gntests strictz terpetude
 marnrandom:
 	python random.py
 
+bug4284:
+	python bug4284.py
+
+# Playthrough.
+# FIXME: Make a Python tool for playthroughs.
+
 balances:
 	$(MOZILLA) $(MOZARGS) -gnusto $(GNUSTOARGS),$(BALANCES),input=$(GAMESCRIPTS)/balances.playback
 
-zork1:
-	$(MOZILLA) $(MOZARGS) -gnusto $(GNUSTOARGS),$(ZORK1),input=$(GAMESCRIPTS)/zork1.playback
+zork1z3:
+	$(MOZILLA) $(MOZARGS) -gnusto $(GNUSTOARGS),$(ZORK1Z3),input=$(GAMESCRIPTS)/zork1.playback
+
+zork1z5:
+	$(MOZILLA) $(MOZARGS) -gnusto $(GNUSTOARGS),$(ZORK1Z5),input=$(GAMESCRIPTS)/zork1.playback
 
 ################################################################
 
@@ -52,3 +62,10 @@ terpetude:
 
 v3:
 	$(MOZILLA) $(MOZARGS) -gnusto $(GNUSTOARGS),$(VERSION3GAME)
+
+################################################################
+#
+# Trademarks in this document are used only for identification.
+# Zork is a trademark of Activision, Inc.
+#
+# EOF Makefile
