@@ -1,0 +1,25 @@
+#!/usr/bin/python
+
+"Translates binary files to JS byte arrays."
+
+import sys
+
+print 'binaryarray=['
+
+line = ''
+
+while 1:
+	char = sys.stdin.read(1)
+
+	if char == '':
+		break
+
+	line = line + '0x%02X,' % (ord(char))
+
+	if len(line)>75:
+		print line
+		line = ''
+
+print line[:-1] + '];'
+print
+print '// EOF'
