@@ -1,7 +1,7 @@
 // mozilla-glue.js || -*- Mode: Java; tab-width: 2; -*-
 // Interface between gnusto-lib.js and Mozilla. Needs some tidying.
 // Now uses the @gnusto.org/engine;1 component.
-// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.109 2003/09/29 06:06:53 marnanel Exp $
+// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.110 2003/10/03 12:56:58 marnanel Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -181,7 +181,8 @@ function command_exec(args) {
 
 				case GNUSTO_EFFECT_SAVE:
 						// nope
-						gnusto_error(601, "Saving of games isn't implemented yet.");
+						//gnusto_error(601, "Saving of games isn't implemented yet, MAYBE.");
+						glue_save();
 						looping = 1;
 						break;
 
@@ -867,7 +868,8 @@ function load_from_file(file) {
 		try {
 
 		// Based on test code posted by Robert Ginda <rginda@netscape.com> to
-		// bug 170585 on Mozilla's bugzilla.
+		// bug 170585 on Mozilla's bugzilla:
+		// http://bugzilla.mozilla.org/attachment.cgi?id=115210&action=view
 
 		var IOS_CTR = "@mozilla.org/network/io-service;1";
 		var nsIIOService = Components.interfaces.nsIIOService;
@@ -942,12 +944,27 @@ function load_from_file(file) {
 
 				// NEW:
 
-				engine.loadStory(buf, file.fileSize);
+				var binis = Components.Constructor("@mozilla.org/binaryinputstream;1",
+																					 "nsIBinaryInputStream",
+																					 "setInputStream")(buf);
+					
+				var memory = binis.readByteArray(file.fileSize);
+				buf.close();
+				engine.loadStory(memory.length, memory);
 
 				// We're required to modify some bits
 				// according to what we're able to supply.
 				engine.setByte(0x1D, 0x01); // Flags 1
-				engine.setByte(engine.getByte(0x11) & 0x47, 0x11);
+				// Flags 2:
+				//  0 LSB Transcript            leave
+				//    1   Fixed-pitch           leave
+				//    2   Redraw (v6 only)      leave
+				//    3   Want pictures         CLEAR
+				//    4   Want undo             leave
+				//    5   Want mouse            CLEAR
+				//    6   Want sound effects    CLEAR
+				//  7 MSB Want menus (v6 only)  leave  : AND with 0x57
+				engine.setByte(engine.getByte(0x11) & 0x57, 0x11);
 
 				// It's not at all clear what architecture
 				// we should claim to be. We could decide to
@@ -996,6 +1013,40 @@ function zGetWord(address) { return engine.getWord(address); }
 function zGetUnsignedWord(address) { return engine.getUnsignedWord(address); }
 function zSetByte(value, address) { engine.setByte(value, address); }
 function zSetWord(value, address) { engine.setWord(value, address); }
+
+////////////////////////////////////////////////////////////////
+
+function glue_save() {
+
+		var file = new Components.
+				Constructor("@mozilla.org/file/local;1",
+										"nsILocalFile",
+										"initWithPath")('/tmp/GLUESAVE.qtz');
+		
+		var stream = new Components.
+				Constructor("@mozilla.org/network/file-output-stream;1",
+										"nsIFileOutputStream",
+										"init")(file,
+														0x2C, // open flags: PR_TRUNCATE|PR_CREATE_FILE|PR_RDWR
+														0600, // mode flags: owner can read & write, no other perms
+														0);
+
+		var binstream = new Components.
+				Constructor("@mozilla.org/binaryoutputstream;1",
+										"nsIBinaryOutputStream")();
+
+		binstream.setOutputStream(stream);
+
+		var dummy = [];
+		var image = engine.saveGameData(engine.saveGame(), dummy);
+		alert(image);
+		alert(image.length);
+
+		binstream.writeByteArray(image, image.length);
+
+		binstream.close();
+		stream.close();
+}
 
 ////////////////////////////////////////////////////////////////
 MOZILLA_GLUE_HAPPY = 1;
