@@ -1,0 +1,52 @@
+<html><head><title>gnusto</title></head>
+
+<script src="troll.js" type="text/javascript"></script>
+<script src="gnusto-lib.js" type="text/javascript"></script>
+
+<script><!--
+
+function print_text(what) {
+	if (what!='')
+		document.getElementById("tty").appendChild(
+			document.createTextNode(what));
+}
+
+function output(what) {
+	var newline;
+
+	while (what.indexOf && (newline=what.indexOf('\n'))!=-1) {
+		print_text(what.substring(0, newline));
+		what = what.substring(newline+1);
+
+		document.getElementById("tty").appendChild(
+			document.createElement('br'));
+	}
+
+	print_text(what);
+	window.scrollBy(0, 9999);
+}
+
+function input() {
+	var instruction = prompt("What now?\n\n(No, the prompt won't look like this in the end.)");
+	output('\n> '+instruction+'\n');
+	return instruction;
+}
+
+function play() {
+	setup();
+	try {
+		execute_loop();
+	} catch (e) {
+		alert('Unhandled exception. I shall now crash horribly.\n\n'+e);
+		throw e;
+	}
+}
+--></script>
+<body onload="play();">
+<div id="notes"><a href="http://freshmeat.net/projects/gnusto/">Gnusto</a> v0.0.4 (prerelease). <i>Note that many useful operations are
+not implemented. In particular, taking an inventory will crash the
+Z-machine. Just hit reload to restart.</i></div><hr>
+<div id="tty"></div>
+<div id="end"></div>
+</body>
+</html>
