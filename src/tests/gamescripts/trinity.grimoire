@@ -1,0 +1,93 @@
+GNUSTO.MAGIC.GRIMOIRE=1
+#
+# Trinity script, based on a bunch of hint files in the if-archive.
+#
+
+meta.name=Trinity
+
+# FIXME: Absolute paths are necessary here at present.
+# It's not an acceptable long-term solution.
+
+open=gamescripts/stdspells.h
+
+open=/home/marnanel/proj/gnusto/testrigs/trinity.z4
+
+#
+# The actions:
+#
+
+act=
+# ^^ to get past loading screen
+act=ne
+act=unscrew gnomon
+act=get gnomon
+act=se
+act=get football
+act=n
+act=n
+act=help woman
+act=throw ball at umbrella
+act=get umbrella
+act=w
+act=s
+act=w
+act=buy bag
+act=get bag
+act=get change
+act=n
+act=open pram
+act=push pram se
+act=get bird
+act=open bird
+act=read bird
+act=put bird in pocket
+act=push pram e
+act=e
+act=read notice
+act=e
+act=take crumbs
+act=get ruby
+act=get in pram
+act=open umbrella
+act=get crumbs
+act=get twenty pence
+act=get gnomon
+act=examine missile
+act=e
+act=e
+act=
+act=n
+act=ne
+act=get log
+act=get splinter
+act=se
+act=se
+act=w
+act=examine sculpture
+act=s
+act=u
+act=get axe
+act=n
+act=d
+act=examine sculpture
+act=drop gnomon
+act=n
+act=u
+act=s
+act=d
+act=get gnomon
+act=e
+act=nw
+act=n
+act=u
+act=u
+act=screw gnomon into dial
+act=examine lever
+act=examine dial
+
+# Bug 5580 refers:
+act=set ring to sixth symbol
+
+# and for now, because we have to:
+act=quit
+act=yes
