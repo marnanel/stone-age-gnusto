@@ -1,3 +1,8 @@
 /* CSS for Gnusto */
 
-window { background-color: blue; }
+window {
+        font-family: "clean", sans-serif;
+	font-size: 15px;
+	border: 0;
+}
+
