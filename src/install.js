@@ -1,6 +1,6 @@
 // install.js - installation script
 //   Heavily based on ForumZilla's install.js.
-// $Header: /cvs/gnusto/src/install.js,v 1.5 2003/07/26 02:36:26 naltrexone42 Exp $
+// $Header: /cvs/gnusto/src/install.js,v 1.6 2003/08/05 06:32:13 naltrexone42 Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -19,6 +19,8 @@
 // http://www.gnu.org/copyleft/gpl.html ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
 
+const OLDEST_BUILD_ID = 2003030700
+
 try {
 
     // initialize the install with the package name and version
@@ -28,14 +30,26 @@ try {
     if (err) throw ('initInstall: ' + err);
 
     // prepare to install package directory onto user's computer
+    var chromeType = DELAYED_CHROME;
     var chromeDir = getFolder("chrome");
+
+    // Ask if the user wants to install to profile directory instead
+    if (newEnough() && confirm("Press OK if you want to install to your profile directory.  " +
+        "NOTE:  This should allow non-admin users to install Gnusto in Linux and should cause Gnusto to " +
+        "persist across browser upgrades.   HOWEVER-- this should only be done on a clean install or " +
+        "after successfully uninstalling gnusto from the main chrome directory."))
+    {
+    	chromeType = PROFILE_CHROME;
+    	chromeDir = getFolder("Profile", "chrome");
+    }
+        
     err = addDirectory("" , "gnusto", chromeDir, "gnusto");
     if (err) throw ('addDirectory: ' + err);
 
     ////////////////////////////////////////////////////////////////
     // register content's contents.rdf in chrome registry
 
-    err = registerChrome(PACKAGE | DELAYED_CHROME,
+    err = registerChrome(PACKAGE | chromeType,
 			 chromeDir,
 			 "gnusto/content/");
     if (err) throw ('registerChrome: ' + err);
@@ -43,7 +57,7 @@ try {
     ////////////////////////////////////////////////////////////////
     // register locale's contents.rdf in chrome registry
 
-    err = registerChrome(LOCALE | DELAYED_CHROME,
+    err = registerChrome(LOCALE | chromeType,
 			 chromeDir,
 			 "gnusto/locale/en-US/");
     if (err) throw ('registerChrome: ' + err);
@@ -51,7 +65,7 @@ try {
     ////////////////////////////////////////////////////////////////
     // register skin's contents.rdf in chrome registry
 
-    err = registerChrome(SKIN | DELAYED_CHROME,
+    err = registerChrome(SKIN | chromeType,
 			 chromeDir,
 			 "gnusto/skin/");
     if (err) throw ('registerChrome: ' + err);
@@ -76,3 +90,12 @@ try {
     cancelInstall(err);
 }
 
+function newEnough() 
+{
+        if (buildID >= OLDEST_BUILD_ID)  
+        return true;
+        else if( buildID == 0) //development versions
+        return true;
+        else
+        return false;
+}
