@@ -1,7 +1,7 @@
 // mozilla-glue.js || -*- Mode: Java; tab-width: 2; -*-
 // Interface between gnusto-lib.js and Mozilla. Needs some tidying.
 // Now uses the @gnusto.org/engine;1 component.
-// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.149 2005/01/28 01:33:04 naltrexone42 Exp $
+// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.150 2005/01/28 06:37:59 naltrexone42 Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -323,7 +323,7 @@ function command_exec(args) {
 						if (prefs.getBoolStackablePref('gnusto', '', 'gameoverquit')) {
 								window.close();
 						}
-
+                                                document.getElementById('savemenuitem').setAttribute('disabled','true');
 						win_relax();
 						win_show_status("Game over.");
 						break;
@@ -1143,8 +1143,10 @@ function command_transcript() {
 //
 function load_from_file(file) {
 	
-		document.getElementById('gnbrowser').setAttribute('hidden','true');		
-		//document.getElementById('gamespace').setAttribute('hidden','false');	
+		document.getElementById('gnbrowser').setAttribute('hidden','true');
+		document.getElementById('restartmenuitem').setAttribute('disabled','false');				
+		document.getElementById('savemenuitem').setAttribute('disabled','false');
+                glue__command_history = [];
 
 		try {
 
