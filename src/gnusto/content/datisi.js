@@ -1,7 +1,7 @@
 // datisi.js || -*- Mode: Java; tab-width: 2; -*-
 // Standard command library
 // 
-// $Header: /cvs/gnusto/src/gnusto/content/datisi.js,v 1.41 2005/01/24 21:08:30 naltrexone42 Exp $
+// $Header: /cvs/gnusto/src/gnusto/content/datisi.js,v 1.42 2005/01/24 23:28:51 naltrexone42 Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -259,6 +259,10 @@ function sys_update_recent_menu(recent) {
 						appendChild(sep);
 		}
 
+
+                // Force the list down to 10 if it is larger than 10.
+                // It shouldn't be, but let's be safe.
+                recent.splice(10);
 
 		// Now, for each recent file, set or create a menu item.
 
