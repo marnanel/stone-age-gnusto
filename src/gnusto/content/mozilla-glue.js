@@ -1,7 +1,7 @@
 // mozilla-glue.js || -*- Mode: Java; tab-width: 2; -*-
 // Interface between gnusto-lib.js and Mozilla. Needs some tidying.
 // Now uses the @gnusto.org/engine;1 component.
-// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.141 2004/04/12 03:49:10 marnanel Exp $
+// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.142 2004/08/01 03:22:02 marnanel Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -580,7 +580,7 @@ function glue__parse_arguments() {
 
 								if (middle==-1) {
 										// no "=" sign, so it's an "open" instruction
-										command_open([0, arg], 1);
+										command_open(arg, 1);
 								} else {
 										// split it up
 										field = arg.substring(0, middle);
