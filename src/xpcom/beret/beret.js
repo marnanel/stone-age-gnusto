@@ -1,5 +1,5 @@
 // -*- Mode: Java; tab-width: 2; -*-
-// $Id: beret.js,v 1.12 2004/01/19 23:59:00 marnanel Exp $
+// $Id: beret.js,v 1.13 2004/01/26 05:25:29 marnanel Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -19,10 +19,31 @@
 
 ////////////////////////////////////////////////////////////////
 
-const CVS_VERSION = '$Date: 2004/01/19 23:59:00 $';
+const CVS_VERSION = '$Date: 2004/01/26 05:25:29 $';
 const BERET_COMPONENT_ID = Components.ID("{ed0618e3-8b2b-4bc8-b1a8-13ae575efc60}");
 const BERET_DESCRIPTION  = "Checks file magic and routes them accordingly";
 const BERET_CONTRACT_ID  = "@gnusto.org/beret;1";
+
+////////////////////////////////////////////////////////////////
+
+// Some parameters are booleans, some are integers and
+// some are strings.
+const TYPE_IS_BOOLEAN = 'b';
+const TYPE_IS_INTEGER = 'i';
+const TYPE_IS_STRING  = 's';
+
+const parameter_types = {
+		// Name          Type
+		'nowin':        TYPE_IS_BOOLEAN,
+		'gameoverquit': TYPE_IS_BOOLEAN,
+		'open':         TYPE_IS_STRING,
+		'seed':         TYPE_IS_INTEGER,
+		'copper':       TYPE_IS_BOOLEAN,
+		'golden':       TYPE_IS_BOOLEAN,
+		'input':        TYPE_IS_STRING,
+		'output':       TYPE_IS_STRING,
+		'robmiz':       TYPE_IS_STRING,
+};
 
 ////////////////////////////////////////////////////////////////
 //
@@ -257,7 +278,6 @@ Beret.prototype = {
 						// end of IFF-specific code
 
 				} else if (magic_number_is_string('GNUSTO.MAGIC.GRIMOIRE=')) {
-						dump('This is a grimoire.\n');
 
 						// We SHOULD be using nsIStringBundle here, but
 						// we don't have the array as a file. So we just
@@ -266,6 +286,13 @@ Beret.prototype = {
 						var str = String.fromCharCode.apply(this, content);
 						str = str.replace('\r','\n','g');
 						str = str.split(/\n/);
+
+						var prefs = Components.
+						classes["@gnusto.org/stackable-prefs;1"].
+						getService(Components.interfaces.gnustoIStackPrefs);
+
+						var lhs, rhs;
+
 						for (var ik in str) {
 
 								var entry = str[ik].replace(/#.*/,''); // ignore comments
@@ -280,24 +307,127 @@ Beret.prototype = {
 														replace(/[\t ]*$/,'');
 										}
 
-										var lhs = trim(entry.substring(0, equalspos));
-										var rhs = trim(entry.substring(equalspos+1));
-								
-										if (lhs.indexOf('.')==-1) {
-												// Treat as gparam.
-												dump('Setting gparam: ');
-												dump(rhs);
-										} else {
-												dump('Meta: ');
-												dump(rhs);
-										}
-										dump('\n');
-										
+										lhs = trim(entry.substring(0, equalspos));
+										rhs = trim(entry.substring(equalspos+1));
+								} else {
+										lhs = 'act';
+										rhs = trim(entry);
 								}
 
+								lhs = lhs.toLowerCase().split('.');
+
+								if (lhs.length==0) throw "Need something before the equals sign";
+
+								switch(lhs[0]) {
+										
+								case 'set':
+										// Set a parameter
+										if (lhs.length==1) throw "Need to say what to set";
+
+										var field = "gnusto.current."+lhs[1];
+
+										if (!(lhs[1] in parameter_types))
+												throw "Unknown parameter "+lhs[1];
+
+										switch(parameter_types[lhs[1]]) {
+
+										case TYPE_IS_STRING:
+												prefs.setCharPref(field, rhs);
+												break;
+
+										case TYPE_IS_BOOLEAN:
+												prefs.setBoolPref(field, rhs=="1");
+												break;
+														
+										case TYPE_IS_INTEGER:
+												rhs = parseInt(rhs);
+												if (!isNaN(rhs)) {
+														prefs.setIntPref(field, rhs);
+												}
+												break;
+
+										default:
+												throw "impossible: weird parameter type";
+										}
+										break; // end of "set.*" handling
+
+								case 'gnusto':
+										// file signature; ignore.
+										// (Maybe we'll use this for file format
+										// revisions some day.)
+										break;
+
+								case 'meta':
+										// metadata.
+										// We don't currently use this.
+										break;
+
+								case 'open':
+
+										// Load the file in the civilised way.
+
+										with (Components) {
+												const BINIS_CTR = "@mozilla.org/binaryinputstream;1";
+
+												if (!(BINIS_CTR in classes)) {
+														throw "You need the new BINIS to use open in grimoires";
+												}
+
+												var ios = classes["@mozilla.org/network/io-service;1"].
+														getService(interfaces.nsIIOService);
+
+												var file = new Components.Constructor("@mozilla.org/file/local;1",
+																															"nsILocalFile",
+																															"initWithPath")(rhs);
+
+												if (!file.exists()) {
+														throw rhs + " does not exist (in 'open')";
+												}
+
+												var buf = 
+														Constructor("@mozilla.org/network/buffered-input-stream;1",
+																				"nsIBufferedInputStream",
+																				"init")(ios.newChannelFromURI(ios.newFileURI(file)).open(),
+																								file.fileSize);
+										
+												var new_contents =
+														Constructor(BINIS_CTR,
+																				"nsIBinaryInputStream",
+																				"setInputStream")(buf).
+														readByteArray(file.fileSize);
+
+												buf.close();
+
+												// And recur.
+												arguments.callee(new_contents.length, new_contents);
+										}
+
+										break;
+
+								case 'act':
+										// FIXME: deal with this
+										break;
+												
+								default:
+										throw "Unknown command in grimoire: "+lhs[0];
+								}
 						}
 
 						this.m_filetype = 'ok other grimoire';
+
+				} else if (magic_number_is_string('\t;; robmiz')) {
+
+						dump(' --- This is a robmiz file; FIXME ---\n');
+
+						// Warning: untested code
+						//var robmiz = new Components.Constructor('@gnusto.org/robmiz;1',
+					  //																				'gnustoIRobmiz')();
+					  //var stream = ( a stream based on content somehow )
+						//robmiz.assemble(stream);
+						//robmiz.messages();
+
+						// Also, we need to find a way to stop putting the
+						// main window coming up.
 
 				} else {
 						// OK, just give up.
