@@ -1,7 +1,7 @@
 // mozilla-glue.js || -*- Mode: Java; tab-width: 2; -*-
 // Interface between gnusto-lib.js and Mozilla. Needs some tidying.
 // Now uses the @gnusto.org/engine;1 component.
-// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.125 2003/12/03 09:46:16 marnanel Exp $
+// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.126 2003/12/05 08:43:39 marnanel Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -26,6 +26,7 @@ var current_window = 0;
 var engine = 0;
 var beret = 0;
 var replayer = 0;
+var errorbox = 0;
 
 // The effects. Defined more fully in the component.
 var GNUSTO_EFFECT_INPUT          = 'RS';
@@ -603,6 +604,9 @@ function glue_init() {
 
 		glue__init_burin();
 
+		errorbox = Components.classes['@gnusto.org/errorbox;1'].
+				getService(Components.interfaces.gnustoIErrorBox);
+
 		setTimeout("glue__set_up_engine_from_args();", 0);
 }
 
@@ -914,97 +918,7 @@ function quitGame() {
     window.close();
 }
 
-function gnusto_error(n) {
-		//VERBOSE burin('ERROR', n);
-		if (ignore_errors[n])
-				return;
-
-		var m = getMsg('error.'+n+'.name', arguments, 'Unknown error!');
-
-		m = m + '\n\n' + getMsg('error.'+n+'.details', arguments, '');
-
-		m = m + '\n\nError #'+n+'-- ';
-
-		if (n>=500)
-				m = m + 'transient';
-		else
-				m = m + 'fatal';
-
-		for (var i=1; i<arguments.length; i++) {
-				if (arguments[i] && arguments[i].toString) {
-						m = m + '\nDetail: '+arguments[i].toString();
-				}
-		}
-
-		var procs = arguments.callee;
-		var procstring = '';
-
-		var loop_count = 0;
-		var loop_max = 100;
-
-		while (procs!=null && loop_count<loop_max) {
-				var name = procs.toString();
-
-				if (name==null) {
-						procstring = ' (anon)'+procstring;
-				} else {
-						var r = name.match(/function (\w*)/);
-
-						if (r==null) {
-								procstring = ' (weird)' + procstring;
-						} else {
-								procstring = ' ' + r[1] + procstring;
-						}
-				}
-
-				procs = procs.caller;
-				loop_count++;
-		}
-
-		if (loop_count==loop_max) {
-				procstring = '...' + procstring;
-		}
-
-		m = m + '\n\nJS call stack:' + procstring;
-
-		m = m + '\n\nZ call stack:';
-
-		try {
-				for (var i in call_stack) {
-						// We don't have any way of finding out the real names
-						// of z-functions at present. This will have to do.
-						m = m + ' ('+call_stack[i].toString(16)+')'
-				}
-
-				if (pc!=null)
-						m = m + '\nProgram counter: '+pc.toString(16);
-
-				m = m + '\nZ eval stack (decimal):';
-				for (var i in gamestack) {
-						m = m + ' '+ gamestack[i];
-				}
-
-				if (locals!=null) {
-						m = m + '\nLocals (decimal):';
-						for (var i=0; i<16; i++) {
-								m = m + ' ' + i + '=' + locals[i];
-						}
-				}
-
-				if (debug_mode) {
-						glue_print('\n\n--- Error ---:\n'+m);
-				}
-
-		} catch (e) {
-				m = m + '(Some symbols not defined.)';
-		}
-		
-		if (!ignore_transient_errors) {
-                  window.openDialog("chrome://gnusto/content/errorDialog.xul", "Error", "modal,centerscreen,chrome,resizable=no", m, n);               
-                }
-
-		if (n<500) throw -1;
-}
+function gnusto_error(n) { errorbox.alert(n, 'fromtop'); }
 
 // Here we ask for a filename if |whether|, and we don't
 // already have a filename. Returns 0 if transcription
@@ -1211,49 +1125,51 @@ function load_from_file(file) {
 
 				if (result[1]=='story') {
 						engine = beret.engine;
+						
+						if (result[3]=='zcode') {
+								// We're required to modify some bits
+								// according to what we're able to supply.
+								// FIXME: This should probably be done somewhere else.
 
-						// We're required to modify some bits
-						// according to what we're able to supply.
-						// FIXME: This should probably be done somewhere else.
+								engine.setByte(0x1D, 0x01); // Flags 1
+								// Flags 2:
+								//  0 LSB Transcript            leave
+								//    1   Fixed-pitch           leave
+								//    2   Redraw (v6 only)      leave
+								//    3   Want pictures         CLEAR
+								//    4   Want undo             leave
+								//    5   Want mouse            CLEAR
+								//    6   Want sound effects    CLEAR
+								//  7 MSB Want menus (v6 only)  leave  : AND with 0x57
+								engine.setByte(engine.getByte(0x10) & 0x57, 0x10);
+								
+								// It's not at all clear what architecture
+								// we should claim to be. We could decide to
+								// be the closest to the real machine
+								// we're running on (6=PC, 3=Mac, and so on),
+								// but the story won't be able to tell the
+								// difference because of the thick layers of
+								// interpreters between us and the metal.
+								// At least, we hope it won't.
+								
+								engine.setByte(  1, 0x1E); // uh, let's be a vax.
+								engine.setByte(103, 0x1F); // little "g" for gnusto
+								
+								// Put in some default screen values here until we can
+								// set them properly later.
+								// For now, units are characters. Later they'll be pixels.
+								
+								engine.setByte( 25, 0x20); // screen height, characters
+								engine.setByte( 80, 0x21); // screen width, characters
+								engine.setByte( 25, 0x22); // screen width, units
+								engine.setByte(  0, 0x23);
+								engine.setByte( 80, 0x24); // screen height, units
+								engine.setByte(  0, 0x25);
+								engine.setByte(  1, 0x26); // font width, units
+								engine.setByte(  1, 0x27); // font height, units
 
-						engine.setByte(0x1D, 0x01); // Flags 1
-						// Flags 2:
-						//  0 LSB Transcript            leave
-						//    1   Fixed-pitch           leave
-						//    2   Redraw (v6 only)      leave
-						//    3   Want pictures         CLEAR
-						//    4   Want undo             leave
-						//    5   Want mouse            CLEAR
-						//    6   Want sound effects    CLEAR
-						//  7 MSB Want menus (v6 only)  leave  : AND with 0x57
-						engine.setByte(engine.getByte(0x10) & 0x57, 0x10);
-								
-						// It's not at all clear what architecture
-						// we should claim to be. We could decide to
-						// be the closest to the real machine
-						// we're running on (6=PC, 3=Mac, and so on),
-						// but the story won't be able to tell the
-						// difference because of the thick layers of
-						// interpreters between us and the metal.
-						// At least, we hope it won't.
-								
-						engine.setByte(  1, 0x1E); // uh, let's be a vax.
-						engine.setByte(103, 0x1F); // little "g" for gnusto
-								
-						// Put in some default screen values here until we can
-						// set them properly later.
-						// For now, units are characters. Later they'll be pixels.
-								
-						engine.setByte( 25, 0x20); // screen height, characters
-						engine.setByte( 80, 0x21); // screen width, characters
-						engine.setByte( 25, 0x22); // screen width, units
-						engine.setByte(  0, 0x23);
-						engine.setByte( 80, 0x24); // screen height, units
-						engine.setByte(  0, 0x25);
-						engine.setByte(  1, 0x26); // font width, units
-						engine.setByte(  1, 0x27); // font height, units
-
-						return 1;
+								return 1;
+						}
 
 				} else if (result[1]=='saved') {
 
