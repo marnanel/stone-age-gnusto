@@ -45,6 +45,11 @@ interface gnustoIEngine : nsISupports
   long getUnsignedWord(in long address);
   void setByte(in short value, in long address);
   void setWord(in long value, in long address);
+
+  // Sets the seed for the random number generator.
+  // Use zero as the seed to return to pseudorandom numbers.
+  // Why are there no writeonly attributes?
+  void setRandomSeed(in long seed);
 };
 
 ////////////////////////////////////////////////////////////////
