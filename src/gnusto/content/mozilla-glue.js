@@ -1,7 +1,7 @@
 // mozilla-glue.js || -*- Mode: Java; tab-width: 2; -*-
 // Interface between gnusto-lib.js and Mozilla. Needs some tidying.
 // Now uses the @gnusto.org/engine;1 component.
-// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.145 2004/09/30 00:31:28 naltrexone42 Exp $
+// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.146 2004/10/02 22:21:31 naltrexone42 Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -722,8 +722,8 @@ function glue_store_screen_size(width_in_chars,
 
 		// Screen minima (s8.4): 60x14.
 
-		if (width_in_chars<60) width_in_chars=60;
-		if (height_in_chars<14) height_in_chars=14;
+		//if (width_in_chars<60) width_in_chars=60;
+		//if (height_in_chars<14) height_in_chars=14;
 
 		// Maxima: we can't have a screen > 255 in either direction
 		// (which is really possible these days).

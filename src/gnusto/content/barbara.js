@@ -1,7 +1,7 @@
 // barbara.js || -*- Mode: Java; tab-width: 2; -*-
 // Lightweight lower-window handler.
 //
-// $Header: /cvs/gnusto/src/gnusto/content/barbara.js,v 1.35 2004/10/01 00:10:55 naltrexone42 Exp $
+// $Header: /cvs/gnusto/src/gnusto/content/barbara.js,v 1.36 2004/10/02 22:21:31 naltrexone42 Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -126,6 +126,8 @@ function barbara_clear() {
                   }
                   var char_sizes = bocardo_get_font_metrics();  
                   barbara__most_seen = lines_to_hop * char_sizes[1];		                    
+	        } else {
+	          barbara_chalk('\n'); // FIXME: UGLY hack until bug 4206 is fixed	
 	        }
 		
 }
@@ -283,9 +285,9 @@ function barbara_relax() {
 
 				var slippage = page_height - barbara__most_seen;
 
-				if (slippage > (barbara__get_viewport_height()- bocardo_get_top_window_height()-5)) {
+				if (slippage > (barbara__get_viewport_height()- bocardo_get_top_window_height())) {
 						// More than a screenful. Scroll to the top...
-						barbara__set_viewport_top(barbara__most_seen-5);
+						barbara__set_viewport_top(barbara__most_seen-(bocardo_line_height()*2));
 						barbara__set_more(1);
 				} else {
 						// Jump straight to the bottom. No problem.
