@@ -39,9 +39,19 @@
 
 <h3>go</h3>
 
+<p>The do-everything function. Its use is described above.</p>
+
 <h3>engine_console_text, engine_transcript_text</h3>
 
+<p>Return all text written to the screen, or the transcript, respectively, since you last called them. This applies before the current effect: for example, if the font is currently italic, and <code>go()</code> returns with an effect that wants to change the font to bold, then this text should be printed in italic.</p>
+
+<p>Calling either of these functions clears that function's internal buffer, so if you call it again without a call to <code>go()</code> in between, you'll get an empty string. If you don't call these functions between calls to <code>go()</code>, any data in the buffers won't be lost (but don't do this, especially not with <code>engine_console_text()</code> because it will lead to text formatting problems).</p>
+
+<p>No text should ever be returned by <code>engine_transcript_text()</code> unless transcribing has been successfully turned on. You don't need to check it unless you know that's happened.</p>
+
 <h3>engine_effect_parameters</h3>
+
+<p>Some effects need parameters; the effect's documentation will say whether it does. If it does, calling this function will return them. You may call it as many times as you like between calls to <code>go()</code>, with the same result. Calling this when you've got an effect which doesn't have parameters yields undefined results.</p>
 
 <h2>Identifier prefixes</h2>
 
