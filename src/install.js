@@ -1,6 +1,6 @@
 // install.js - installation script
 //   Heavily based on ForumZilla's install.js.
-// $Header: /cvs/gnusto/src/install.js,v 1.4 2003/05/16 11:15:38 naltrexone42 Exp $
+// $Header: /cvs/gnusto/src/install.js,v 1.5 2003/07/26 02:36:26 naltrexone42 Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -24,7 +24,7 @@ try {
     // initialize the install with the package name and version
     var err = initInstall("Gnusto Z-machine",
 			  "gnusto",
-			  "0.5.0Alpha");
+			  "0.5.0");
     if (err) throw ('initInstall: ' + err);
 
     // prepare to install package directory onto user's computer
@@ -60,7 +60,11 @@ try {
     // install package
     err = performInstall();
     if (err) throw ('performInstall: ' + err);
-    alert("Gnusto will be available under the Tools Menu after you restart your browser.");
+    alert("Gnusto will be available under the Tools Menu after you restart your browser. " +
+    	"Some older Mozilla and Firebird profiles may have " +
+    	"difficulty with the installation process: if the Gnusto screen is not white and "+
+    	"the text is unformatted, you should run the installer a second time.  If the problem " +
+    	"persists, you'll need to create a new FB / Moz profile and install under that.  Thanks!");
 
 } catch(e) {
 
