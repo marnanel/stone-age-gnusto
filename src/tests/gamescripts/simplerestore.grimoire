@@ -6,22 +6,25 @@ meta.name=SimpleRestore
 #                          That way, you can use this file to test many
 #                          different architectures.
 
-set.actfilenames=1
+set.actfilenames=1       # Don't prompt for filenames; use this list
+set.nowin=1
 set.output=/dev/stdout
 
 #
 # The actions:
 #
+# Command names should be in lower case because there are differences
+# in case sensitivity between z3 and z5. This makes things easier.
 
 act=x
 act=.
 act=.
-act=S
+act=s
 act=<simplerestore.1.sav
 act=y
 act=.
 act=.
-act=R
+act=r
 act=<simplerestore.1.sav
 act=.
 act=.
