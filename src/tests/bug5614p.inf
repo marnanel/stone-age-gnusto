@@ -1,0 +1,25 @@
+! Gnusto tests: sundries: piracy
+! Copyright (c) 2003 Thomas Thurman. Distributed under v2 of the GNU GPL.
+!
+! Note:
+!  This file can't be part of the final version of Gnusto, since
+!  (obviously) it depends on Inform, and Inform is nonfree, which
+!  will keep Gnusto out of the main parts of some distributions
+!  (notably Debian). I'm figuring out a solution to this, but for
+!  now this file can stay here.
+!
+Release 3814;
+
+! The @piracy opcode is v5+ only.
+Version 5;
+
+[Main;
+    @piracy ?arrjimlad;          ! is this pirated?
+    @print "piracy^";            ! yes.
+    @je 0 0 ?afterpiracy;        ! end the test.
+    .arrjimlad;
+    @print "no-piracy^";         ! no.
+    .afterpiracy;
+
+    @print "end-test^";          ! all done.
+];
