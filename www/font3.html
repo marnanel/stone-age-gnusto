@@ -1,9 +1,13 @@
 <b>Useful links:</b>
 <ul>
-<li><a href="http://mozdev.org/bugs/show_bug.cgi?id=4110">Bug 4110: Produce font 3 using Unicode</a></li>
-<li><a href="http://www.gnelson.demon.co.uk/zspec/sect16.html">Specification of font 3</a></li>
-<li><a href="http://www.alanwood.net/unicode/runic.html">Runic</a>, <a href="http://www.alanwood.net/unicode/box_drawing.html">box drawing</a> characters in Unicode</li>
+<li><a href="http://mozdev.org/bugs/show_bug.cgi?id=4110">Bug 4110: Produce font 3 using Unicode.</a> Comments on and suggestions for this page should go there.</li>
+<li><a href="http://www.inform-fiction.org/zmachine/standards/z1point0/sect16.html">Specification of font 3</a>. <a href="http://www.gnelson.demon.co.uk/zspec/sect16.html">The same at Demon.</a></li>
+<li>Code points for <a href="http://www.alanwood.net/unicode/runic.html">runic</a> and <a href="http://www.alanwood.net/unicode/box_drawing.html">box drawing</a> characters in Unicode.</li>
 </ul>
+
+<p><b>Policy on box drawing characters:</b> Some box drawing characters have horizontal or vertical strokes at pixel 3, some at pixel 4. We're assuming that this is to differentiate between top and bottom, or between left and right. We have represented this with thin lines at the top and left and thick lines at the top and right, in accordance with the usual GUI shadowing conventions. Whether any of this will look sensible when you run <cite>Beyond Zork</cite> remains to be seen.</p>
+
+<p><b>Unsure:</b> Several of the weirder characters seem to have no corresponding Unicode symbol. Something must be done with these, but we're not yet certain what. <a href="http://mozdev.org/bugs/show_bug.cgi?id=4110">Suggestions are welcome</a>.</p>
 
 <table style="font-family: monospace; font-size: 14pt; border: 1pt #777 dotted">
 <caption>Unicode code points for Infocom Font 3</caption>
@@ -294,7 +298,7 @@
 <td>97</td>
 <td>16AA</td>
 <td>&#X16AA;</td>
-<td rowspan="3">runic letter</td>
+<td style="border-left: double" rowspan="3">runic letters</td>
 </tr>
 
 <tr>
