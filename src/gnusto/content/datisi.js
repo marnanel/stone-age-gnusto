@@ -1,7 +1,7 @@
 // datisi.js || -*- Mode: Java; tab-width: 2; -*-
 // Standard command library
 // 
-// $Header: /cvs/gnusto/src/gnusto/content/datisi.js,v 1.28 2003/09/24 00:26:50 marnanel Exp $
+// $Header: /cvs/gnusto/src/gnusto/content/datisi.js,v 1.29 2003/10/17 05:35:44 marnanel Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -35,50 +35,6 @@ function command_about(a) {
 
 function command_shutdown(a) {
   window.close();  	
-}
-
-////////////////////////////////////////////////////////////////
-//
-// iff_parse
-//
-// Parses an IFF file entirely contained in the array |s|.
-// The return value is a list. The first element is the form type
-// of the file; subsequent elements represent chunks. Each chunk is
-// represented by a list whose first element is the chunk type,
-// whose second element is the starting offset of the data within
-// the array, and whose third element is the length.
-//
-function iff_parse(s) {
-
-		function num_from(offset) {
-				return s[offset]<<24 | s[offset+1]<<16 | s[offset+2]<<8 | s[offset+3];
-		}
-
-		function string_from(offset) {
-				return String.fromCharCode(s[offset]) +
-						String.fromCharCode(s[offset+1]) +
-						String.fromCharCode(s[offset+2]) +
-						String.fromCharCode(s[offset+3]);
-		}
-
-		var result = [string_from(8)];
-
-		var cursor = 12;
-
-		while (cursor < s.length) {
-				var chunk = [string_from(cursor)];
-				var chunk_length = num_from(cursor+4);
-
-				chunk.push(cursor+8);
-				chunk.push(chunk_length);
-
-				result.push(chunk);
-
-				cursor += 8 + chunk_length;
-				if (chunk_length % 2) cursor++;
-		}
-
-		return result;
 }
 
 ////////////////////////////////////////////////////////////////
