@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+
+<!--
+
+   Manifest for gnusto
+
+-->
+
+<RDF:RDF xmlns:RDF="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+ xmlns:chrome="http://www.mozilla.org/rdf/chrome#">
+
+  <!-- We supply one package: Gnusto -->
+
+  <RDF:Seq about="urn:mozilla:package:root">
+	<RDF:li resource="urn:mozilla:package:gnusto"/>
+  </RDF:Seq>
+
+  <!-- More information about this package -->
+
+  <RDF:Description about="urn:mozilla:package:gnusto"
+   chrome:displayName="Gnusto Z-machine"
+   chrome:author="marnanel@marnanel.org"
+   chrome:name="gnusto">
+  </RDF:Description>
+
+  <!-- (and add it onto the Tools menu) -->
+  <RDF:Seq about="urn:mozilla:overlays">
+    <RDF:li resource="chrome://communicator/content/tasksOverlay.xul"/>
+    <!-- And: chrome://communicator/content/pref/preftree.xul, later -->
+    </RDF:Seq>
+  <RDF:Seq about="chrome://communicator/content/tasksOverlay.xul">
+    <RDF:li>chrome://gnusto/content/addToMenus.xul</RDF:li>
+  </RDF:Seq>
+
+  <!-- More information about its locale -->
+
+  <RDF:Seq about="urn:mozilla:locale:root">
+	<RDF:li resource="urn:mozilla:locale:en-US"/>
+  </RDF:Seq>
+
+  <RDF:Description about="urn:mozilla:locale:en-US"
+    chrome:displayName="English(US)"
+    chrome:author="mozilla.org"
+    chrome:name="en-US"
+    chrome:previewURL="http://www.mozilla.org/locales/en-US.gif">
+    <chrome:packages>
+       <RDF:Seq about="urn:mozilla:locale:en-US:packages">
+          <RDF:li resource="urn:mozilla:locale:en-US:gnusto">
+       </RDF:Seq>
+    </chrome:packages>
+  </RDF:Description>
+
+  <!-- More information about its skin -->
+
+  <RDF:Seq about="urn:mozilla:skin:root">
+	<RDF:li resource="urn:mozilla:skin:modern/1.0"/>
+  </RDF:Seq>
+  
+  <RDF:Description about="urn:mozilla:skin:modern/1.0"
+    chrome:displayName="Modern"
+    chrome:author="mozilla.org"
+    chrome:name="modern/1.0">
+    <chrome:packages>
+       <RDF:Seq about="urn:mozilla:skin:en-US:packages">
+          <RDF:li resource="urn:mozilla:skin:en-US:gnusto">
+       </RDF:Seq>
+    </chrome:packages>
+  </RDF:Description>
+
+</RDF:RDF>
