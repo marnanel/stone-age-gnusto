@@ -6,9 +6,9 @@ gnustoIBeret
 </div>
 
 <h1 class="page-header">The beret</h1>
-<h2><code>@gnusto.org/beret;1</code></h2>
+<div style="font-family: monospace; font-weight: bolder; font-size: 14pt"><code>@gnusto.org/beret;1</code></div>
 
-<p>The purpose of the beret is to take incoming files, decide their type, and send them where they belong. It does this using magic numbers. Although the files are often routed into the beret by gnusto-service using their <acronym title="multipurpose Internet mail extensions">MIME</acronym> types, the beret ignores both the MIME types and the extensions of files.</p>
+<p>The purpose of the beret is to take incoming files, decide their type, and send them where they belong. It does this using <a href="http://www.catb.org/~esr/magic-numbers/">magic numbers</a>. Although the files are often routed into the beret by <code>gnusto-service</code> using their <a href="http://www.ltsw.se/knbase/internet/mime.htp"><acronym title="multipurpose Internet mail extensions">MIME</acronym></a> types, the beret ignores both the MIME types and the extensions of files.</p>
 
 <p>The beret is capable of parsing <a href="http://www.ea.com">Electronic Arts</a>'s <a href="http://en.wikipedia.org/wiki/IFF"><abbrev title="Interchange File Format">IFF</abbrev></a> format in order to determine the type of a file. Within the IFF forms there may be still further distinctions.</p>
 
@@ -124,3 +124,15 @@ handled by robmiz<br>
 </tr>
 
 </table>
+
+<h2>How executable chunks are recognised</h2>
+
+<p>Blorb provides no means of detecting executable chunks in general, but it does indicate the executable chunks of particular architectures. Based on <a href="http://groups.google.com/groups?selm=82283c$uab$1@nntp9.atl.mindspring.net">a list posted to Usenet by Andrew Plotkin</a>, Gnusto recognises the types
+<code>ZCOD</code>,
+<code>GLUL</code>,
+<code>TADG</code>,
+<code>ALAN</code>,
+<code>HUGO</code>,
+<code>SAAI</code>,
+<code>SAII</code> and
+<code>MSRL</code> as executable. However, it will then strip out the chunk and begin the identification process again. This parallels the policy with MIME types: it's only the magic numbers that count.</p>
