@@ -14,7 +14,7 @@ function NewGnustoWindow(LaunchInWindow)
         var myUrl = "chrome://gnusto/content";
 	var tBrowser = document.getElementById("content");
 	var tab = tBrowser.addTab(myUrl);
-	tab.label = 'Gnusto 1.0';   
+	tab.label = 'Gnusto 0.8';   
 	tBrowser.selectedTab = tab; 	
     }
 }

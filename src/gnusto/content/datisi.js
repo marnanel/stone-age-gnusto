@@ -1,7 +1,7 @@
 // datisi.js || -*- Mode: Java; tab-width: 2; -*-
 // Standard command library
 // 
-// $Header: /cvs/gnusto/src/gnusto/content/datisi.js,v 1.42 2005/01/24 23:28:51 naltrexone42 Exp $
+// $Header: /cvs/gnusto/src/gnusto/content/datisi.js,v 1.43 2005/02/09 05:23:13 naltrexone42 Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -28,9 +28,9 @@ var sys__current_filename = '';
 
 function command_about(a) {
     // simple JS alert for now.
-    alert('Gnusto v0.7.0\nby Thomas Thurman and Eric Liga\n\n'+
+    alert('Gnusto v0.8.0\nby Thomas Thurman and Eric Liga\n\n'+
 	  'http://gnusto.org\nhttp://marnanel.org\n\n'+
-	  'Copyright (c) 2002-2004 Thomas Thurman\nDistrubuted under the GNU GPL.');
+	  'Copyright (c) 2002-2005 Thomas Thurman\nDistrubuted under the GNU GPL.');
 }
 
 function command_shutdown(a) {
@@ -309,7 +309,7 @@ function sys_show_story_title(newname) {
 				sys__story_name = newname;
 
 		if (sys__story_name == '') {
-				window.title = "Gnusto 0.7";
+				window.title = "Gnusto 0.8";
 		} else {
 			        sys__story_name = sys__story_name.replace('\\', '/', 'g');
 			        sys__story_name = sys__story_name.replace(':', '/', 'g');
@@ -317,7 +317,7 @@ function sys_show_story_title(newname) {
 			        var gn_index2 = sys__story_name.lastIndexOf(".");
 			        if (gn_index2 < 0) { gn_index2 = sys__story_name.length - 1;}
 			        sys__story_name = sys__story_name.substring(gn_index1, gn_index2);
-				window.title = sys__story_name + "  (" + newname + ") - Gnusto 0.7";
+				window.title = sys__story_name + "  (" + newname + ") - Gnusto 0.8";
 		}
 }
 

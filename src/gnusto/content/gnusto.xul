@@ -4,7 +4,7 @@
 
 <!--
 
-$Header: /cvs/gnusto/src/gnusto/content/gnusto.xul,v 1.78 2005/01/28 19:23:56 naltrexone42 Exp $
+$Header: /cvs/gnusto/src/gnusto/content/gnusto.xul,v 1.79 2005/02/09 05:23:13 naltrexone42 Exp $
 
 Copyright (c) 2003 Thomas Thurman
 thomas@thurman.org.uk
@@ -25,7 +25,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
 -->
 
 <window
-	title="Gnusto 0.7"
+	title="Gnusto 0.8"
 	xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
 	xmlns:html="http://www.w3.org/1999/xhtml"
 	id="gnusto"
