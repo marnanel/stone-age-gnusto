@@ -19,10 +19,9 @@
 
 <p>If an interface describes the way a component works, the component is said to <dfn>implement</dfn> that interface.</p>
 
-<p>Interfaces are handled separately from components. That way you can have multiple components (controlling, for example, different kinds of printer) and treat them both the same way. It also means that a component can support multiple interfaces.</p>
+<p>Interfaces are handled separately from components. That way you can have multiple components (controlling, for example, different kinds of printer) and treat them all the same way. It also means that a component can support multiple interfaces.</p>
 
 <p>One last problem: how do you get started? If you're handed a component, how do you know whether it supports a particular interface? Well, there's a basic interface that every component must implement, containing the really basic methods. (The name of this interface differs on different component systems-- XPCOM calls it nsISupports, Microsoft call it IUnknown, and CORBA calls it something like CORBA::Object.) One of these really basic methods, generally called QueryInterface, takes an interface ID, tells you whether the component supports it, and (if it does) sets it up for you to use it.</p>
-
 
 <p><b>Further reading:</b> Component-based design is used all over the place: there's
 <a href="http://www.microsoft.com/com/about.asp">COM</a> in Microsoft Windows,
