@@ -1,7 +1,7 @@
 // baroco.js || -*- Mode: Java; tab-width: 2; -*-
 // Screen handler.
 //
-// $Header: /cvs/gnusto/src/gnusto/content/baroco.js,v 1.21 2004/10/02 22:21:31 naltrexone42 Exp $
+// $Header: /cvs/gnusto/src/gnusto/content/baroco.js,v 1.22 2005/01/25 06:50:31 naltrexone42 Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -153,6 +153,7 @@ function calc_and_store_screen_size_in_chars() {
 ////////////////////////////////////////////////////////////////
 
 function win_chalk(win, text) {
+	  if (text != '') {
 		if (win==0 && baroco__enable_barbara) {
 				return barbara_chalk(text);
 		} else {
@@ -160,6 +161,7 @@ function win_chalk(win, text) {
 				bocardo_trim_upper_window_to_fit();
 				return result;
 		}
+	  }
 }
 
 ////////////////////////////////////////////////////////////////

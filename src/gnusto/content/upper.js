@@ -1,7 +1,7 @@
 // gnusto-lib.js || -*- Mode: Java; tab-width: 2; -*-
 // upper.js -- upper window handler.
 //
-// $Header: /cvs/gnusto/src/gnusto/content/upper.js,v 1.54 2004/10/02 22:21:31 naltrexone42 Exp $
+// $Header: /cvs/gnusto/src/gnusto/content/upper.js,v 1.55 2005/01/25 06:50:31 naltrexone42 Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -370,6 +370,9 @@ function bocardo__subchalk(win, text) {
     // dynamic screen resizing.
     while (bocardo__screen_window.childNodes.length <= y) {
 				var newdiv = bocardo__screen_doc.createElement('hbox');
+				var dummySpan = bocardo__screen_doc.createElement('description');
+				dummySpan.setAttribute('value', ' ');
+				newdiv.appendChild(dummySpan);
 
 				// Commenting out for now, since I don't know what
 				// the effect of this will be on the XUL
@@ -394,7 +397,9 @@ function bocardo__subchalk(win, text) {
 
 		// Go past all the spans before us.
 
-		while (cursor<current_line.childNodes.length && charactersSeen+current_line.childNodes[cursor].getAttribute('value').length <= x) {
+                // Don't forget that the sum of the lengths is effectively 1-based whereas the indexing is 0 based
+		while ((cursor<current_line.childNodes.length) && 
+		    ((charactersSeen+current_line.childNodes[cursor].getAttribute('value').length) <= x)) {
 				charactersSeen += current_line.childNodes[cursor].getAttribute('value').length;
 				cursor++;
 		} 
@@ -407,101 +412,116 @@ function bocardo__subchalk(win, text) {
 		var doppelganger = 0;
 		var appendPoint = -1;
 
-		if (cursor==current_line.childNodes.length) {
-
+                // if we're pointing off the end of the line...
+		if (cursor==current_line.childNodes.length) { // Then we're in position for our new span
+                                // unless we've still come up short.  In that case add a padding span 
 				if (charactersSeen < x) {
 						// There aren't enough characters to go round. We
 						// must add extra spaces to the start of the text.
 
 						var padding = '';
-
+                                               
 						for (var i=0; i<(x-charactersSeen); i++) {
 								padding = padding + ' ';
 						}
 
-						doppelganger = bocardo__screen_doc.createElement('description');
-						doppelganger.setAttribute('value', padding);
+                                                if (padding.length > 0) {
+							var paddingspan = bocardo__screen_doc.createElement('description');
+							paddingspan.setAttribute('class', 'bocardo fb');
+							paddingspan.setAttribute('value', padding);
+							current_line.appendChild(paddingspan);
+						}
 				}
+				// and insert our new text.
+				var newSpan = bocardo__screen_doc.createElement('description');
+				newSpan.setAttribute('class', 'bocardo '+bocardo__current_css);
+				newSpan.setAttribute('value', text);
+				current_line.appendChild(newSpan);
+				
 
-				// Just append the text.
-
-		} else {
+  	        } else {
+		                // we're pointing at the span that contains our insertion point                		                  
+		
 				if (charactersSeen < x) {
-
-						// We've seen fewer characters than we were expecting, so the
-						// last span is over-long: we must trim it.
+					
+						// Our insertion point is not at the very beginning of this span.
+						// We must split off the portion that comes before us.
 
 						var amountToKeep = x - charactersSeen;
 
 						if (text.length < current_line.childNodes[cursor].getAttribute('value').length-amountToKeep) {
 
-								// The whole of the new text fits within this node. Let's keep this
-								// node before the new text, and create another node to go after it.
+								// The whole of the new text fits within this node.
+								// So let's break off the part of the node that comes after our
+								// new text and make it into its own node.
 								doppelganger = current_line.childNodes[cursor].cloneNode(1);
-								doppelganger.
-										setAttribute('value',
-
-																 doppelganger.getAttribute('value').
-																 substring(amountToKeep+text.length));
+								doppelganger.setAttribute('value',
+										 doppelganger.getAttribute('value').
+										 substring(amountToKeep+text.length));
+								if (cursor<current_line.childNodes.length) {
+							        	current_line.insertBefore(doppelganger, current_line.childNodes[cursor+1]);
+							        } else {
+							        	current_line.appendChild(doppelganger);	
+							        }
 						}
 
 						charactersTrimmed =
 								current_line.childNodes[cursor].getAttribute('value').length - amountToKeep;
 	
+	                                        // And trim the current span down to just the part before we start our new text
 						current_line.childNodes[cursor].setAttribute('value',
+												 current_line.childNodes[cursor].getAttribute('value').
+												 substring(0, amountToKeep));
 
-																			 current_line.childNodes[cursor].getAttribute('value').
-																			 substring(0, amountToKeep));
-
-						// And push them on one place; they insert *after* us.
+						// Shift the cursor up by one because we insert AFTER the 
+						// first portion of this now-split span.
 						cursor++;
+						
+						
 				}
 
 				appendPoint = cursor;
 
 				if (cursor<current_line.childNodes.length) {
-						// Delete any spans which are hidden by our span.
+						// Delete any spans which are COMPLETELY overwritten by our span.
 						var charactersDeleted = charactersTrimmed;
 						var spansToDelete = 0;
 
-						while (cursor<current_line.childNodes.length && charactersDeleted+current_line.childNodes[cursor].getAttribute('value').length <= text.length) {
+						while ((cursor<current_line.childNodes.length) && 
+						    ((charactersDeleted+current_line.childNodes[cursor].getAttribute('value').length) <= text.length)) {
 								charactersDeleted += current_line.childNodes[cursor].getAttribute('value').length;
 								cursor++;
 								spansToDelete++;
 						}
 
-						// And trim the RHS of the first span after our new span.
+						// And trim the overlapped portion, if any, of any partially overwritten spans.
 						if (cursor<current_line.childNodes.length) {
 								current_line.childNodes[cursor].setAttribute('value',
-																					 current_line.childNodes[cursor].getAttribute('value').
-																					 substring(text.length-charactersDeleted));
+											current_line.childNodes[cursor].getAttribute('value').
+											substring(text.length-charactersDeleted));
 						}
 				}
 
-				// Now we've finished looking at the line, we can start modifying it.
-
 				// Delete the spans which are underneath our text...
-				for (var i=appendPoint; i<appendPoint+spansToDelete; i++) {
+				for (var i=appendPoint; i<(appendPoint+spansToDelete); i++) {
 						current_line.removeChild(current_line.childNodes[appendPoint]); // the others will slide up.
 				}
 
+
+			// ..and append our text.
+			var newSpan = bocardo__screen_doc.createElement('description');
+			newSpan.setAttribute('class', 'bocardo '+bocardo__current_css);
+			newSpan.setAttribute('value', text);
+
+			if (appendPoint == -1) {
+					current_line.appendChild(newSpan);
+			} else {
+					current_line.insertBefore(newSpan, current_line.childNodes[appendPoint]);
+			}
+
 		}
 
-		// ...add the broken span, if there was one...
-		if (doppelganger) {
-				current_line.insertBefore(doppelganger, current_line.childNodes[cursor]);
-		}
 
-		// ..and append our text.
-		var newSpan = bocardo__screen_doc.createElement('description');
-		newSpan.setAttribute('class', 'bocardo '+bocardo__current_css);
-		newSpan.setAttribute('value', text);
-
-		if (appendPoint == -1) {
-				current_line.appendChild(newSpan);
-		} else {
-				current_line.insertBefore(newSpan, current_line.childNodes[appendPoint]);
-		}
 }
 
 ////////////////////////////////////////////////////////////////
