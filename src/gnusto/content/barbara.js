@@ -1,7 +1,7 @@
 // barbara.js || -*- Mode: Java; tab-width: 2; -*-
 // Lightweight lower-window handler.
 //
-// $Header: /cvs/gnusto/src/gnusto/content/barbara.js,v 1.33 2004/09/30 21:43:14 naltrexone42 Exp $
+// $Header: /cvs/gnusto/src/gnusto/content/barbara.js,v 1.34 2004/09/30 22:54:12 naltrexone42 Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -193,6 +193,18 @@ function barbara_get_input() {
 						];
 }
 
+function barbara_force_upper_window_reflow() {
+    var tty = document.getElementById('barbara');
+
+    var tempElement =
+    document.createElementNS(barbara__HTML,'html:span');
+    tempElement.setAttribute('id','tempElement');
+    tempElement.appendChild(document.createTextNode(''));
+
+    tty.appendChild(tempElement);	
+    tty.removeChild(tempElement);
+}
+
 function barbara_destroy_input() {
     var tty = document.getElementById('barbara');
 		tty.removeChild(barbara__before_cursor);
@@ -284,6 +296,7 @@ function barbara_relax() {
 				// This implies collapsing the upper screen (see bug 4050).
 				bocardo_collapse();
 				barbara_print_status();
+				reset_bocardobox_top();
 		}
 }
 
@@ -320,12 +333,11 @@ function barbara_resize_relax() {
                                   barbara__set_viewport_top(barbara__most_seen - (barbara__get_viewport_height() - bocardo_get_top_window_height() ));
                                 }
                                 
-				// This implies collapsing the upper screen (see bug 4050).
-				bocardo_collapse();
 		}
 		barbara__last_width = window.innerWidth;
                 // reprint status based on new window width
 		barbara_print_status();
+		reset_bocardobox_top();
 		
 }
 ////////////////////////////////////////////////////////////////
@@ -398,13 +410,17 @@ function barbara__get_viewport_top() {
 }
 
 function barbara__set_viewport_top(y) {
-
 		barbara__viewport().scrollTo(0, y*barbara__twips_per_pixel());
 
 		var new_top = barbara__get_viewport_top();
-		barbara__most_seen = new_top + barbara__get_viewport_height();
+		barbara__most_seen = new_top + barbara__get_viewport_height();	
+			
+                reset_bocardobox_top();
+}
 
-		document.getElementById('bocardobox').setAttribute('top', new_top);
+function reset_bocardobox_top() {
+                document.getElementById('bocardobox').setAttribute('top', barbara__get_viewport_top());
+                barbara_force_upper_window_reflow()                
 }
 
 function barbara__get_viewport_height() {
