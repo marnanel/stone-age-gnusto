@@ -4,7 +4,7 @@
 
 <!--
 
-$Header: /cvs/gnusto/src/gnusto/content/gnusto.xul,v 1.66 2003/11/18 04:58:51 marnanel Exp $
+$Header: /cvs/gnusto/src/gnusto/content/gnusto.xul,v 1.67 2003/12/03 23:49:42 marnanel Exp $
 
 Copyright (c) 2003 Thomas Thurman
 thomas@thurman.org.uk
@@ -61,7 +61,7 @@ function ensureHappiness() {
    ];
 
    var components = [
-      '@gnusto.org/engine;1',
+      '@gnusto.org/engine;1?type=zcode',
       '@gnusto.org/beret;1',
       '@gnusto.org/replayer;1',
       '@mozilla.org/commandlinehandler/general-startup;1?type=gnusto',
