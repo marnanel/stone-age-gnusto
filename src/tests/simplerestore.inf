@@ -39,7 +39,7 @@ Global register;
 
     ! The different versions handle their read arrays differently...
 
-#Iftrue (#version_number <= 3);
+#Iftrue (#version_number <= 4);
     @storeb readbuffer 0 0; ! Read at most one byte
     @sread readbuffer tokebuffer;
     @loadb readbuffer 1 -> keypress;
