@@ -1,3 +1,10 @@
 <h1 class="page-header" style="text-align: center"><img src="http://gnusto.org/symbols/component" width="30" height="10" alt="" /><img src="http://gnusto.org/lanterns/lantern.png" alt="" width="32" height="64" /><img src="http://gnusto.org/symbols/chrome" width="30" height="10" alt="" /><br />What's the difference between components and chrome?</h1>
 
-<p>Explain that here.</p>
+<p><a href="http://www.mozilla.org">Mozilla</a> has two ways in which a JavaScript-based extension can run.</p>
+
+<p>One of them, <img src="http://gnusto.org/symbols/chrome" width="30" height="10" alt="" /><dfn>chrome</dfn> works very much like the way JavaScript programs run on an ordinary web page: you have a particular document, and the JavaScript sits behind it and provides the magic to make it work. The document could either be an
+<acronym text="hypertext markup language"><a href="http://www.w3.org/MarkUp/">HTML</a></acronym>
+document, as on the web, or it could be written in Mozilla's own language, <acronym text="XML user interface language"><a href="http://www.mozilla.org/projects/xul/">XUL</a></acronym>, which defines the look of application windows and dialogues; you'd load it from an address beginning "<code>chrome:</code> rather than <code>http:</code>, such as <blockquote><code>chrome://gnusto/content/gnusto.xul</code></blockquote></p>
+
+<p>The big <em>difference</em> between chrome JavaScript and web JavaScript is that web JavaScript isn't allowed to read your hard disk, play with random network connections, and so on. After all, it could have been written by just anyone, so it's wise to treat it with some caution. Chrome JavaScript, on the other hand, is trusted and treated as part of your browser itself-- it's allowed to do pretty much anything Mozilla can do.</p>
+
