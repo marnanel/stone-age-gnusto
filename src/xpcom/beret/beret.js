@@ -1,13 +1,12 @@
 // -*- Mode: Java; tab-width: 2; -*-
-// $Id: beret.js,v 1.10 2003/12/03 23:52:43 marnanel Exp $
+// $Id: beret.js,v 1.11 2004/01/19 20:44:24 marnanel Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
 // 
 // This program is free software; you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation; either version 2 of the License, or
-// (at your option) any later version.
+// it under the terms of version 2 of the GNU General Public License
+// as published by the Free Software Foundation.
 // 
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -20,7 +19,7 @@
 
 ////////////////////////////////////////////////////////////////
 
-const CVS_VERSION = '$Date: 2003/12/03 23:52:43 $';
+const CVS_VERSION = '$Date: 2004/01/19 20:44:24 $';
 const BERET_COMPONENT_ID = Components.ID("{ed0618e3-8b2b-4bc8-b1a8-13ae575efc60}");
 const BERET_DESCRIPTION  = "Checks file magic and routes them accordingly";
 const BERET_CONTRACT_ID  = "@gnusto.org/beret;1";
@@ -93,6 +92,15 @@ Beret.prototype = {
 
 		load: function b_load(aLength, content) {
 
+				function magic_number_is_string(str) {
+						for (var ij=0; ij<str.length; ij++) {
+								if (str.charCodeAt(ij)!=content[ij]) {
+										return false;
+								}
+						}
+						return true;
+				}
+
 				if (aLength==0) {
 						// An empty file was passed in; it's not really worth
 						// going any further.
@@ -121,16 +129,17 @@ Beret.prototype = {
 																											 'gnustoIEngine',
 																											 'loadStory')(content.length,
 																																		content);
-				} else if (content[0]==71 && content[1]==108 && content[2]==117 && content[3]==108) {
-						// "G, l, u, l". A Glulx file.
+
+				} else if (magic_number_is_string('Glul')) { // A Glulx file.
+
 						this.m_filetype = 'ok story naked glulx';
 
 						this.m_engine = new Components.Constructor('@gnusto.org/engine;1?type=glulx',
 																											 'gnustoIEngine',
 																											 'loadStory')(content.length,
 																																		content);
-				} else if (content[0]==70 && content[1]==79 && content[2]==82 && content[3]==77) {
-						// "F, O, R, M". An IFF file, then...
+
+				} else if (magic_number_is_string('FORM')) { // An IFF file.
 
 						var iff_details = iff_parse(content);
 
