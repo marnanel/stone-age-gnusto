@@ -1,54 +1,101 @@
-diff /usr/src/frotz-2.40/frotz.h ./frotz.h
-245c245
-< #define LOW_BYTE(addr,v)  { v = zmp[addr]; }
----
-> #define LOW_BYTE(addr,v)  { char ZZ[200]; v = zmp[addr]; sprintf(ZZ,"get: %x==%x\n", addr, zmp[addr]); golden_print(ZZ); }
-diff /usr/src/frotz-2.40/process.c ./process.c
-237a238,253
->  * golden_print
->  * 
->  * Prints text to the trace file
->  *
->  */
-> 
-> void golden_print(text)
-> {
-> 	FILE *golden = fopen("golden.log", "a");
-> 	fprintf(golden, "%s", text);
-> 	fclose(golden);
-> }
-> 
-> /****************************************************************/
-> 
-> /*
-249a266,295
-> 
-> 	/****************************************************************/
-> 	char QQ[200];
-> 	int jj;
-> 	sprintf(QQ,"pc : %x", pcp-zmp);
-> 	golden_print(QQ);
-> 
-> #ifdef FUNKY_EXTRA_GOLDEN_STUFF
-> 
-> 	/* If you want very detailed information in the golden file,
-> 	   enable this section. Mostly that's not useful, because there
-> 	   has to be a way for the interpreter you're testing to generate
-> 	   information in just the same format. But if you can get round
-> 	   that, it might help in debugging. */
-> 
-> 	for (jj=0; jj<16; jj++) {
-> 	  sprintf(QQ," %x=%x", jj, *(fp - jj));
-> 	  golden_print(QQ);
-> 	}
-> 
-> 	if (sp!=stack+STACK_SIZE) {
-> 	  sprintf(QQ," s=%x", *sp);
-> 	  golden_print(QQ);
-> 	}
-> #endif /* FUNKY_EXTRA_GOLDEN_STUFF */
-> 
-> 	sprintf(QQ,"\n");
-> 	golden_print(QQ);
-> 
-> 	/****************************************************************/
+*** frotz.h	Tue Jun 10 22:39:52 2003
+--- /usr/src/frotz-2.40/frotz.h	Sat Nov  4 20:20:47 2000
+***************
+*** 240,250 ****
+  #define FILE_SAVE_AUX 6
+  
+  /*** Data access macros ***/
+  
+  #define SET_BYTE(addr,v)  { zmp[addr] = v; }
+! #define LOW_BYTE(addr,v)  { char ZZ[200]; v = zmp[addr]; sprintf(ZZ,"get: %x==%x\n", addr, zmp[addr]); silver_print(ZZ); }
+  #define CODE_BYTE(v)	  { v = *pcp++;    }
+  
+  #if defined (AMIGA)
+  
+  extern zbyte *pcp;
+--- 240,250 ----
+  #define FILE_SAVE_AUX 6
+  
+  /*** Data access macros ***/
+  
+  #define SET_BYTE(addr,v)  { zmp[addr] = v; }
+! #define LOW_BYTE(addr,v)  { v = zmp[addr]; }
+  #define CODE_BYTE(v)	  { v = *pcp++;    }
+  
+  #if defined (AMIGA)
+  
+  extern zbyte *pcp;
+*** process.c	Tue Jun 10 22:46:31 2003
+--- /usr/src/frotz-2.40/process.c	Wed Oct 25 09:25:53 2000
+***************
+*** 233,258 ****
+      }
+  
+  }/* load_all_operands */
+  
+  /*
+-  * golden_print
+-  * 
+-  * Prints text to the trace file
+-  *
+-  */
+- 
+- void golden_print(text)
+- {
+- 	FILE *golden = fopen("golden.log", "a");
+- 	fprintf(golden, "%s", text);
+- 	fclose(golden);
+- }
+- 
+- /****************************************************************/
+- 
+- /*
+   * interpret
+   *
+   * Z-code interpreter main loop
+   *
+   */
+--- 233,242 ----
+***************
+*** 261,300 ****
+  {
+  
+      do {
+  
+  	zbyte opcode;
+- 
+- 	/****************************************************************/
+- 	char QQ[200];
+- 	int jj;
+- 	sprintf(QQ,"pc : %x", pcp-zmp);
+- 	golden_print(QQ);
+- 
+- #ifdef FUNKY_EXTRA_GOLDEN_STUFF
+- 
+- 	/* If you want very detailed information in the golden file,
+- 	   enable this section. Mostly that's not useful, because there
+- 	   has to be a way for the interpreter you're testing to generate
+- 	   information in just the same format. But if you can get round
+- 	   that, it might help in debugging. */
+- 
+- 	for (jj=0; jj<16; jj++) {
+- 	  sprintf(QQ," %x=%x", jj, *(fp - jj));
+- 	  golden_print(QQ);
+- 	}
+- 
+- 	if (sp!=stack+STACK_SIZE) {
+- 	  sprintf(QQ," s=%x", *sp);
+- 	  golden_print(QQ);
+- 	}
+- #endif /* FUNKY_EXTRA_GOLDEN_STUFF */
+- 
+- 	sprintf(QQ,"\n");
+- 	golden_print(QQ);
+- 
+- 	/****************************************************************/
+  
+  	CODE_BYTE (opcode)
+  
+  	zargc = 0;
+  
+--- 245,254 ----
