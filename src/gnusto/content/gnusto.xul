@@ -4,7 +4,7 @@
 
 <!--
 
-$Header: /cvs/gnusto/src/gnusto/content/gnusto.xul,v 1.74 2004/09/28 19:55:58 naltrexone42 Exp $
+$Header: /cvs/gnusto/src/gnusto/content/gnusto.xul,v 1.75 2005/01/25 07:25:55 naltrexone42 Exp $
 
 Copyright (c) 2003 Thomas Thurman
 thomas@thurman.org.uk
@@ -184,6 +184,12 @@ function ensureHappiness() {
 <menuitem label="rec.arts.int-fiction" oncommand="open('http://groups.google.com/groups?group=rec.arts.int-fiction')" accesskey="R"/>
 <menuitem label="rec.games.int-fiction" oncommand="open('http://groups.google.com/groups?group=rec.games.int-fiction')" accesskey="M"/>
 <menuitem label="rec.games.int-fiction FAQ" oncommand="open('http://bang.dhs.org/faq/1.html')" accesskey="Q"/>
+</menupopup>
+</menu>
+
+<menu id="tools-menu" label="Tools" accesskey="T">
+<menupopup>
+<menuitem label="Options" accesskey="O" oncommand="openDialog('gnustosettings.xul');"/>
 </menupopup>
 </menu>
 
