@@ -16,7 +16,7 @@
             <description>
                 Settings go here ...
             </description>
-            <button label="Uninstall" oncommand="var unreg = new exUnregisterer('chrome://gnusto/content/contents.rdf', 'chrome://gnusto/skin/contents.rdf', 'chrome://gnusto/locale/en-US/contents.rdf'); unreg.unregister(); unreg.removePrefs('gnusto'); alert('Uninstall will finish when you close and restart the browser.');"/>            
+            <button label="Uninstall" oncommand="cleanHouse();"/>             
     </groupbox>
 
 </dialog>

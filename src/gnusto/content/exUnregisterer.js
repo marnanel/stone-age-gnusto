@@ -71,6 +71,7 @@ and in the profile directory.
 
 
 
+
 function exUnregisterer()
 {
 	this.init(arguments);
@@ -538,3 +539,60 @@ exUnregisterer.prototype =
    
 } 
  
+// this function deletes a folder (recursively) if it exists
+function deleteThisFolder(dirKey, folder)
+{
+
+  try {  
+    var fToDelete = Components.classes['@mozilla.org/file/directory_service;1'].
+				getService(Components.interfaces.nsIProperties).
+				get(dirKey, Components.interfaces.nsIFile);
+
+    fToDelete.append(folder);
+	
+
+  try {
+    if (fToDelete.exists()) {
+      fToDelete.remove(true);
+    }
+    return(true);
+  } catch(e) {
+    //alert(e);
+    return(false);
+  }
+  } catch(e) {
+  //alert(e);
+  return(false);}
+}
+
+function cleanHouse()
+{
+  try {
+    var unreg = new exUnregisterer('%chromeFolder%gnusto/content/contents.rdf', '%chromeFolder%gnusto/skin/contents.rdf', '%chromeFolder%gnusto/locale/en-US/contents.rdf'); 
+    unreg.unregister(); 
+    unreg.removePrefs('gnusto');  
+    deleteThisFolder("AChrom",'gnusto'); 
+    deleteThisFolder("UChrom",'gnusto');	
+    deleteThisFolder("ComsD",'beret.js');  
+    deleteThisFolder("ComsD",'beret.xpt');
+    deleteThisFolder("ComsD",'gnusto-baroco.js');    
+    deleteThisFolder("ComsD",'gnusto-doer.xpt'); 
+    deleteThisFolder("ComsD",'gnusto-engine.js');
+    deleteThisFolder("ComsD",'gnusto-engine.xpt');
+    deleteThisFolder("ComsD",'gnusto-errorbox.js');
+    deleteThisFolder("ComsD",'gnusto-errorbox.xpt');
+    deleteThisFolder("ComsD",'gnusto-replayer.js');
+    deleteThisFolder("ComsD",'gnusto-replayer.xpt');
+    deleteThisFolder("ComsD",'gnusto-screen.xpt');
+    deleteThisFolder("ComsD",'gnusto-service.js');
+    deleteThisFolder("ComsD",'tossio-robmiz.js');
+    deleteThisFolder("ComsD",'tossio-robmiz.xpt');                  
+    deleteThisFolder("ComsD",'compreg.dat');
+    deleteThisFolder("ComsD",'xpti.dat');
+    alert('Uninstall will finish when you close and restart the browser.');        
+  } catch(e) {
+    alert(e);
+  }	
+  
+  return(true);
+}

@@ -1,5 +1,5 @@
 // -*- Mode: Java; tab-width: 2; -*-
-// $Id: gnusto-baroco.js,v 1.1 2003/11/30 06:20:20 marnanel Exp $
+// $Id: gnusto-baroco.js,v 1.2 2003/12/06 02:06:48 naltrexone42 Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -24,7 +24,7 @@
 
 // **** ONE: Standard defines
 
-const CVS_VERSION = '$Date: 2003/11/30 06:20:20 $';
+const CVS_VERSION = '$Date: 2003/12/06 02:06:48 $';
 const BAROCO_COMPONENT_ID = Components.ID("{ed0618e3-8b2b-4bc8-b1a8-13ae575efc60}");
 const BAROCO_DESCRIPTION  = "The old screen handler, now in component form.";
 const BAROCO_CONTRACT_ID  = "@gnusto.org/baroco;1";
@@ -516,7 +516,7 @@ function bocardo_record_seen_quote_box() {
 
 // **** THREE: The old lower-window handler, Barbara (barbara.js)
 
-																		 'html:span');
+//																		 'html:span');
 				barbara__before_cursor.
 						setAttribute('id','beforecursor');
 				barbara__before_cursor.

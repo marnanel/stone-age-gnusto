@@ -1,6 +1,6 @@
 // install.js - installation script
 //   Heavily based on ForumZilla's install.js.
-// $Header: /cvs/gnusto/src/install.js,v 1.8 2003/08/31 23:28:29 naltrexone42 Exp $
+// $Header: /cvs/gnusto/src/install.js,v 1.9 2003/12/06 02:06:48 naltrexone42 Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -26,27 +26,45 @@ try {
     // initialize the install with the package name and version
     var err = initInstall("Gnusto Z-machine",
 			  "gnusto",
-			  "0.6.0");
+			  "0.7.0Alpha");
     if (err) throw ('initInstall: ' + err);
 
     // prepare to install package directory onto user's computer
     var chromeType = DELAYED_CHROME;
     var chromeDir = getFolder("chrome");
+    var profileChromeDir = getFolder("Profile", "chrome");
+    var baseDir = getFolder("Program");
+    var componentsDir = getFolder("Program","components");
 
-    // Ask if the user wants to install to profile directory instead
-    if (newEnough() && confirm("Press OK if you want to install to your profile directory (BEST).\n" +
-        "CANCEL will install to the program directory (NON-PREFERRED).\n\n" +
-        "NOTE:  This should allow non-admin users to install Gnusto in Linux and should cause Gnusto to " +
-        "persist across browser upgrades.   An install of Gnusto to the profile directory will override " +
-        "and obscure any prior or subsequent installs of Gnusto to the program directory."))
-    {
-    	chromeType = PROFILE_CHROME;
-    	chromeDir = getFolder("Profile", "chrome");
-    }
+    //(Hopefully) temporarily removing the install-to-profile option until we figure out a way to
+    //install components to the profile directory.  That may, however, be tilting at windmills.
+    
+    //Ask if the user wants to install to profile directory instead
+    //if (newEnough() && confirm("Press OK if you want to install to your profile directory (BEST).\n" +
+    //    "CANCEL will install to the program directory (NON-PREFERRED).\n\n" +
+    //    "NOTE:  This should allow non-admin users to install Gnusto in Linux and should cause Gnusto to " +
+    //    "persist across browser upgrades.   An install of Gnusto to the profile directory will override " +
+    //    "and obscure any prior or subsequent installs of Gnusto to the program directory."))
+    //{
+    //	chromeType = PROFILE_CHROME;
+    //	chromeDir = getFolder("Profile", "chrome");
+    //}
+ 
+    //Clean up old installs of Gnusto
+//    deleteThisFolder("Program","chrome/gnusto");
+    deleteThisFolder("Profile","chrome/gnusto");
+    deleteThisFile("Program","components/compreg.dat");
+    deleteThisFile("Program","components/xpti.dat");
         
+    var GnustoDir = getFolder("Program", "chrome/gnusto");
+    err = File.dirCreate(GnustoDir);
+    if (err) throw ('dirCreate: ' + err);
+    
     err = addDirectory("" , "gnusto", chromeDir, "gnusto");
     if (err) throw ('addDirectory: ' + err);
 
+    err = addDirectory("" , "components", componentsDir, "");
+    if (err) throw ('addDirectory: ' + err);
     ////////////////////////////////////////////////////////////////
     // register content's contents.rdf in chrome registry
 
@@ -64,7 +82,7 @@ try {
     if (err) throw ('registerChrome: ' + err);
 
     ////////////////////////////////////////////////////////////////
-    // register skin's contents.rdf in chrome registry
+    // register skin's contents.rdf in chrome registry 
 
     err = registerChrome(SKIN | chromeType,
 			 chromeDir,
@@ -75,6 +93,15 @@ try {
     // install package
     err = performInstall();
     if (err) throw ('performInstall: ' + err);
+    deleteThisFile("Program","chrome/overlayinfo/browser/content/overlays.rdf");
+    deleteThisFile("Profile","chrome/overlayinfo/browser/content/overlays.rdf");
+    deleteThisFile("Program","chrome/overlayinfo/browser/skin/stylesheets.rdf");
+    deleteThisFile("Profile","chrome/overlayinfo/browser/skin/stylesheets.rdf");
+    deleteThisFile("Program","chrome/overlayinfo/communicator/content/overlays.rdf");
+    deleteThisFile("Profile","chrome/overlayinfo/communicator/content/overlays.rdf");
+    deleteThisFile("Program","chrome/overlayinfo/global/skin/stylesheets.rdf");
+    deleteThisFile("Profile","chrome/overlayinfo/global/skin/stylesheets.rdf");                          
+    
     alert("Gnusto will be available under the Tools Menu after you restart your browser. " +
     	"Some older Mozilla and Firebird profiles may have " +
     	"difficulty with the installation process: if the Gnusto screen is not white and "+
@@ -100,3 +127,46 @@ function newEnough()
         else
         return false;
 }
+
+// this function deletes a file if it exists
+function deleteThisFile(dirKey, file)
+{
+  var fFileToDelete;
+  
+  try {
+    fFileToDelete = getFolder(dirKey, file);
+    logComment(file + " file: " + fFileToDelete);
+    if(File.exists(fFileToDelete))
+    {
+      fileDelete(fFileToDelete);
+      return(true);
+    }
+    else
+      return(false);
+  } catch(e) { 
+    logComment(e);  	
+    return(false);
+  }
+}
+
+// this function deletes a folder (recursively) if it exists
+function deleteThisFolder(dirKey, folder)
+{
+  var fToDelete;
+
+  try {
+    fToDelete = getFolder(dirKey, folder);
+    logComment(folder + " folder: " + fToDelete);
+    if(File.exists(fToDelete))
+    { 
+      File.dirRemove(fToDelete, true);
+      return(true);
+    }
+    else
+      return(false);
+  } catch(e) {
+    logComment(e);
+    return(false);
+  }
+}
+
