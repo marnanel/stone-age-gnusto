@@ -15,7 +15,7 @@
 <li>be achievable using xpconnect calls as much as possible, rather than JS processing.</li>
 </ul>
 
-<p>The source file is considered as an array of bytes: <var>source[]</var>. The encoded file is the concatenation of two arrays <var>values[]</var> and <var>fixups[]</var>. Thus a file of size <var>n</var> will have size <var>2n</var> after encoding.</p>
+<p>The source file is considered as an array of bytes: <var>source[]</var>. The encoded file is the concatenation of two arrays <var>values[]</var> and <var>fixups[]</var>, both the same length as <var>source[]</var>. Thus a file of size <var>n</var> will have size <var>2n</var> after encoding.</p>
 
 <p>For any byte offset <var>x</var> where 0 &lt;= <var>x</var> &lt; <var>n</var>:
 <ul>
