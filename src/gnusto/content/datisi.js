@@ -1,7 +1,7 @@
 // datisi.js || -*- Mode: Java; tab-width: 2; -*-
 // Standard command library
 // 
-// $Header: /cvs/gnusto/src/gnusto/content/datisi.js,v 1.38 2004/09/29 18:35:34 naltrexone42 Exp $
+// $Header: /cvs/gnusto/src/gnusto/content/datisi.js,v 1.39 2004/09/29 23:26:39 naltrexone42 Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -138,6 +138,9 @@ function sys_init() {
 ////////////////////////////////////////////////////////////////
 
 function sys_get_recent_list() {
+                if (!sys__recent_list) {
+                  sys_init();
+                }
 
 		if (sys__recent_list.exists()) {
 
@@ -264,8 +267,9 @@ function sys_update_recent_menu(recent) {
 				var element = document.getElementById(name);
 				var command = 'alert("erroneous");';
 				var label = '?';
-
-				if (recent[i].length>0) command = 'command_open(\''+recent[i][0].replace('\\','\\\\', 'g') + '\');';
+                                //var scrubbed = recent[i][0];
+                                //scrubbed.replace('\\','\\\\', 'g');
+				if (recent[i].length>0) command = 'command_open(\''+ recent[i][0].replace('\\','\\\\', 'g') + '\');';
 
 				if (recent[i].length>1)
 						label = recent[i][1];
@@ -283,8 +287,6 @@ function sys_update_recent_menu(recent) {
 				var n = parseInt(i)+1;
 
 				element.setAttribute('label', n+'. '+label);
-				// XXX FIXME: This was broken by the move away from dispatch().
-				// OTOH, it was broken anyway. Bug 3648 tracks.
 				element.setAttribute('oncommand', command);
 				if (n<10)
 						element.setAttribute('accesskey', n);

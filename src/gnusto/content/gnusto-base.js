@@ -1,4 +1,4 @@
-// $Header: /cvs/gnusto/src/gnusto/content/gnusto-base.js,v 1.5 2004/09/29 18:35:34 naltrexone42 Exp $
+// $Header: /cvs/gnusto/src/gnusto/content/gnusto-base.js,v 1.6 2004/09/29 23:26:39 naltrexone42 Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -48,7 +48,7 @@ function command_open(filename, nolaunch) {
     localfile = new Components.Constructor("@mozilla.org/file/local;1",
 					   "nsILocalFile",
 					   "initWithPath")(filename);
-    filename = filename.replace('\\','\\\\', 'g');
+    //filename = filename.replace('\\','\\\\', 'g');
 
   } else {
 
