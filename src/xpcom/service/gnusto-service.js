@@ -1,5 +1,5 @@
 // -*- Mode: Java; tab-width: 2; -*-
-// $Id: gnusto-service.js,v 1.7 2005/02/10 08:15:34 naltrexone42 Exp $
+// $Id: gnusto-service.js,v 1.8 2005/02/10 08:16:31 naltrexone42 Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -55,7 +55,7 @@ const mime_types = {
 
 ////////////////////////////////////////////////////////////////
 
-const CVS_VERSION = '$Date: 2005/02/10 08:15:34 $';
+const CVS_VERSION = '$Date: 2005/02/10 08:16:31 $';
 
 const CONTENT_HANDLER_CONTRACT_ID_PREFIX = // Only the start of it:
 		"@mozilla.org/uriloader/content-handler;1?type=";
@@ -71,7 +71,7 @@ const COMMAND_LINE_COMPONENT_ID =
 const COMMAND_LINE_DESCRIPTION = 'Gnusto command-line service';
 const COMMAND_LINE_CATEGORY = 'command-line-argument-handlers';
 const EXTENSION_MAPPER_CATEGORY = 'ext-to-type-mapping';
-const Z_MACHINE_FILE_TYPE = 'Z5';
+const Z_MACHINE_FILE_TYPE = 'z5';
 const Z_MACHINE_MIME_TYPE ='application/x-zmachine';
 
 // I think this is the magic number we want:
