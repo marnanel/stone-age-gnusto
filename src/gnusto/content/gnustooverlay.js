@@ -1,12 +1,20 @@
 // Functions to launch Gnusto from the Tools menu
 
-function toGnusto()
+function toGnusto(LaunchInWindow)
 {
-    NewGnustoWindow();
+    NewGnustoWindow(LaunchInWindow);
 }
 
-function NewGnustoWindow()
+function NewGnustoWindow(LaunchInWindow)
 {
     // Open Gnusto window
-    window.openDialog("chrome://gnusto/content", "_blank", "chrome,all,dialog=no");
+    if (LaunchInWindow != 0) {
+      window.openDialog("chrome://gnusto/content", "_blank", "chrome,all,dialog=no"); }
+    else {
+        var myUrl = "chrome://gnusto/content";
+	var tBrowser = document.getElementById("content");
+	var tab = tBrowser.addTab(myUrl);
+	tab.label = 'Gnusto 1.0';   
+	tBrowser.selectedTab = tab; 	
+    }
 }

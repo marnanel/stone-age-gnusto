@@ -9,7 +9,12 @@
 <script type="application/x-javascript" src="chrome://gnusto/content/gnustooverlay.js" />
    
   <menupopup id="menu_ToolsPopup">
-    <menuitem id="gnusto-item" label="&gnustoMenu.label;" position="7" oncommand="toGnusto();"/>
+    <menu id="gnustotop" label="&gnustoMenu.label;" position="7">
+      <menupopup id="gnustopopup"> 
+        <menuitem id="gnusto-item" label="&gnustoMenuLaunchWindow.label;" oncommand="toGnusto(1);"/>
+        <menuitem id="gnusto-item" label="&gnustoMenuLaunchTab.label;" oncommand="toGnusto(0);"/>
+      </menupopup>
+    </menu>
   </menupopup> 
   
   <!-- Button for customisation and addition to toolbar -->
