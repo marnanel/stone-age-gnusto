@@ -1,0 +1,121 @@
+! Gnusto tests: object movement
+! Copyright (c) 2003 Thomas Thurman. Distributed under v2 of the GNU GPL.
+!
+! Note:
+!  This file can't be part of the final version of Gnusto, since
+!  (obviously) it depends on Inform, and Inform is nonfree, which
+!  will keep Gnusto out of the main parts of some distributions
+!  (notably Debian). I'm figuring out a solution to this, but for
+!  now this file can stay here.
+!
+
+! FIRST:
+!      gc1
+!     /   \      Initial state.
+!   gc2   gc3
+!
+! SECOND:
+!      gc3
+!       |
+!      gc1
+!     /          after @insert_obj gc1 gc3
+!   gc2
+!
+! THIRD:
+!      gc3
+!     /   \      after @insert_obj gc2 gc3
+!   gc2   gc1
+!
+! FOURTH:
+!      gc3 gc1
+!     /          after @remove_obj gc1
+!   gc2
+!
+Release 177;
+
+Object gc1 "gcone"
+ with 	name "gc1" "root" "thing",
+ 	description "This is a thing.",
+       	number 1;
+
+Object gc2 "gctwo" gc1
+ with 	name "gc2" "leaf" "thing",
+ 	description "This is another thing.",
+       	number 2;
+
+Object gc3 "gcthree" gc1
+ with 	name "gc3" "leaf" "thing",
+ 	description "This is a thing too.",
+       	number 3;
+
+[JinTest something somethingelse;
+    @jin something somethingelse ?jinyes;
+    @print_num 0;
+    @rfalse;
+    .jinyes;
+    @print_num 1;
+    @rtrue;
+];
+
+[Examine something temp;
+
+    @print_num something;
+    @print_char 32;
+
+    @get_parent something temp;
+    @print_num temp;
+    @print_char 32;
+
+    @get_child something temp ?childjump;
+    @print_num 0;
+    @je 0 0 ?childafter;
+    .childjump;
+    @print_num 1;
+    .childafter;
+
+    @print_char 32;
+    @print_num temp;
+    @print_char 32;
+
+    @get_sibling something temp ?siblingjump;
+    @print_num 0;
+    @je 0 0 ?siblingafter;
+    .siblingjump;
+    @print_num 1;
+    .siblingafter;
+
+    @print_char 32;
+    @print_num temp;
+    @print_char 32;
+
+    JinTest(something, gc1);
+    JinTest(something, gc2);
+    JinTest(something, gc3);
+   
+    
+    @print_char 13;
+];
+
+[ExamineAll;
+    Examine(gc1);
+    Examine(gc2);
+    Examine(gc3);
+    @print_char 13;
+];
+
+
+[Main ;
+
+    print "# P Chi Sib jin^";
+
+    ExamineAll();
+    @insert_obj gc1 gc3;
+    ExamineAll();
+    @insert_obj gc2 gc3;
+    ExamineAll();
+    @remove_obj gc1;
+    ExamineAll();
+    
+    
+    print "^";
+];
