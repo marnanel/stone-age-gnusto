@@ -1,0 +1,56 @@
+// $Id: gnusto-stackprefs.idl,v 1.1 2004/01/23 05:00:27 marnanel Exp $
+//
+// Copyright (c) 2004 Thomas Thurman
+// thomas@thurman.org.uk
+// 
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of version 2 of the GNU General Public License
+// as published by the Free Software Foundation.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// You should have be able to view the GNU General Public License at 
+// http://www.gnu.org/copyleft/gpl.html ; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
+//             _________________________________________
+//            /                                         \
+//           (   ALL PARAMS LEAD TO KENSINGTON GARDENS   )
+//            \_________________________________________/
+
+#include "nsIPrefBranch.idl"
+
+[scriptable, uuid(be7d1f03-0b31-447c-8998-0c3ea92c9c38)]
+interface gnustoIStackPrefs : nsIPrefBranch
+{
+
+  // Each of the next three methods takes these parameters:
+  //   app -- the name of the application (called <APP> below;
+  //             use "gnusto" for Gnusto)
+  //   state -- a space-separated list of strings (called
+  //             <STATES> below; can be an empty string)
+  //   pref -- the preference suffix, <PREF> below
+  //
+  // The system will return the first successful result of
+  // get{Bool|Int|Char}Pref() with each of the following:
+  //
+  // <APP>.current.<PREF>
+  // for each <STATE> in <STATES>: <APP>.<STATE>.<PREF>
+  // <APP>.default.<PREF>
+  //
+  // If none of these exist, you will be given an error.
+
+  boolean getBoolStackablePref(in string app, in string state, in string pref);
+  long getIntStackablePref(in string app, in string state, in string pref);
+  string getCharStackablePref(in string app, in string state, in string pref);
+
+  // I'll add complexValue support if anyone convinces me.
+
+  // Clears all prefs beginning "|app|.current".
+  void clearCurrentPrefs(in string app);
+
+};
+
+// eof gnusto-stackprefs.idl
