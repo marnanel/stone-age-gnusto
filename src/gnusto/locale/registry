@@ -1,0 +1,1237 @@
+#
+# The Gnusto Registry
+#
+# Changes to any part of this document are welcome.
+# Please mail them to <registry@gnusto.org>.
+
+###
+### Hand-modified section
+###
+
+# Infocom's games, from Appendix F of the Z-spec.
+# Not tested.
+
+# Many of these names are trademarks of Activision,
+# and are acknowledged.
+
+# v3 games. For future reference, since we can't run v3 yet.
+
+reg.97.851218.name = Ballyhoo
+reg.23.840809.name = Cutthroats
+reg.18.820311.name = Deadline
+reg.19.820427.name = Deadline
+reg.21.820512.name = Deadline
+reg.26.821108.name = Deadline
+reg.27.831005.name = Deadline
+reg.10.830810.name = Enchanter
+reg.15.831107.name = Enchanter
+reg.16.831118.name = Enchanter
+reg.24.851118.name = Enchanter
+reg.29.860820.name = Enchanter
+reg.26.840731.name = Four-In-One Sampler I
+reg.53.850407.name = Four-In-One Sampler I
+reg.55.850823.name = Four-In-One Sampler I
+reg.97.870601.name = Four-In-One Sampler II
+reg.47.840914.name = The Hitch Hiker's Guide To The Galaxy
+reg.56.841221.name = The Hitch Hiker's Guide To The Galaxy
+reg.58.851002.name = The Hitch Hiker's Guide To The Galaxy
+reg.59.851108.name = The Hitch Hiker's Guide To The Galaxy
+reg.37.861215.name = Hollywood Hijinx
+reg.22.830916.name = Infidel 
+reg.118.860325.name = Leather Goddesses of Phobos
+reg.50.860711.name = Leather Goddesses of Phobos
+reg.59.860730.name = Leather Goddesses of Phobos
+reg.59.861114.name = Leather Goddesses of Phobos
+reg.203.870506.name = Lurking Horror
+reg.219.870912.name = Lurking Horror
+reg.221.870918.name = Lurking Horror
+reg.34.871124.name = Mini-Zork I
+reg.4.860918.name = Moonmist
+reg.9.861022.name = Moonmist
+reg.20.830708.name = Planetfall
+reg.29.840118.name = Planetfall
+reg.37.851003.name = Planetfall
+reg.26.870730.name = Plundered Hearts
+reg.86.840320.name = Seastalker
+reg.15.840501.name = Seastalker
+reg.15.840522.name = Seastalker
+reg.16.850515.name = Seastalker
+reg.16.850603.name = Seastalker
+reg.67.000000.name = Sorcerer
+reg.4.840131.name = Sorcerer
+reg.6.840508.name = Sorcerer
+reg.13.851021.name = Sorcerer
+reg.15.851108.name = Sorcerer
+reg.18.860904.name = Sorcerer
+reg.63.850916.name = Spellbreaker
+reg.87.860904.name = Spellbreaker
+reg.15.820901.name = Starcross
+reg.17.821021.name = Starcross
+reg.107.870430.name = Stationfall
+reg.14.841005.name = Suspect
+reg.5.830222.name = Suspended
+reg.7.830419.name = Suspended
+reg.8.830521.name = Suspended
+reg.8.840521.name = Suspended
+reg.68.850501.name = Wishbringer
+reg.69.850920.name = Wishbringer
+reg.13.830524.name = Witness
+reg.18.830910.name = Witness
+reg.20.831119.name = Witness
+reg.21.831208.name = Witness
+reg.22.840924.name = Witness
+reg.23.820428.name = Zork I
+reg.25.820515.name = Zork I
+reg.26.820803.name = Zork I
+reg.28.821013.name = Zork I
+reg.30.830330.name = Zork I
+reg.75.830929.name = Zork I
+reg.76.840509.name = Zork I
+reg.88.840726.name = Zork I
+reg.17.820427.name = Zork II
+reg.18.820512.name = Zork II
+reg.18.820517.name = Zork II
+reg.19.820721.name = Zork II
+reg.22.830331.name = Zork II
+reg.23.830411.name = Zork II
+reg.48.840904.name = Zork II
+reg.10.820818.name = Zork III
+reg.15.830331.name = Zork III
+reg.16.830410.name = Zork III
+reg.15.840518.name = Zork III
+reg.17.840727.name = Zork III
+
+# v4 games. For future reference, since we can't run v4 yet.
+
+reg.77.850814.name = A Mind Forever Voyaging
+reg.79.851122.name = A Mind Forever Voyaging
+reg.86.870212.name = Bureaucracy
+reg.116.870602.name = Bureaucracy
+reg.19.870722.name = Nord and Bert Couldn't Make Head Nor Tail Of It
+reg.11.860509.name = Trinity
+reg.12.860926.name = Trinity
+
+# v5 games.
+
+reg.47.870915.name = Beyond Zork
+reg.49.870917.name = Beyond Zork
+reg.51.870923.name = Beyond Zork
+reg.57.871221.name = Beyond Zork
+reg.9.871008.name = Border Zone
+reg.31.871119.name = The Hitch Hiker's Guide To The Galaxy
+reg.4.880405.name = Leather Goddesses of Phobos
+reg.10.880531.name = Planetfall
+reg.21.871214.name = Sherlock
+reg.26.880127.name = Sherlock
+reg.23.880706.name = Wishbringer
+reg.52.871125.name = Zork I
+reg.3.880113.name = Zork I (German)
+
+# Activision reprise
+
+reg.16.970828.name = Zork: The Undiscovered Underground
+
+# End of hand-modified section.
+
+###
+### Start of the auto-generated section
+###
+
+reg.5.990206.code.r = ifarc:games/zcode/anchor.z8
+reg.5.990206.baf = 17
+
+reg.1.960928.code.r = ifarc:games/competition96/sherbet/sherbet.z5
+reg.1.960928.baf = 189
+
+reg.1.960930.code.r = ifarc:games/competition96/stalker/stalker.z5
+reg.1.960930.baf = 202
+
+reg.1.970719.code.r = ifarc:games/competition97/inform/home/home.z5
+reg.1.970719.baf = 343
+
+reg.3.970904.code.r = ifarc:games/zcode/acorncourt.z5
+reg.3.970904.baf = 11
+
+reg.1.970929.code.r = ifarc:games/competition97/inform/newday/newday.z5
+reg.1.970929.baf = 153
+
+reg.3.560827.code.r = ifarc:games/zcode/newday.z5
+reg.3.560827.baf = 153
+
+reg.1.970925.code.r = ifarc:games/competition97/inform/reflect/reflect.z5
+reg.1.970925.baf = 263
+
+reg.1.961111.code.r = ifarc:games/zcode/Adventureland.z5
+reg.1.961111.baf = 3
+
+reg.3.980215.code.r = ifarc:games/zcode/awitl.z5
+reg.3.980215.baf = 24
+
+reg.5.961216.code.r = ifarc:games/zcode/Balances.z5
+reg.5.961216.baf = 28
+
+reg.2.971011.code.r = ifarc:games/competition97/inform/bear/bear.z5
+reg.2.971011.baf = 29
+
+reg.4.000326.code.r = ifarc:games/zcode/bearg.z5
+reg.4.000326.baf = 29
+
+reg.3.971123.code.r = ifarc:games/zcode/bomber.z5
+reg.3.971123.baf = 32
+
+reg.4.971205.code.r = ifarc:games/zcode/bunny.z5
+reg.4.971205.baf = 35
+
+reg.3.970110.code.r = ifarc:games/zcode/bse.z5
+reg.3.970110.baf = 265
+
+reg.1.970917.code.r = ifarc:games/competition97/inform/cask/cask.z5
+reg.1.970917.baf = 249
+
+reg.1.960920.code.r = ifarc:games/zcode/cheater.z5
+reg.1.960920.baf = 42
+
+reg.4.961117.code.r = ifarc:games/zcode/minster.z5
+reg.4.961117.baf = 43
+
+reg.3.970327.code.r = ifarc:games/zcode/claw.z5
+reg.3.970327.baf = 45
+
+reg.16.951024.code.r = ifarc:games/zcode/curses.z5
+reg.16.951024.baf = 55
+
+reg.4.971121.code.r = ifarc:games/zcode/Delusns.z5
+reg.4.971121.baf = 61
+
+reg.1.920902.code.r = ifarc:games/competition97/inform/pintown/pintown.z5
+reg.1.920902.baf = 341
+
+reg.1.970929.code.r = ifarc:games/competition97/inform/congrats/congrats.z5
+reg.1.970929.baf = 340
+
+reg.3.970929.code.r = ifarc:games/competition97/inform/tempest/tempest.z5
+reg.3.970929.baf = 316
+
+reg.2.970929.code.r = ifarc:games/competition97/inform/tdragon/tdragon.z5
+reg.2.970929.baf = 330
+
+reg.2.971107.code.r = ifarc:games/competition97/inform/agb/agb.z5
+reg.2.971107.baf = 329
+
+reg.1.980917.code.r = ifarc:games/competition98/inform/dilly/dilly.z5
+reg.1.980917.baf = 472
+
+reg.7.981001.code.r = ifarc:games/competition98/inform/enlighte/enlighte.z5
+reg.7.981001.baf = 250
+
+reg.1.970929.code.r = ifarc:games/competition97/inform/pizza/pizza.z5
+reg.1.970929.baf = 320
+
+reg.1.970928.code.r = ifarc:games/competition97/inform/sylenius/sylenius.z5
+reg.1.970928.baf = 325
+
+reg.1.970929.code.r = ifarc:games/competition97/inform/lest/lest.z5
+reg.1.970929.baf = 319
+
+reg.1.970927.code.r = ifarc:games/competition97/inform/friday/friday.z5
+reg.1.970927.baf = 315
+
+reg.1.970930.code.r = ifarc:games/competition97/inform/erden/erden.z8
+reg.1.970930.baf = 324
+
+reg.1.000210.code.r = ifarc:games/zcode/905.z5
+reg.1.000210.baf = 327
+
+reg.1.961015.code.r = ifarc:games/competition96/stargaze/stargaze.z5
+reg.1.961015.baf = 203
+
+reg.3.960823.code.r = ifarc:games/zcode/lists.z5
+reg.3.960823.baf = 128
+
+reg.2.961021.code.r = ifarc:games/competition96/forms/forms.z5
+reg.2.961021.baf = 93
+
+reg.3.970206.code.r = ifarc:games/zcode/forms.z5
+reg.3.970206.baf = 93
+
+reg.1.961015.code.r = ifarc:games/competition96/reverb/reverb.z5
+reg.1.961015.baf = 180
+
+reg.7.980224.code.r = ifarc:games/zcode/Ralph.z5
+reg.7.980224.baf = 177
+
+reg.3.980110.code.r = ifarc:games/zcode/mimesis.z5
+reg.3.980110.baf = 139
+
+reg.1.970925.code.r = ifarc:games/competition97/inform/mimesis/mimesis.z5
+reg.1.970925.baf = 139
+
+reg.2.970927.code.r = ifarc:games/competition97/inform/lost/lost.z5
+reg.2.970927.baf = 132
+
+reg.3.980116.code.r = ifarc:games/zcode/lost.z5
+reg.3.980116.baf = 132
+
+reg.1.970929.code.r = ifarc:games/competition97/inform/spring/spring.z5
+reg.1.970929.baf = 313
+
+reg.1.970930.code.r = ifarc:games/competition97/inform/edifice/edifice.z5
+reg.1.970930.baf = 78
+
+reg.2.980206.code.r = ifarc:games/zcode/edifice.z5
+reg.2.980206.baf = 78
+
+reg.1.970906.code.r = ifarc:games/competition97/inform/house/house.z5
+reg.1.970906.baf = 342
+
+reg.1.971011.code.r = ifarc:games/competition97/inform/legacy/legacy.z5
+reg.1.971011.baf = 344
+
+reg.2.961216.code.r = ifarc:games/zcode/sherbet.z5
+reg.2.961216.baf = 189
+
+reg.666.990127.code.r = ifarc:games/mini-comps/no-inventory/camping.z5
+reg.666.990127.baf = 487
+
+reg.1.961010.code.r = ifarc:games/competition96/tapestry/tapestry.z5
+reg.1.961010.baf = 208
+
+reg.1.990220.code.r = ifarc:games/mini-comps/no-inventory/undead.z5
+reg.1.990220.baf = 488
+
+reg.1.961010.code.r = ifarc:games/competition96/intheend/intheend.z5
+reg.1.961010.baf = 113
+
+reg.1.961015.code.r = ifarc:games/competition96/piece/piece.z5
+reg.1.961015.baf = 170
+
+reg.1.961012.code.r = ifarc:games/competition96/fear/fear.z5
+reg.1.961012.baf = 85
+
+reg.1.961014.code.r = ifarc:games/competition96/phlegm/phlegm.z5
+reg.1.961014.baf = 168
+
+reg.3.970804.code.r = ifarc:games/zcode/phlegm.z5
+reg.3.970804.baf = 168
+
+reg.1.960927.code.r = ifarc:games/competition96/liquid/liquid.z5
+reg.1.960927.baf = 127
+
+reg.1.970715.code.r = ifarc:games/zcode/promoted.z5
+reg.1.970715.baf = 372
+
+reg.6.960613.code.r = ifarc:games/zcode/weather.z5
+reg.6.960613.baf = 235
+
+reg.4.950819.code.r = ifarc:games/competition95/weather.z5
+reg.4.950819.baf = 235
+
+reg.3.941008.code.r = ifarc:games/zcode/mindelec.z5
+reg.3.941008.baf = 140
+
+reg.2.950830.code.r = ifarc:games/competition95/mindelec.z5
+reg.2.950830.baf = 140
+
+reg.1.950726.code.r = ifarc:games/competition95/magic-toyshop.z5
+reg.1.950726.baf = 218
+
+reg.1.951018.code.r = ifarc:games/zcode/magic-toyshop.z5
+reg.1.951018.baf = 218
+
+reg.101.960831.code.r = ifarc:games/zcode/mst3k1.z5
+reg.101.960831.baf = 146
+
+reg.2.951204.code.r = ifarc:games/zcode/library.z5
+reg.2.951204.baf = 126
+
+reg.1.950829.code.r = ifarc:games/competition95/library.z5
+reg.1.950829.baf = 126
+
+reg.0.950901.code.r = ifarc:games/zcode/tube.z5
+reg.0.950901.baf = 222
+
+reg.0.950831.code.r = ifarc:games/competition95/tube.z5
+reg.0.950831.baf = 222
+
+reg.1.970626.code.r = ifarc:games/zcode/Comp96.z5
+reg.1.970626.baf = 376
+
+reg.3.971009.code.r = ifarc:games/competition97/comp97.z5
+reg.3.971009.baf = 376
+
+reg.1.981002.code.r = ifarc:games/competition98/comp98.z5
+reg.1.981002.baf = 376
+
+reg.2.991005.code.r = ifarc:games/competition99/comp99.z5
+reg.2.991005.baf = 376
+
+reg.112.011119.code.r = ifarc:games/zcode/castles-1.1.z5
+reg.112.011119.baf = 1661
+
+reg.1.020505.code.r = ifarc:games/zcode/Cyclops.z5
+reg.1.020505.baf = 1831
+
+reg.4.980226.code.r = ifarc:games/zcode/Tangle.z5
+reg.4.980226.baf = 207
+
+reg.2.000615.code.r = ifarc:games/zcode/Tokyo2.z5
+reg.2.000615.baf = 258
+
+reg.1.980930.code.r = ifarc:games/competition98/inform/tokyo/tokyo.z5
+reg.1.980930.baf = 258
+
+reg.3.980519.code.r = ifarc:games/zcode/zfiles.z8
+reg.3.980519.baf = 415
+
+reg.1.000229.code.r = ifarc:games/zcode/ztrek.z5
+reg.1.000229.baf = 466
+
+reg.1.990524.code.r = ifarc:games/zcode/zombies.z5
+reg.1.990524.baf = 467
+
+reg.12.990623.code.r = ifarc:games/zcode/zdungeon.z5
+reg.12.990623.baf = 2
+
+reg.1.981224.code.r = ifarc:games/zcode/photopia.z5
+reg.1.981224.baf = 255
+
+reg.1.990810.code.r = ifarc:games/zcode/Zokoban.z5
+reg.1.990810.baf = 425
+
+reg.7.970521.code.r = ifarc:games/zcode/tatctae.z8
+reg.7.970521.baf = 210
+
+reg.2.951203.code.r = ifarc:games/zcode/theatre.z5
+reg.2.951203.baf = 212
+
+reg.3.980518.code.r = ifarc:games/zcode/troll.z5
+reg.3.980518.baf = 220
+
+reg.205.970629.code.r = ifarc:games/zcode/tryst205.z5
+reg.205.970629.baf = 248
+
+reg.1.970329.code.r = ifarc:games/zcode/under.z5
+reg.1.970329.baf = 223
+
+reg.1.950925.code.r = ifarc:games/zcode/tk1.z5
+reg.1.950925.baf = 215
+
+reg.2.980217.code.r = ifarc:games/zcode/Mercy.z5
+reg.2.980217.baf = 450
+
+reg.1.000208.code.r = ifarc:games/zcode/Peacock.z5
+reg.1.000208.baf = 452
+
+reg.1.990928.code.r = ifarc:games/competition99/inform/winter/winter.z5
+reg.1.990928.baf = 604
+
+reg.4.970602.code.r = ifarc:games/zcode/wedding.z5
+reg.4.970602.baf = 236
+
+reg.1.980731.code.r = ifarc:games/zcode/SameGame.z5
+reg.1.980731.baf = 455
+
+reg.1.971009.code.r = ifarc:games/zcode/Slackerx.z5
+reg.1.971009.baf = 457
+
+reg.6.961218.code.r = ifarc:games/zcode/SoFar.z8
+reg.6.961218.baf = 193
+
+reg.5.960828.code.r = ifarc:games/zcode/windhal1.z8
+reg.5.960828.baf = 237
+
+reg.1.000930.code.r = ifarc:games/competition2000/inform/bestman/bestman.z5
+reg.1.000930.baf = 1008
+
+reg.5.980419.code.r = ifarc:games/zcode/abent.z5
+reg.5.980419.baf = 1
+
+reg.5.990927.code.r = ifarc:games/competition99/inform/wossname/wossname.z5
+reg.5.990927.baf = 440
+
+reg.1.980913.code.r = ifarc:games/competition98/inform/photopia/photopia.z5
+reg.1.980913.baf = 255
+
+reg.1.991216.code.r = ifarc:games/zcode/wumpus.z5
+reg.1.991216.baf = 442
+
+reg.10.000225.code.r = ifarc:games/zcode/wossname.z5
+reg.10.000225.baf = 440
+
+reg.3.960121.code.r = ifarc:games/zcode/z-life.z5
+reg.3.960121.baf = 443
+
+reg.1.980314.code.r = ifarc:games/zcode/zball.z5
+reg.1.980314.baf = 244
+
+reg.4.970307.code.r = ifarc:games/zcode/I-0.z5
+reg.4.970307.baf = 114
+
+reg.2.981211.code.r = ifarc:games/zcode/Informat.z5
+reg.2.981211.baf = 447
+
+reg.3.951129.code.r = ifarc:games/zcode/Jigsaw.z8
+reg.3.951129.baf = 117
+
+reg.3.951128.code.r = ifarc:games/zcode/Jigsaw_Footnotes.z5
+reg.3.951128.baf = 117
+
+reg.3.951129.code.r = ifarc:games/zcode/Jigsaw_Game.z5
+reg.3.951129.baf = 117
+
+reg.1.980914.code.r = ifarc:games/competition98/inform/photopia/photobw.z5
+reg.1.980914.baf = 255
+
+reg.1.980927.code.r = ifarc:games/competition98/inform/muse/muse.z5
+reg.1.980927.baf = 254
+
+reg.2.990922.code.r = ifarc:games/zcode/muse.z5
+reg.2.990922.baf = 254
+
+reg.1.990528.code.r = ifarc:games/zcode/Aisle.z5
+reg.1.990528.baf = 431
+
+reg.1.990127.code.r = ifarc:games/zcode/annoy.z5
+reg.1.990127.baf = 459
+
+reg.1.000401.code.r = ifarc:games/zcode/Aug4.z8
+reg.1.000401.baf = 433
+
+reg.1.980726.code.r = ifarc:games/zcode/awaken.z5
+reg.1.980726.baf = 460
+
+reg.3.000525.code.r = ifarc:games/zcode/Cove.z5
+reg.3.000525.baf = 434
+
+reg.1.000705.code.r = ifarc:games/zcode/AtWork.z5
+reg.1.000705.baf = 432
+
+reg.1.990129.code.r = ifarc:games/zcode/Frobozzi.z5
+reg.1.990129.baf = 439
+
+reg.4.990115.code.r = ifarc:games/zcode/Enemies.z8
+reg.4.990115.baf = 386
+
+reg.2.000513.code.r = ifarc:games/zcode/GerbilRiot.z5
+reg.2.000513.baf = 405
+
+reg.1.960331.code.r = ifarc:games/zcode/Gumshoe.z5
+reg.1.960331.baf = 446
+
+reg.1.991217.code.r = ifarc:games/zcode/School.z5
+reg.1.991217.baf = 458
+
+reg.1.980928.code.r = ifarc:games/competition98/inform/loose/loose.z5
+reg.1.980928.baf = 470
+
+reg.2.981128.code.r = ifarc:games/zcode/loose.z5
+reg.2.981128.baf = 470
+
+reg.1.980923.code.r = ifarc:games/competition98/inform/bluemen/bluemen.z5
+reg.1.980923.baf = 471
+
+reg.1.980927.code.r = ifarc:games/competition98/inform/ritual/ritual.z5
+reg.1.980927.baf = 256
+
+reg.1.970930.code.r = ifarc:games/competition98/inform/city/city.z5
+reg.1.970930.baf = 473
+
+reg.1.980929.code.r = ifarc:games/competition98/inform/purple/purple.z5
+reg.1.980929.baf = 474
+
+reg.1.980930.code.r = ifarc:games/competition98/inform/evil/evil.z5
+reg.1.980930.baf = 475
+
+reg.1.980930.code.r = ifarc:games/competition98/inform/research/research.z5
+reg.1.980930.baf = 477
+
+reg.3.981001.code.r = ifarc:games/competition98/inform/atrox/atrox.z5
+reg.3.981001.baf = 478
+
+reg.5.980929.code.r = ifarc:games/competition98/inform/spotlite/spotlite.z5
+reg.5.980929.baf = 257
+
+reg.1.980928.code.r = ifarc:games/competition98/inform/acid/acid.z5
+reg.1.980928.baf = 480
+
+reg.1.980926.code.r = ifarc:games/competition98/inform/fifteen/fifteen.z5
+reg.1.980926.baf = 251
+
+reg.1.980923.code.r = ifarc:games/competition98/inform/hrs/hrs.z5
+reg.1.980923.baf = 252
+
+reg.4.991119.code.r = ifarc:games/zcode/huntdark.z5
+reg.4.991119.baf = 483
+
+reg.3.990918.code.r = ifarc:games/competition99/inform/huntdark/huntdark.z5
+reg.3.990918.baf = 483
+
+reg.2.991124.code.r = ifarc:games/zcode/chix.z5
+reg.2.991124.baf = 367
+
+reg.1.990323.code.r = ifarc:games/mini-comps/xcomp/Sixfoot.z5
+reg.1.990323.baf = 484
+
+reg.1.990930.code.r = ifarc:games/competition99/inform/chix/chix.z5
+reg.1.990930.baf = 367
+
+reg.2.961017.code.r = ifarc:games/zcode/b2demo.z5
+reg.2.961017.baf = 489
+
+reg.1.991128.code.r = ifarc:games/zcode/ballerina102.z8
+reg.1.991128.baf = 490
+
+reg.1.000413.code.r = ifarc:games/zcode/chico.z5
+reg.1.000413.baf = 366
+
+reg.1.961218.code.r = ifarc:games/zcode/cia.z5
+reg.1.961218.baf = 497
+
+reg.10859.960409.code.r = ifarc:games/zcode/booth.z5
+reg.10859.960409.baf = 176
+
+reg.1.970711.code.r = ifarc:games/zcode/bedlam.z5
+reg.1.970711.baf = 492
+
+reg.5.981103.code.r = ifarc:games/zcode/bj.z5
+reg.5.981103.baf = 493
+
+reg.1.970621.code.r = ifarc:games/zcode/candy.z5
+reg.1.970621.baf = 495
+
+reg.1.991210.code.r = ifarc:games/zcode/deephome.z5
+reg.1.991210.baf = 508
+
+reg.1.971031.code.r = ifarc:games/zcode/doll.z5
+reg.1.971031.baf = 246
+
+reg.1.990223.code.r = ifarc:games/zcode/dumont.z5
+reg.1.990223.baf = 509
+
+reg.1.980619.code.r = ifarc:games/mini-comps/mini-comp/bloodline.z5
+reg.1.980619.baf = 524
+
+reg.1.991220.code.r = ifarc:games/zcode/fotopia.z5
+reg.1.991220.baf = 255
+
+reg.1.981015.code.r = ifarc:games/zcode/dogslife.z5
+reg.1.981015.baf = 510
+
+reg.1.970806.code.r = ifarc:games/zcode/f209.z5
+reg.1.970806.baf = 511
+
+reg.1.960599.code.r = ifarc:games/zcode/godot.z5
+reg.1.960599.baf = 99
+
+reg.1.100031.code.r = ifarc:games/zcode/guestret.z5
+reg.1.100031.baf = 513
+
+reg.2.950817.code.r = ifarc:games/zcode/inhumane.z5
+reg.2.950817.baf = 111
+
+reg.4.971125.code.r = ifarc:games/zcode/heist.z8
+reg.4.971125.baf = 419
+
+reg.4.000630.code.r = ifarc:games/zcode/i-0esp.z5
+reg.4.000630.baf = 114
+
+reg.2.961207.code.r = ifarc:games/zcode/karn.z5
+reg.2.961207.baf = 119
+
+reg.3.062776.code.r = ifarc:games/zcode/kirby.z5
+reg.3.062776.baf = 517
+
+reg.1.971119.code.r = ifarc:games/zcode/kooku.z5
+reg.1.971119.baf = 121
+
+reg.2.971119.code.r = ifarc:games/zcode/blair.z5
+reg.2.971119.baf = 518
+
+reg.2.971010.code.r = ifarc:games/zcode/lambs.z5
+reg.2.971010.baf = 122
+
+reg.1.960620.code.r = ifarc:games/zcode/frozen.z5
+reg.1.960620.baf = 519
+
+reg.2.960613.code.r = ifarc:games/zcode/mhpquest.z5
+reg.2.960613.baf = 138
+
+reg.5.000715.code.r = ifarc:games/zcode/mst3k2.z5
+reg.5.000715.baf = 147
+
+reg.1.961118.code.r = ifarc:games/zcode/night.z5
+reg.1.961118.baf = 154
+
+reg.12.961127.code.r = ifarc:games/zcode/ninepts.z5
+reg.12.961127.baf = 155
+
+reg.2.000319.code.r = ifarc:games/zcode/njag2.z5
+reg.2.000319.baf = 536
+
+reg.2.990710.code.r = ifarc:games/zcode/jewel.z5
+reg.2.990710.baf = 546
+
+reg.1.990930.code.r = ifarc:games/competition99/inform/change/change.z5
+reg.1.990930.baf = 605
+
+reg.1.990930.code.r = ifarc:games/competition99/inform/softfood/softfood.z5
+reg.1.990930.baf = 607
+
+reg.1.990928.code.r = ifarc:games/competition99/inform/halo/halo.z5
+reg.1.990928.baf = 608
+
+reg.4.990926.code.r = ifarc:games/competition99/inform/btd2/btd2.z5
+reg.4.990926.baf = 610
+
+reg.1.990924.code.r = ifarc:games/competition99/inform/jacks/jacks.z5
+reg.1.990924.baf = 611
+
+reg.1.990915.code.r = ifarc:games/competition99/inform/oad/oad.z5
+reg.1.990915.baf = 623
+
+reg.0.888888.code.r = ifarc:games/competition99/inform/lomalow/lomalow.z5
+reg.0.888888.baf = 627
+
+reg.1.991001.code.r = ifarc:games/competition99/inform/calliope/calliope.z5
+reg.1.991001.baf = 629
+
+reg.1.990911.code.r = ifarc:games/competition99/inform/me/me.z5
+reg.1.990911.baf = 631
+
+reg.1.990921.code.r = ifarc:games/competition99/inform/banana/banana.z5
+reg.1.990921.baf = 632
+
+reg.4.011124.code.r = ifarc:games/zcode/starrider.z5
+reg.4.011124.baf = 907
+
+reg.11.000806.code.r = ifarc:games/zcode/LASH.z8
+reg.11.000806.baf = 448
+
+reg.7.000715.code.r = ifarc:games/zcode/mst3k1_2.z5
+reg.7.000715.baf = 146
+
+reg.1.000831.code.r = ifarc:games/zcode/RtDoom.z5
+reg.1.000831.baf = 454
+
+reg.1.000920.code.r = ifarc:games/zcode/CtDoom.z5
+reg.1.000920.baf = 437
+
+reg.6.000724.code.r = ifarc:games/zcode/Mulldoon.z8
+reg.6.000724.baf = 451
+
+reg.11.030207.code.r = ifarc:games/zcode/DDIV.z5
+reg.11.030207.baf = 1948
+
+reg.1.990930.code.r = ifarc:games/competition99/inform/death/death.z5
+reg.1.990930.baf = 683
+
+reg.101.990929.code.r = ifarc:games/competition99/inform/tac/tac.z5
+reg.101.990929.baf = 896
+
+reg.1.990929.code.r = ifarc:games/competition99/inform/outsided/outsided.z5
+reg.1.990929.baf = 685
+
+reg.1.990930.code.r = ifarc:games/competition99/inform/guard/guard.z8
+reg.1.990930.baf = 514
+
+reg.1.990930.code.r = ifarc:games/competition99/inform/ludite/ludite.z5
+reg.1.990930.baf = 684
+
+reg.1.000925.code.r = ifarc:games/competition2000/inform/my_angel/my_angel.z5
+reg.1.000925.baf = 914
+
+reg.1.000930.code.r = ifarc:games/competition2000/inform/metamorp/metamorp.z5
+reg.1.000930.baf = 910
+
+reg.2.020305.code.r = ifarc:games/zcode/gostak.z5
+reg.2.020305.baf = 1670
+
+reg.1.000928.code.r = ifarc:games/competition2000/inform/bap/bap.z5
+reg.1.000928.baf = 911
+
+reg.1.000925.code.r = ifarc:games/competition2000/inform/adverbum/adverbum.z5
+reg.1.000925.baf = 912
+
+reg.1.001002.code.r = ifarc:games/competition2000/Comp00.z5
+reg.1.001002.baf = 376
+
+reg.9.000930.code.r = ifarc:games/competition2000/inform/transfer/transfer.z5
+reg.9.000930.baf = 913
+
+reg.2.001218.code.r = ifarc:games/zcode/My_Angel.z5
+reg.2.001218.baf = 914
+
+reg.3.000930.code.r = ifarc:games/competition2000/inform/mask/mask.z5
+reg.3.000930.baf = 916
+
+reg.4.010122.code.r = ifarc:games/zcode/Mask.z5
+reg.4.010122.baf = 916
+
+reg.1.001001.code.r = ifarc:games/competition2000/inform/yagwad/yagwad.z5
+reg.1.001001.baf = 917
+
+reg.2.001121.code.r = ifarc:games/zcode/yagwad.z5
+reg.2.001121.baf = 917
+
+reg.2.000925.code.r = ifarc:games/competition2000/inform/shade/shade.z5
+reg.2.000925.baf = 918
+
+reg.3.001127.code.r = ifarc:games/zcode/shade.z5
+reg.3.001127.baf = 918
+
+reg.4.001210.code.r = ifarc:games/zcode/guess.z5
+reg.4.001210.baf = 919
+
+reg.2.970402.code.r = ifarc:games/zcode/sutwin.z5
+reg.2.970402.baf = 920
+
+reg.1.000905.code.r = ifarc:games/competition2000/inform/rameses/rameses.z5
+reg.1.000905.baf = 922
+
+reg.2.001128.code.r = ifarc:games/zcode/rameses.z5
+reg.2.001128.baf = 922
+
+reg.1.000927.code.r = ifarc:games/competition2000/inform/djinni/djinni.z5
+reg.1.000927.baf = 923
+
+reg.2.001117.code.r = ifarc:games/zcode/djinni.z5
+reg.2.001117.baf = 923
+
+reg.1.980929.code.r = ifarc:games/competition98/inform/informat/informat.z5
+reg.1.980929.baf = 447
+
+reg.1.980819.code.r = ifarc:games/competition98/inform/space_st/space_st.z5
+reg.1.980819.baf = 253
+
+reg.2.990301.code.r = ifarc:games/zcode/spacest2.z5
+reg.2.990301.baf = 253
+
+reg.2.951111.code.r = ifarc:games/zcode/freefall.z5
+reg.2.951111.baf = 94
+
+reg.34.871124.code.r = ifarc:infocom/demos/minizork.z3
+reg.34.871124.baf = 141
+
+reg.1.010310.code.r = ifarc:games/zcode/Biscuit.z5
+reg.1.010310.baf = 1325
+
+reg.1.990823.code.r = ifarc:games/zcode/Crobe.z5
+reg.1.990823.baf = 435
+
+reg.1.000914.code.r = ifarc:games/competition2000/inform/atwctw/atwctw.z8
+reg.1.000914.baf = 1009
+
+reg.1.990823.code.r = ifarc:games/zcode/Fyleet.z5
+reg.1.990823.baf = 441
+
+reg.1.000930.code.r = ifarc:games/competition2000/inform/dinner/dinner.z5
+reg.1.000930.baf = 1012
+
+reg.8.888888.code.r = ifarc:games/competition2000/inform/bigmama/bigmama.z5
+reg.8.888888.baf = 1015
+
+reg.2.010108.code.r = ifarc:games/zcode/punkpnts.z5
+reg.2.010108.baf = 1017
+
+reg.5.961209.code.r = ifarc:games/zcode/Advent.z5
+reg.5.961209.baf = 1
+
+reg.1.990823.code.r = ifarc:games/zcode/Sangraal.z5
+reg.1.990823.baf = 456
+
+reg.5.990224.code.r = ifarc:games/zcode/bear.z5
+reg.5.990224.baf = 29
+
+reg.1.930921.code.r = ifarc:games/zcode/dejavu.z3
+reg.1.930921.baf = 506
+
+reg.9.000926.code.r = ifarc:games/zcode/break-in.z5
+reg.9.000926.baf = 494
+
+reg.1.980517.code.r = ifarc:games/zcode/limp.z5
+reg.1.980517.baf = 535
+
+reg.1.980316.code.r = ifarc:games/zcode/paint.z5
+reg.1.980316.baf = 160
+
+reg.1.970819.code.r = ifarc:games/zcode/piece_v3.z5
+reg.1.970819.baf = 170
+
+reg.1.990110.code.r = ifarc:games/zcode/reverb.z5
+reg.1.990110.baf = 180
+
+reg.2.980706.code.r = ifarc:games/zcode/rogue.z5
+reg.2.980706.baf = 756
+
+reg.1.000504.code.r = ifarc:games/competition2000/inform/enlisted/enlisted.z5
+reg.1.000504.baf = 1067
+
+reg.1.990831.code.r = ifarc:games/zcode/vgame.z8
+reg.1.990831.baf = 429
+
+reg.1.960613.code.r = ifarc:games/zcode/vindaloo.z5
+reg.1.960613.baf = 233
+
+reg.1.000929.code.r = ifarc:games/competition2000/inform/gotid/gotid.z5
+reg.1.000929.baf = 1118
+
+reg.1.980412.code.r = ifarc:games/zcode/vision.z5
+reg.1.980412.baf = 436
+
+reg.1.000929.code.r = ifarc:games/competition2000/inform/masque/masque.z5
+reg.1.000929.baf = 1120
+
+reg.1.000929.code.r = ifarc:games/competition2000/inform/ppocket/ppocket.z5
+reg.1.000929.baf = 1121
+
+reg.1.000212.code.r = ifarc:games/zcode/shrapnel.z5
+reg.1.000212.baf = 645
+
+reg.1.001021.code.r = ifarc:games/zcode/samhain.z5
+reg.1.001021.baf = 1104
+
+reg.3.092800.code.r = ifarc:games/zcode/schooldays.z5
+reg.3.092800.baf = 1105
+
+reg.0.000929.code.r = ifarc:games/competition2000/inform/rtzas/rtzas.z8
+reg.0.000929.baf = 1068
+
+reg.4.000925.code.r = ifarc:games/competition2000/inform/letters/letters.z5
+reg.4.000925.baf = 921
+
+reg.1.980710.code.r = ifarc:games/zcode/spacez.z5
+reg.1.980710.baf = 1106
+
+reg.3.960606.code.r = ifarc:games/zcode/spirit.z5
+reg.3.960606.baf = 240
+
+reg.69.690609.code.r = ifarc:games/zcode/stiffmst.z5
+reg.69.690609.baf = 1107
+
+reg.2.980107.code.r = ifarc:games/zcode/sycamora.z5
+reg.2.980107.baf = 1108
+
+reg.1.000321.code.r = ifarc:games/zcode/visitor.z5
+reg.1.000321.baf = 1111
+
+reg.4.000918.code.r = ifarc:games/zcode/wcastle.z5
+reg.4.000918.baf = 678
+
+reg.2.000918.code.r = ifarc:games/zcode/zcamel.z5
+reg.2.000918.baf = 1112
+
+reg.2.100122.code.r = ifarc:games/zcode/zenon.z5
+reg.2.100122.baf = 1113
+
+reg.1.000921.code.r = ifarc:games/competition2000/inform/prodly/prodly.z5
+reg.1.000921.baf = 1124
+
+reg.2.000930.code.r = ifarc:games/competition2000/inform/withdraw/withdraw.z5
+reg.2.000930.baf = 1125
+
+reg.1.990509.code.r = ifarc:games/zcode/zazie.z5
+reg.1.990509.baf = 445
+
+reg.1.000929.code.r = ifarc:games/competition2000/inform/123/1-2-3.z5
+reg.1.000929.baf = 1130
+
+reg.1.000930.code.r = ifarc:games/competition2000/inform/kitty/kitty.z5
+reg.1.000930.baf = 1132
+
+reg.257.000930.code.r = ifarc:games/competition2000/inform/comp00tr/comp00tr.z5
+reg.257.000930.baf = 1137
+
+reg.3.981017.code.r = ifarc:games/zcode/Alpha.z5
+reg.3.981017.baf = 1142
+
+reg.1.000930.code.r = ifarc:games/competition2000/inform/punkpnts/punkpnts.z5
+reg.1.000930.baf = 1017
+
+reg.1.000715.code.r = ifarc:games/zcode/detective.z5
+reg.1.000715.baf = 63
+
+reg.3.000715.code.r = ifarc:games/zcode/fable.z5
+reg.3.000715.baf = 84
+
+reg.2.000925.code.r = ifarc:games/competition2000/inform/asendent/asendent.z5
+reg.2.000925.baf = 1139
+
+reg.1.000926.code.r = ifarc:games/competition2000/inform/what_if/what_if.z5
+reg.1.000926.baf = 1140
+
+reg.2.000913.code.r = ifarc:games/zcode/oad.z5
+reg.2.000913.baf = 623
+
+reg.1.950503.code.r = ifarc:games/zcode/paperchase.z5
+reg.1.950503.baf = 162
+
+reg.10.990821.code.r = ifarc:games/zcode/permagic.z5
+reg.10.990821.baf = 1148
+
+reg.6.980115.code.r = ifarc:games/zcode/robots.z5
+reg.6.980115.baf = 185
+
+reg.1.000506.code.r = ifarc:games/mini-comps/manos/ManoZ.z5
+reg.1.000506.baf = 1174
+
+reg.1.980622.code.r = ifarc:games/mini-comps/mini-comp/inherit.z5
+reg.1.980622.baf = 717
+
+reg.1.980623.code.r = ifarc:games/mini-comps/mini-comp/sumbunny.z5
+reg.1.980623.baf = 718
+
+reg.2.980728.code.r = ifarc:games/mini-comps/chicken/cutwind.z5
+reg.2.980728.baf = 695
+
+reg.1.010227.code.r = ifarc:games/mini-comps/highland/roots.z5
+reg.1.010227.baf = 1251
+
+reg.1.010225.code.r = ifarc:games/mini-comps/highland/highland.z5
+reg.1.010225.baf = 1337
+
+reg.2.010504.code.r = ifarc:games/mini-comps/smoochie/voices.z5
+reg.2.010504.baf = 1184
+
+reg.1.970908.code.r = ifarc:games/zcode/residnt2.z5
+reg.1.970908.baf = 1339
+
+reg.1.991218.code.r = ifarc:games/zcode/reverzi.z5
+reg.1.991218.baf = 757
+
+reg.2.000825.code.r = ifarc:games/zcode/Galatea.z8
+reg.2.000825.baf = 1326
+
+reg.3.001211.code.r = ifarc:games/zcode/Heroine.z8
+reg.3.001211.baf = 1327
+
+reg.1.001218.code.r = ifarc:games/zcode/FailSafe.z5
+reg.1.001218.baf = 1328
+
+reg.1.000801.code.r = ifarc:games/zcode/LDoDoom.z5
+reg.1.000801.baf = 449
+
+reg.1.000820.code.r = ifarc:games/zcode/Relief.z5
+reg.1.000820.baf = 1329
+
+reg.0.000531.code.r = ifarc:games/zcode/aventure.z5
+reg.0.000531.baf = 1
+
+reg.1.010331.code.r = ifarc:games/zcode/degen.z5
+reg.1.010331.baf = 1330
+
+reg.1.010306.code.r = ifarc:games/zcode/fracture.z5
+reg.1.010306.baf = 910
+
+reg.1.010114.code.r = ifarc:games/zcode/golf.z5
+reg.1.010114.baf = 1029
+
+reg.2.000403.code.r = ifarc:games/zcode/mary.z5
+reg.2.000403.baf = 706
+
+reg.1.314159.code.r = ifarc:games/zcode/pad.z5
+reg.1.314159.baf = 1332
+
+reg.6.030206.code.r = ifarc:games/zcode/pentari.z5
+reg.6.030206.baf = 1333
+
+reg.2.010105.code.r = ifarc:games/mini-comps/arcade/rox.z5
+reg.2.010105.baf = 1115
+
+reg.2.010618.code.r = ifarc:games/zcode/PUTPBAA.z5
+reg.2.010618.baf = 1380
+
+reg.1.990417.code.r = ifarc:art/if-artshow/spring1999/tpold.z5
+reg.1.990417.baf = 1341
+
+reg.1.000218.code.r = ifarc:art/if-artshow/visual.z5
+reg.1.000218.baf = 1342
+
+reg.1.990827.code.r = ifarc:art/if-artshow/summer1999/statue01.z5
+reg.1.990827.baf = 1343
+
+reg.1.990903.code.r = ifarc:art/if-artshow/summer1999/statue11.z5
+reg.1.990903.baf = 1343
+
+reg.1.990824.code.r = ifarc:art/if-artshow/summer1999/wheel.z5
+reg.1.990824.baf = 1344
+
+reg.3.001128.code.r = ifarc:art/if-artshow/summer1999/wheel_r3.z5
+reg.3.001128.baf = 1344
+
+reg.4.010803.code.r = ifarc:games/zcode/adverbum.z5
+reg.4.010803.baf = 912
+
+reg.2.010702.code.r = ifarc:games/zcode/ribbons.z5
+reg.2.010702.baf = 1393
+
+reg.9.010613.code.r = ifarc:games/zcode/curves.z8
+reg.9.010613.baf = 507
+
+reg.1.000930.code.r = ifarc:games/competition2000/inform/amnos/amnos01.z5
+reg.1.000930.baf = 1119
+
+reg.1.861002.code.r = ifarc:games/competition2000/inform/guess/guess.z5
+reg.1.861002.baf = 919
+
+reg.1.000930.code.r = ifarc:games/competition2000/inform/happy/happy.z5
+reg.1.000930.baf = 1123
+
+reg.10.000928.code.r = ifarc:games/competition2000/inform/never/never.z5
+reg.10.000928.baf = 915
+
+reg.2.961003.code.r = ifarc:games/competition96/claw/claw.z5
+reg.2.961003.baf = 45
+
+reg.3.960823.code.r = ifarc:games/competition96/lists/lists.z5
+reg.3.960823.baf = 128
+
+reg.2.961005.code.r = ifarc:games/competition96/ralph/ralph.z5
+reg.2.961005.baf = 177
+
+reg.1.960914.code.r = ifarc:games/competition96/ripflesh/ripflesh.z5
+reg.1.960914.baf = 184
+
+reg.1.000322.code.r = ifarc:art/if-artshow/year2000/cove.z5
+reg.1.000322.baf = 434
+
+reg.1.000323.code.r = ifarc:art/if-artshow/year2000/guitar.z5
+reg.1.000323.baf = 1347
+
+reg.1.000324.code.r = ifarc:art/if-artshow/year2000/sprkboot.z5
+reg.1.000324.baf = 1348
+
+reg.1.000324.code.r = ifarc:art/if-artshow/year2000/stat1.z5
+reg.1.000324.baf = 1349
+
+reg.1.000324.code.r = ifarc:art/if-artshow/year2000/galatea.z5
+reg.1.000324.baf = 1326
+
+reg.1.000321.code.r = ifarc:art/if-artshow/year2000/visitor.z5
+reg.1.000321.baf = 1111
+
+reg.3.010925.code.r = ifarc:games/zcode/burglar.z5
+reg.3.010925.baf = 1643
+
+reg.1.010905.code.r = ifarc:games/zcode/largemac.z5
+reg.1.010905.baf = 1637
+
+reg.1.010902.code.r = ifarc:games/zcode/thegreat.z5
+reg.1.010902.baf = 1638
+
+reg.1.000001.code.r = ifarc:games/zcode/ats.z8
+reg.1.000001.baf = 1642
+
+reg.1.010930.code.r = ifarc:games/competition2001/Comp01.z5
+reg.1.010930.baf = 376
+
+reg.1.010928.code.r = ifarc:games/competition2001/inform/elements/elements.z5
+reg.1.010928.baf = 1666
+
+reg.1.010928.code.r = ifarc:games/competition2001/inform/eleven/eleven.z5
+reg.1.010928.baf = 1667
+
+reg.1.010902.code.r = ifarc:games/competition2001/inform/evil/evil.z5
+reg.1.010902.baf = 1668
+
+reg.4.200108.code.r = ifarc:games/competition2001/inform/Timeout/Timeout.z5
+reg.4.200108.baf = 1658
+
+reg.1.010928.code.r = ifarc:games/competition2001/inform/URHere/URHere.z5
+reg.1.010928.baf = 1659
+
+reg.6.010925.code.r = ifarc:games/competition2001/inform/bb/bb.z5
+reg.6.010925.baf = 1660
+
+reg.1.010928.code.r = ifarc:games/competition2001/inform/colours/colours.z5
+reg.1.010928.baf = 1662
+
+reg.1.010913.code.r = ifarc:games/competition2001/inform/crusade/crusade.z5
+reg.1.010913.baf = 1663
+
+reg.1.010928.code.r = ifarc:games/competition2001/inform/newcomer/newcomer.z5
+reg.1.010928.baf = 1674
+
+reg.1.010928.code.r = ifarc:games/competition2001/inform/possess/Alys.z5
+reg.1.010928.baf = 1675
+
+reg.1.010314.code.r = ifarc:games/competition2001/inform/schroed/schroed.z5
+reg.1.010314.baf = 1676
+
+reg.8.010928.code.r = ifarc:games/competition2001/inform/shatmem/shattmem.z5
+reg.8.010928.baf = 1677
+
+reg.1.011007.code.r = ifarc:games/competition2001/inform/shatmem/clues.z5
+reg.1.011007.baf = 1677
+
+reg.1.010926.code.r = ifarc:games/competition2001/inform/gostak/gostak.z5
+reg.1.010926.baf = 1670
+
+reg.1.010928.code.r = ifarc:games/competition2001/inform/jump/jump.z5
+reg.1.010928.baf = 1672
+
+reg.6.020420.code.r = ifarc:games/zcode/Savoir.z8
+reg.6.020420.baf = 1821
+
+reg.1.010928.code.r = ifarc:games/competition2001/inform/finetune/finetune.z8
+reg.1.010928.baf = 1669
+
+reg.1.010928.code.r = ifarc:games/competition2001/inform/heroes/heroes.z5
+reg.1.010928.baf = 1671
+
+reg.1.010928.code.r = ifarc:games/competition2001/inform/cycles/cycles.z5
+reg.1.010928.baf = 1664
+
+reg.32.010910.code.r = ifarc:games/competition2001/inform/castles/castles.z5
+reg.32.010910.baf = 1661
+
+reg.1.011119.code.r = ifarc:games/zcode/AllRoads.z5
+reg.1.011119.baf = 1657
+
+reg.1.010908.code.r = ifarc:games/competition2001/inform/AllRoads/AllRoads.z5
+reg.1.010908.baf = 1657
+
+reg.1.020603.code.r = ifarc:games/zcode/amish.z5
+reg.1.020603.baf = 1832
+
+reg.3.020223.code.r = ifarc:games/mini-comps/smoochie/pytho.z8
+reg.3.020223.baf = 1180
+
+reg.3.020222.code.r = ifarc:games/zcode/cycles.z5
+reg.3.020222.baf = 1664
+
+reg.4.020222.code.r = ifarc:games/zcode/metamorp.z5
+reg.4.020222.baf = 910
+
+reg.1.010926.code.r = ifarc:games/competition2001/inform/eas/eas.z5
+reg.1.010926.baf = 1665
+
+reg.2.021126.code.r = ifarc:games/zcode/wurm.z5
+reg.2.021126.baf = 1770
+
+reg.2.020130.code.r = ifarc:games/zcode/Vacation.z5
+reg.2.020130.baf = 1768
+
+reg.5.020131.code.r = ifarc:games/zcode/winchest.z8
+reg.5.020131.baf = 438
+
+reg.1.020101.code.r = ifarc:games/zcode/farm.z5
+reg.1.020101.baf = 903
+
+reg.1.020409.code.r = ifarc:games/zcode/amiss.z5
+reg.1.020409.baf = 1833
+
+reg.2.640101.code.r = ifarc:games/zcode/warp.z5
+reg.2.640101.baf = 1376
+
+reg.3.020214.code.r = ifarc:games/zcode/Mullmurd.z5
+reg.3.020214.baf = 1777
+
+reg.1.990804.code.r = ifarc:solutions/slag/deadlineinv.z5
+reg.1.990804.baf = 1244
+
+reg.1.020228.code.r = ifarc:games/mini-comps/hours/defra.z5
+reg.1.020228.baf = 1801
+
+# games/mini-comps/introcomp/Waterhouse.z5 : can't find
+
+### End of the auto-generated section
