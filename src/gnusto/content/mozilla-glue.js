@@ -1,7 +1,7 @@
 // mozilla-glue.js || -*- Mode: Java; tab-width: 2; -*-
 // Interface between gnusto-lib.js and Mozilla. Needs some tidying.
 // Now uses the @gnusto.org/engine;1 component.
-// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.124 2003/12/03 08:43:03 marnanel Exp $
+// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.125 2003/12/03 09:46:16 marnanel Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -782,7 +782,9 @@ function gotInput(e) {
 
 				var current = win_get_input();
 
-				if (zscii_code in glue__terminating_characters) {
+				if (zscii_code in glue__terminating_characters ||
+						(keypress_considered_function_key &&
+						 (255 in glue__terminating_characters))) {
 
 						// It's a code we've been asked to terminate on,
 						// so we have a full line of input.
