@@ -13,16 +13,17 @@
 	  <description>
 	    Caution: these probably don't work yet.
 	  </description>
-
+	  <checkbox id="tandy" label="Monospace bit"/>
+	    <description><html:a href="http://mozillazine.org">(What's this?)</html:a></description>
 	  <checkbox id="tandy" label="Tandy bit"/>
-	    <html:a href="http://mozillazine.org">(What's this?)</html:a>
+	    <description><html:a href="http://mozillazine.org">(What's this?)</html:a></description>
 	  <checkbox id="piracy" label="Piracy"/>
 	    <html:a href="http://mozillazine.org">(What's this?)</html:a>
 
 	  <menulist id="hardware" label="Claim to be">
 	    <menupopup>
-	      <menuitem selected="true" label="DECSystem-20"/>
-	      <menuitem label="Apple ][e"/>
+	      <menuitem label="DECSystem-20"/>
+	      <menuitem selected="true" label="Apple ][e"/>
 	      <menuitem label="Macintosh"/>
 	      <menuitem label="Amiga"/>
 	      <menuitem label="Atari ST"/>
@@ -34,7 +35,14 @@
 	      <menuitem label="Tandy Color"/>
 	    </menupopup>
 	  </menulist>
-
+	  
+	  <radiogroup>
+	    <radio value="Truly Random Events" checked="true"/>
+	    <radio value="Make 'Random' Events Predictable"/>
+	  </radiogroup>
+	  <description>Seed for Random Number Generator:</description>
+	  <textfield value="1"/>
+          
     </groupbox>
 
 </dialog>

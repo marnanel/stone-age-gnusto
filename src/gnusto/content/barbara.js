@@ -1,7 +1,7 @@
 // barbara.js || -*- Mode: Java; tab-width: 2; -*-
 // Lightweight lower-window handler.
 //
-// $Header: /cvs/gnusto/src/gnusto/content/barbara.js,v 1.36 2004/10/02 22:21:31 naltrexone42 Exp $
+// $Header: /cvs/gnusto/src/gnusto/content/barbara.js,v 1.37 2005/01/25 07:45:01 naltrexone42 Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -180,7 +180,7 @@ function barbara_print_status() {
 	        if (zVersion < 4) {                  
 	          win_clear(1);
                   win_set_top_window_size(1);	          	
-                  bocardo_gotoxy(1,0,2);
+                  bocardo_gotoxy(1,0,0);
                   win_set_text_style(1,0,0);
                   bocardo_chalk(1,engine.getStatusLine(bocardo_get_screen_size()[0]));                  
                   win_set_text_style(0,0,0);
