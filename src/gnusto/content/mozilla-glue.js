@@ -1,7 +1,7 @@
 // mozilla-glue.js || -*- Mode: Java; tab-width: 2; -*-
 // Interface between gnusto-lib.js and Mozilla. Needs some tidying.
 // Now uses the @gnusto.org/engine;1 component.
-// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.113 2003/10/27 01:08:39 marnanel Exp $
+// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.114 2003/11/15 22:30:56 marnanel Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -68,6 +68,15 @@ var glue__reason_for_stopping = GNUSTO_EFFECT_WIMP_OUT; // safe default
 // The maximum number of characters that the input buffer can currently
 // accept.
 var glue__input_buffer_max_chars = 255;
+
+// List of arguments to the program. These are created from
+// the main window's arguments. Each entry in this array is
+// a list of strings, one for each entry in the argument string.
+// For example, the argument string
+//     a=p,a=q,b=r,a=s
+// would set glue__arguments to
+//     {'a':['p','q','s'],'b':['r']}
+var glue__arguments = {};
 
 ////////////////////////////////////////////////////////////////
 
@@ -438,7 +447,64 @@ function glue__init_burin() {
 
 ////////////////////////////////////////////////////////////////
 
+function glue__parse_arguments() {
+		// Do we have any arguments passed on the command-line?
+		if (window.arguments.length>0 && typeof window.arguments[0]=='string') {
+				var args = window.arguments[0].split(',');
+
+				// Ugly hack: Mozilla often munges the argument
+				// into a URL if it thinks it looks like a filename.
+				// There doesn't seem to be any way to stop this at present.
+				// So we replace "file:///" at the start with "/".
+				if (args[0].substring(0,8)=='file:///') {
+						args[0]=args[0].substring(7);
+				}
+
+				for (i in args) {
+						var arg=args[i];
+
+						// Skip "-" and "", which are dummy arguments.
+
+						if (arg!='-' && arg!='') {
+								var field, value;
+								var middle = arg.indexOf('=');
+
+								if (middle==-1) {
+										field = 'open'; // the default
+										value = arg;
+								} else {
+										// split it up
+										field = arg.substring(0, middle);
+										value = arg.substring(middle+1);
+								}
+								
+								if (field in glue__arguments) {
+										glue__arguments[field].push(value);
+								} else {
+										glue__arguments[field] = [value];
+								}
+						}
+				}
+		}
+}
+
+////////////////////////////////////////////////////////////////
+
+function glue__load_beret_from_args() {
+		if ('open' in glue__arguments) {
+				var loadlist = glue__arguments['open'];
+				for (i in loadlist) {
+						var filename = loadlist[i];
+						command_open([0, filename]);
+				}
+		}
+}
+
+////////////////////////////////////////////////////////////////
+
 function glue_init() {
+
+		glue__parse_arguments();
 
 		engine = new Components.Constructor('@gnusto.org/engine;1',
 																				'gnustoIEngine')();
@@ -449,6 +515,8 @@ function glue_init() {
 		document.onkeypress=gotInput;
 
 		glue__init_burin();
+
+		glue__load_beret_from_args();
 }
 
 ////////////////////////////////////////////////////////////////
