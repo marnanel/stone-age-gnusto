@@ -5,6 +5,26 @@
 
 <script><!--
 
+zbytes = []
+
+function getbyte(address) {
+	if (!isNaN(zbytes[address]))
+		return zbytes[address];
+	else {
+		// So look it up.
+		var result = zstr.charCodeAt(address)
+
+		zbytes[address] = result;
+		return result;
+	}
+}
+
+function setbyte(q,value, address) {
+	if (value<0) throw "too low "+value;
+	if (value>255) throw "too high "+value;
+	zbytes[address] = value;
+}
+
 function print_text(what) {
 	if (what!='')
 		document.getElementById("tty").appendChild(
@@ -28,7 +48,7 @@ function output(what) {
 
 function input() {
 	var instruction = prompt("What now?\n\n(No, the prompt won't look like this in the end.)");
-	output('\n> '+instruction+'\n');
+	output(instruction+'\n');
 	return instruction;
 }
 
