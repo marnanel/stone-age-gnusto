@@ -1,7 +1,7 @@
 // gnusto-lib.js || -*- Mode: Java; tab-width: 2; -*-
 // upper.js -- upper window handler.
 //
-// $Header: /cvs/gnusto/src/gnusto/content/upper.js,v 1.52 2004/09/30 20:56:39 naltrexone42 Exp $
+// $Header: /cvs/gnusto/src/gnusto/content/upper.js,v 1.53 2004/09/30 21:43:14 naltrexone42 Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -113,9 +113,9 @@ function bocardo_relax() {
 		bocardo__screen_scroll_count = 0;
 }
 
-////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////
 
-bocardo_trim_upper_window_to_fit() {
+function bocardo_trim_upper_window_to_fit() {
     // process each row in the upper window
     for (var row = 0; row < bocardo__screen_window.childNodes.length; row++) {
     	var current_line = bocardo__screen_window.childNodes[row];
@@ -134,7 +134,10 @@ bocardo_trim_upper_window_to_fit() {
 	 
         if (cursor < current_line.childNodes.length) { // if we determined that the row is wider than the window
             current_line.childNodes[cursor].setAttribute('value',
-				current_line.childNodes[cursor].getAttribute('value').substring(bocardo__screen_width-charactersSeen));
+				current_line.childNodes[cursor].getAttribute('value').substring(0,bocardo__screen_width-charactersSeen));
+	    for (var NodeIndex = current_line.childNodes.length-1; NodeIndex > cursor; NodeIndex--) {
+	      current_line.removeChild(current_line.childNodes[NodeIndex]);
+	    }
         }
         
     }
