@@ -1,0 +1,28 @@
+#include "nsISupports.idl"
+
+// General interface for screen handlers.
+
+[scriptable, uuid(4a570c25-72e5-4f91-8b4a-2c3675376365)]
+interface gnustoIScreen : nsISupports
+{
+  void reset();
+
+  void clear_screen();
+
+  void set_status(in string status);
+
+  void print(in string message);
+
+  attribute short bold;
+  attribute short italic;
+  attribute short reverse;
+  attribute short mono;
+  void reset_attributes();
+
+  void select_window(in short window);
+
+  attribute short wrapping;
+  attribute short scrolling;
+  attribute short transcribing;
+  attribute short buffering;
+};
