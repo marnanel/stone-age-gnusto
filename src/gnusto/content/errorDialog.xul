@@ -57,11 +57,12 @@
 	<vbox>
 	 <hbox>
 	 <button label="Show JS console" accesskey="J" flex="0"
-		oncommand="window.opener.open('chrome://global/content/console.xul');"/>
-	 <button label="Report bug" flex="0" disabled="true"/>
+		oncommand="try{window.openDialog('chrome://global/content/console.xul','_blank');}catch(e){alert(e);}"/>
+	 <button label="Report bug" accesskey="B" flex="0"
+		oncommand="try{window.open('http://mozdev.org/bugs/enter_bug.cgi?product=gnusto','_blank');}catch(e){alert(e);}"/>
 	 </hbox>
 	</vbox>
-        <checkbox id="transientCheckBox" label="Hide future transient errors"/>
+        <checkbox id="transientCheckBox" label="Hide future transient errors" accesskey="H"/>
       </vbox>
     </vbox>
 </dialog>
