@@ -1,7 +1,7 @@
 // datisi.js || -*- Mode: Java; tab-width: 2; -*-
 // Standard command library
 // 
-// $Header: /cvs/gnusto/src/gnusto/content/datisi.js,v 1.29 2003/10/17 05:35:44 marnanel Exp $
+// $Header: /cvs/gnusto/src/gnusto/content/datisi.js,v 1.30 2003/11/17 19:37:43 marnanel Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -117,7 +117,7 @@ function command_shutdown(a) {
 //
 ////////////////////////////////////////////////////////////////
 
-function command_open(a) {
+function command_open(a, nolaunch) {
 
 		var localfile = 0;
 		var filename = null;
@@ -180,6 +180,9 @@ function command_open(a) {
 		//
 		// var result = dealWith(content);
 		load_from_file(localfile);
+		if (!nolaunch) {
+				glue_play();
+		}
 		//var result = dealWith(content);
 
     // FIXME: and this (which isn't immediately necessary) depends on the
