@@ -1,0 +1,60 @@
+!                                         
+!  ####  #####  ####  #    # #    #  ####   An Inform program
+! #    #   #   #      #    # ##   # #    #  to test the Gnusto
+! #    #   #    ####  #    # # #  # #       z-machine. Supplied
+! #    #   #        # #    # #  # # #  ###  under the GPL with
+! #    #   #   #    # #    # #   ## #    # no warranty. Copyright
+!  ####    #    ####   ####  #    #  ####   2003 Thomas Thurman.
+
+Serial "030601";
+Release 1;
+
+Constant MAGIC_BEGIN_TEST            = 1;
+Constant MAGIC_END_TEST              = 2;
+Constant MAGIC_EXECUTE_JAVASCRIPT    = 3;
+
+[Magic subfunc args result;
+    @"EXT:177S" subfunc args -> result;
+    return result;
+];
+
+[Run_Tests;
+
+    ! Say we're starting...
+    Magic(1, 0);    
+];
+
+[Check_Interpreter;
+    ! Firstly, we have to be running under Gnusto, obviously.
+
+    if ($1F->0 == 103)
+	{
+	! Great, we're running Gnusto. Now, are we in
+	! testing mode? Gnusto sets the standard-interpreter
+	! field to the magic value 103 to let us know if the
+	! special testing opcodes are enabled.
+
+	if ($32->0 == 103) 
+	{
+	    Run_Tests();
+	}
+	else 
+	{
+	    "^^^This isn't an ordinary story. It's used to
+	    test the internals of Gnusto.";
+	}
+    }
+    else
+    {
+	"^^^Sorry, you're not running Gnusto.";
+    }
+];
+
+[Main;
+
+    Check_Interpreter();
+    
+];
+
+! EOF otsung.inf
+
