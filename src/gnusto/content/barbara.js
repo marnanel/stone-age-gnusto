@@ -1,7 +1,7 @@
 // barbara.js || -*- Mode: Java; tab-width: 2; -*-
 // Lightweight lower-window handler.
 //
-// $Header: /cvs/gnusto/src/gnusto/content/barbara.js,v 1.37 2005/01/25 07:45:01 naltrexone42 Exp $
+// $Header: /cvs/gnusto/src/gnusto/content/barbara.js,v 1.38 2005/02/09 04:45:50 naltrexone42 Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -151,6 +151,8 @@ function barbara_set_input(textlist) {
 																		 'html:span');
 				barbara__before_cursor.
 						setAttribute('id','beforecursor');
+				barbara__before_cursor.
+				                setAttribute('class',barbara__current_css);
 				barbara__before_cursor.
 								appendChild(document.createTextNode(''));
 
