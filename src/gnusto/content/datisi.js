@@ -1,7 +1,7 @@
 // datisi.js || -*- Mode: Java; tab-width: 2; -*-
 // Standard command library
 // 
-// $Header: /cvs/gnusto/src/gnusto/content/datisi.js,v 1.37 2004/09/28 19:55:58 naltrexone42 Exp $
+// $Header: /cvs/gnusto/src/gnusto/content/datisi.js,v 1.38 2004/09/29 18:35:34 naltrexone42 Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -265,7 +265,7 @@ function sys_update_recent_menu(recent) {
 				var command = 'alert("erroneous");';
 				var label = '?';
 
-				if (recent[i].length>0) command = 'open '+recent[i][0];
+				if (recent[i].length>0) command = 'command_open(\''+recent[i][0].replace('\\','\\\\', 'g') + '\');';
 
 				if (recent[i].length>1)
 						label = recent[i][1];
@@ -303,9 +303,9 @@ function sys_show_story_title(newname) {
 				sys__story_name = newname;
 
 		if (sys__story_name == '') {
-				window.title = "Gnusto";
+				window.title = "Gnusto 0.7";
 		} else {
-				window.title = sys__story_name + " - Gnusto";
+				window.title = sys__story_name + " - Gnusto 0.7";
 		}
 }
 

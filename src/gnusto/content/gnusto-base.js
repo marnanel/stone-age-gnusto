@@ -1,4 +1,4 @@
-// $Header: /cvs/gnusto/src/gnusto/content/gnusto-base.js,v 1.4 2004/08/01 03:36:11 marnanel Exp $
+// $Header: /cvs/gnusto/src/gnusto/content/gnusto-base.js,v 1.5 2004/09/29 18:35:34 naltrexone42 Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -71,21 +71,21 @@ function command_open(filename, nolaunch) {
     filename = localfile.path;
   }
 
-  load_from_file(localfile);
+  var result = load_from_file(localfile);
 
   if (!nolaunch) {
     glue_play();
     command_exec();
   }
 
-  return 1;
-
   // FIXME: At one point we had these lines; something similar
   // should eventually be re-included here.
-  //if (filename && result==1) {
-  //		sys_notify_of_load(filename);
-  //		sys_show_story_title(filename);
-  //}
+  if (filename && result==1) {
+  		sys_notify_of_load(filename);
+  		sys_show_story_title(filename);
+  }
+  
+  return 1;  
 }
 
 ////////////////////////////////////////////////////////////////
