@@ -1,5 +1,5 @@
 // -*- Mode: Java; tab-width: 2; -*-
-// $Id: beret.js,v 1.15 2004/01/29 06:00:51 marnanel Exp $
+// $Id: beret.js,v 1.16 2004/01/29 21:41:14 marnanel Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -19,7 +19,7 @@
 
 ////////////////////////////////////////////////////////////////
 
-const CVS_VERSION = '$Date: 2004/01/29 06:00:51 $';
+const CVS_VERSION = '$Date: 2004/01/29 21:41:14 $';
 const BERET_COMPONENT_ID = Components.ID("{ed0618e3-8b2b-4bc8-b1a8-13ae575efc60}");
 const BERET_DESCRIPTION  = "Checks file magic and routes them accordingly";
 const BERET_CONTRACT_ID  = "@gnusto.org/beret;1";
@@ -40,9 +40,8 @@ const parameter_types = {
 		'seed':         TYPE_IS_INTEGER,
 		'copper':       TYPE_IS_BOOLEAN,
 		'golden':       TYPE_IS_BOOLEAN,
-		'input':        TYPE_IS_STRING,
 		'output':       TYPE_IS_STRING,
-		'robmiz':       TYPE_IS_STRING,
+		'actfilenames': TYPE_IS_BOOLEAN,
 };
 
 ////////////////////////////////////////////////////////////////
