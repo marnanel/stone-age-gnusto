@@ -1,7 +1,7 @@
 // barbara.js || -*- Mode: Java; tab-width: 2; -*-
 // Lightweight lower-window handler.
 //
-// $Header: /cvs/gnusto/src/gnusto/content/barbara.js,v 1.25 2003/09/24 00:27:44 marnanel Exp $
+// $Header: /cvs/gnusto/src/gnusto/content/barbara.js,v 1.26 2004/09/28 19:40:30 naltrexone42 Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -219,6 +219,10 @@ function barbara_relax() {
 				// barbara__most_seen is now the page height, of course.
 
 				barbara__most_seen = page_height;
+				
+				// reset more to prevent lockup if this was 
+				// triggered by a resize event
+				barbara__set_more(0);
 
 		} else {
 				// The lower screen scrolls by some amount.
