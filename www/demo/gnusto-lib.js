@@ -9,10 +9,9 @@
 ////////////////////////////////////////////////////////////////
 
 var jit = []
-
-// Possibly we should automatically insert a "return" if
-// this gets set to zero.
 var compiling = 0;
+var gamestack = [];
+var sp=0;
 
 ////////////////////////////////////////////////////////////////
 
@@ -38,12 +37,12 @@ function call_vn(args, offset) {
 
 function brancher(condition) {
 	var inverted = 1;
-	var temp = a[pc++];
+	var temp = getbyte(pc++);
 	var target_address = temp & 0x3F;
 
 	if (temp & 0x80) inverted = 0;
 	if (!(temp & 0x40)) {
-		target_address = (target_address << 8) | a[pc++];
+		target_address = (target_address << 8) | getbyte(pc++);
 		// and it's signed...
 
 		if (target_address & 0x2000) {
@@ -79,7 +78,7 @@ function brancher(condition) {
 
 function code_for_varcode(varcode) {
 	if (varcode==0) {
-		return 'user_stack.pop()'
+		return 'gamestack.pop()'
 	} else if (varcode < 0x10) {
 		return 'locals['+(varcode-1)+']';
 	} else {
@@ -109,17 +108,19 @@ function store_into(lvalue, rvalue) {
 			'})';
 	}
 
-	if (lvalue=='user_stack.pop()') {
-		return 'user_stack.push('+rvalue+')';
+	if (lvalue=='gamestack.pop()') {
+		return 'gamestack.push('+rvalue+')';
 	} else if (lvalue.substring(0,8)=='getword(') {
 		return 'setword('+rvalue+','+lvalue.substring(8);
+	} else if (lvalue.substring(0,8)=='getbyte(') {
+		return 'setbyte("a",'+rvalue+','+lvalue.substring(8);
 	} else {
 		return lvalue + '=' + rvalue;
 	}
 }
 
 function storer(rvalue) {
-	return store_into(code_for_varcode(a[pc++]), rvalue);
+	return store_into(code_for_varcode(getbyte(pc++)), rvalue);
 }
 
 function simple_call(target, arguments) {
@@ -133,9 +134,9 @@ function simple_call(target, arguments) {
 function simple_print(a) {
 	var zf = zscii_from(pc,65535,1);
 	var message=(zf[0].
-		replace(/\\/g,'\\\\').
-		replace(/"/g,'\\"').
-		replace(/\n/g,'\\n')); // not elegant
+		replace('\\','\\\\').
+		replace('"','\\"').
+		replace('\n','\\n')); // not elegant
 	pc=zf[1];
 	return 'output("'+message+'")';
 }
@@ -161,14 +162,19 @@ var handlers = {
 		// Length == 2: direct comparison
 		// Length >  2: set t, then compare against it
 		//		(length must be 3 or 4)
-		if (a.length<2) return ''; // it's a no-op
 
-		var condition = '';
-		for (var i=1; i<a.length; i++) {
-			if (i!=1) condition = condition + '||';
-			condition = condition + 't=='+a[i];
+		if (a.length<2)
+			return ''; // it's a no-op
+		else if (a.length==2)
+			return brancher(a[0]+'=='+a[1]);
+		else {
+			var condition = '';
+			for (var i=1; i<a.length; i++) {
+				if (i!=1) condition = condition + '||';
+				condition = condition + 't=='+a[i];
+			}
+			return 't='+a[0]+';'+brancher(condition);
 		}
-		return 't='+a[0]+';'+brancher(condition);
 	},
 	2: function(a) { return brancher(a[0]+'<'+a[1]); }, // jl
 	3: function(a) { return brancher(a[0]+'>'+a[1]); }, // jg
@@ -214,7 +220,7 @@ var handlers = {
 		return storer("getword(1*"+a[0]+"+2*"+a[1]+")");
 	},
 	16: function(a) { // loadb
-		return storer("a[1*"+a[0]+"+1*"+a[1]+"]");
+		return storer("getbyte(1*"+a[0]+"+1*"+a[1]+")");
 	},
 	17: function(a) { // get_prop
 		return storer("get_prop("+a[0]+','+a[1]+')');
@@ -314,15 +320,19 @@ var handlers = {
 	// not implemented: function(a) { compiling=0; and RESTART somehow,
 	184: function(a) { // ret_popped
 		compiling=0;
-		return "gnusto_return(user_stack.pop());return";
+		return "gnusto_return(gamestack.pop());return";
 	},
 	// not implemented:           0OP:185 9   1   pop                             pop'"},
 	// not implemented:     *                 5/6 catch -> (result)               catch '"},
 	// not implemented:           0OP:186 A       quit                            quit'"},
 	187: function(a) { return "output('\\n')" },
 	// not implemented:        *  0OP:189 D   3   verify ?(label)                 verify '"},
-	// not implemented:           0OP:190 E   5   [first byte of extended opcode] extended'"},
-	191: function(a) { return brancher("1"); },
+
+	190: function(a) { throw "extended opcodes not implemented"; },
+
+	191: function(a) { // piracy
+		return brancher("1");
+	},
 
 	224: function(args) { // call_vs
 		return storer(call_vn(args,1));
@@ -332,8 +342,9 @@ var handlers = {
 		return "setword("+a[2]+",1*"+a[0]+"+2*"+a[1]+")";
 	},
 
-	226: function(a) { // storew
-		return "a[1*("+a[0]+")+1*("+a[1]+")]="+a[2];
+	226: function(a) { // storeb
+		var qqq=pc.toString(16);
+		return "setbyte('b"+qqq+"',"+a[2]+",1*"+a[0]+"+1*"+a[1]+")";
 	},
 
 	227 : function(a) { // put_prop
@@ -347,7 +358,7 @@ var handlers = {
 			return storer("aread("+a[0]+","+a[1]+",0,0)");
 	},
 	229: function(a) { // print_char
-		return 'output_char('+a[0]+')';
+		return 'output(zscii_char_to_ascii('+a[0]+'))';
 	},
 	230: function(a) { // print_num
 		return "output("+a[0]+")";
@@ -356,11 +367,11 @@ var handlers = {
 		return storer("gnusto_random("+a[0]+")");
 	},
 	232: function(a) { // push
-		return store_into('user_stack.pop()', a[0]);
+		return store_into('gamestack.pop()', a[0]);
 	},
 	233: function(a) { // pull
 		var c=code_for_varcode(a[0]);
-		return store_into(c, 'user_stack.pop()');
+		return store_into(c, 'gamestack.pop()');
 	},
 	234: cursor_handling_is_a_bit_advanced, // split_window
 	235: cursor_handling_is_a_bit_advanced, // set_window
@@ -406,18 +417,18 @@ function unsigned2signed(value) {
 }
 
 function get_unsigned_word(addr) {
-	var result = a[addr]*256+a[addr+1];
+	var result = getbyte(addr)*256+getbyte(addr+1);
 	return result;
 }
 
 function setword(value, addr) {
-	a[addr] = (value>>8) & 0xFF;
-	a[addr+1] = (value) & 0xFF;
+	setbyte('c',(value>>8) & 0xFF, addr);
+	setbyte('d',(value) & 0xFF, addr+1);
 }
 
-a[1] = 0; // for now, we don't provide anything
-a[32] = 80; // width (notional)
-a[33] = 25; // height (notional)
+setbyte('e',0,   1); // for now, we don't provide anything
+setbyte('e',80, 32); // width (notional)
+setbyte('e',25, 33); // height (notional)
 var himem      = get_unsigned_word(0x4)
 var pc         = get_unsigned_word(0x6)
 var dict_start = get_unsigned_word(0x8)
@@ -430,7 +441,7 @@ function dissemble() {
 	code = '';
 
 	while(compiling) {
-		var instr = a[pc++];
+		var instr = getbyte(pc++);
 
 		var form = 'L';
 		var ops = 2;
@@ -441,7 +452,7 @@ function dissemble() {
 		if (instr==190) {
 			form = 'E';
 			ops = -1;
-			instr = a[pc++];
+			instr = getbyte(pc++);
 		} else if (instr & 0x80) {
 			if (instr & 0x40) {
 				form = 'V';
@@ -475,10 +486,10 @@ function dissemble() {
 		}
 
 		if (form=='V' || form=='E') {
-			types = (a[pc++]<<8)
+			types = (getbyte(pc++)<<8)
 
 			if (instr==250 || instr==236) {
-				types = types | a[pc++];
+				types = types | getbyte(pc++);
 			} else {
 				types = types | 0xFF;
 			}
@@ -495,10 +506,10 @@ function dissemble() {
 				args[argcursor++] = getword(pc);
 				pc+=2;
 			} else if (current==0x4000) {
-				args[argcursor++] = a[pc++];
+				args[argcursor++] = getbyte(pc++);
 			} else if (current==0x8000) {
 				args[argcursor++] =
-					code_for_varcode(a[pc++]);
+					code_for_varcode(getbyte(pc++));
 			} else {
 				throw "impossible";
 			}
@@ -525,8 +536,23 @@ function dissemble() {
 ////////////////////////////////////////////////////////////////
 // Library functions
 
+function zscii_char_to_ascii(zscii_code) {
+	if (zscii_code<0 || zscii_code>1023)
+		throw "illegal zscii code output! "+zscii_code;
+
+	var result;
+
+	if (zscii_code==13)
+		result = 10;
+	else if ((zscii_code>=32 && zscii_code<=126) || zscii_code==0)
+		result = zscii_code;
+	else
+		throw "don't know how to convert zscii code "+zscii_code;
+
+	return String.fromCharCode(result);
+}
+
 var func_stack = [];
-var user_stack = [];
 var locals = []
 var locals_stack = []
 var param_counts = []
@@ -541,7 +567,7 @@ function clear_locals() {
 }
 
 function func_prologue(actuals) {
-	var count = a[pc++];
+	var count = getbyte(pc++);
 	for (var i=count; i>=0; i--) {
 		if (i<actuals.length) {
 			locals.unshift(actuals[i]);
@@ -558,14 +584,19 @@ function gosub(to_address, actuals, ret_address, result_eater) {
 	func_prologue(actuals);
 	param_counts.unshift(actuals.length);
 	result_eaters.push(result_eater);
+
+	if (to_address==0) {
+		// Rare special case.
+		gnusto_return(0);
+	}
 }
 
 function look_up(word) {
 	// note: very inefficient. We turn all the entries into ascii and
 	// compare. Really we should turn |word| into zscii and compare.
 	word = word.substring(0,9);
-	var separator_count = a[dict_start];
-	var entry_length = a[dict_start+separator_count+1];
+	var separator_count = getbyte(dict_start);
+	var entry_length = getbyte(dict_start+separator_count+1);
 	var entries_count = getword(dict_start+separator_count+2);
 	var entries_start = dict_start+separator_count+4;
 
@@ -585,15 +616,15 @@ function tokenise(text_buffer, parse_buffer, dictionary, overwrite) {
 	if (dictionary) throw 'no user dictionaries yet -- '+dictionary;
 	if (overwrite) throw 'no overwrite yet';
 
-	var max_chars = a[text_buffer];
+	var max_chars = getbyte(text_buffer);
 
 	var result = '';
 
-	for (var i=0;i<a[text_buffer + 1];i++)
-		result += a[text_buffer + 2 + i];
+	for (var i=0;i<getbyte(text_buffer + 1);i++)
+		result += String.fromCharCode(getbyte(text_buffer + 2 + i));
 
 	var words_count = parse_buffer + 1;
-	a[words_count] = 0;
+	setbyte('f',0, words_count);
 	parse_buffer+=2;
 
 	var words = result.split(' ');
@@ -604,11 +635,11 @@ function tokenise(text_buffer, parse_buffer, dictionary, overwrite) {
 
 		setword(lexical, parse_buffer);
 		parse_buffer+=2;
-		a[parse_buffer++] = words[i].length;
-		a[parse_buffer++] = position;
+ 		setbyte('g',words[i].length, parse_buffer++);
+		setbyte('h',position, parse_buffer++);
 		
 		position += words[i].length+1;
-		a[words_count]++;
+		setbyte('i',getbyte(words_count)+1, words_count);
 	}
 
 	return 10;
@@ -619,13 +650,13 @@ function tokenise(text_buffer, parse_buffer, dictionary, overwrite) {
 //  * Doesn't handle word separators.
 //  * Doesn't honour the timer interrupt at all.
 function aread(text_buffer, parse_buffer, time, routine) {
-	var max_chars = a[text_buffer];
+	var max_chars = getbyte(text_buffer);
 	var result = input().substring(0,max_chars);
 
-	a[text_buffer + 1] = result.length;
-
+	setbyte('j',result.length, text_buffer + 1);
+	
 	for (var i=0;i<result.length;i++)
-		a[text_buffer + 2 + i] = result[i];
+		setbyte('k',result.charCodeAt(i), text_buffer + 2 + i);
 
 	if (parse_buffer!=0)
 		tokenise(text_buffer, parse_buffer, 0, 0);
@@ -654,12 +685,12 @@ function get_prop_addr(object, property) {
 }
 
 function get_prop_len(address) {
-	var prop = a[address++];
+	var prop = getbyte(address++);
 	var len = 1;
 
 	if (prop & 0x80) {
 		// Long format.
-		len = a[props_address++];
+		len = getbyte(props_address++);
 		if (len==0) len = 64;
 	} else {
 		// Short format.
@@ -670,17 +701,16 @@ function get_prop_len(address) {
 }
 
 function get_prop(object, property) {
-	var result = '';
 	var temp = property_search(object, property);
 
 	if (temp[1]==2) {
 		return getword(temp[0]);
 	} else if (temp[1]==1) {
-		return a[temp[0]]; // should this be treated as signed?
+		return getbyte(temp[0]); // should this be treated as signed?
 	} else {
 		throw "get_prop used on a property of the wrong length";
 	}
-	return result[0];
+	throw "impossible";
 }
 
 // returns an array.
@@ -691,15 +721,15 @@ function get_prop(object, property) {
 function property_search(object, property) {
 	var props_address = get_unsigned_word(objs_start + 124 + object*14);
 
-	props_address = props_address + a[props_address]*2 + 1;
+	props_address = props_address + getbyte(props_address)*2 + 1;
 
 	while(1) {
-		var prop = a[props_address++];
+		var prop = getbyte(props_address++);
 		var len = 1;
 
 		if (prop & 0x80) {
 			// Long format.
-			len = a[props_address++];
+			len = getbyte(props_address++);
 			if (len==0) len = 64;
 		} else {
 			// Short format.
@@ -723,22 +753,19 @@ function property_search(object, property) {
 	throw "impossible";
 }
 
-function output_char(ascii_value) {
-	var a=ascii_value;
-	output(unescape('%'+a.toString(16)));
-}
-
 ////////////////////////////////////////////////////////////////
 // Functions that modify the object tree
 
 function set_attr(object, bit) {
-	var address = objs_start + 112 + object*14;
-	a[address+(bit>>3)] |= (128>>(bit%8));
+	var address = objs_start + 112 + object*14 + (bit>>3);
+	var value = getbyte(address);
+	setbyte('l', value | (128>>(bit%8)), address);
 }
 
 function clear_attr(object, bit) {
-	var address = objs_start + 112 + object*14;
-	a[address+(bit>>3)] &= ~(128>>(bit%8));
+	var address = objs_start + 112 + object*14 + (bit>>3);
+	var value = getbyte(address);
+	setbyte('m',value & ~(128>>(bit%8)), address);
 }
 
 function put_prop(object, property, value) {
@@ -746,7 +773,7 @@ function put_prop(object, property, value) {
 
 	if (!address[2]) throw "put_prop on an undefined property";
 	if (address[1]==1) {
-		a[address[0]] = (value & 0xff);
+		setbyte('n',value & 0xff, address[0]);
 	} else if (address[1]==2) {
 		setword(value&0xffff, address[0]);
 	} else {
@@ -814,7 +841,7 @@ function insert_obj(mover, new_parent) {
 function test_attr(object, bit) {
 	var address = objs_start + 112 + object*14;
 
-	if (a[address+(bit>>3)] & (128>>(bit%8)))
+	if (getbyte(address+(bit>>3)) & (128>>(bit%8)))
 		return 1;
 	else
 		return 0;
@@ -856,12 +883,11 @@ function setup() {
 
 function execute_loop() {
 	var start_pc;
-	for (var i=0;i<10000;i++) {
+	while(1) {
 		start_pc = pc;
 		if (!jit[start_pc]) eval('jit[start_pc]=' + dissemble());
 		jit[start_pc]();
 	}
-	print('--term--');
 }
 
 var zalphabet = {
@@ -871,6 +897,63 @@ var zalphabet = {
  }
 
 function zscii_from(address, max_length, tell_length) {
+	var temp = '';
+	var alph = 0;
+	var running = 1;
+
+	// Should be:
+	//   -2 if we're not expecting a ten-bit character
+	//   -1 if we are, but we haven't seen any of it
+	//   n  if we've seen half of one, where n is what we've seen
+	var tenbit = -2;
+
+	if (!max_length) max_length = 65535;
+	var stopping_place = address + max_length;
+
+	while (running) {
+		var word = get_unsigned_word(address);
+		address += 2;
+
+		running = !(word & 0x8000) && address<stopping_place;
+
+		for (var j=2; j>=0; j--) {
+			var code = ((word>>(j*5))&0x1f)
+
+			// FIXME: also need to handle:
+			//  * abbreviations
+
+			if (tenbit==-2) {
+				if (code==0) { temp = temp + ' '; alph=0; }
+				else if (code==4) { alph = 1; }
+				else if (code==5) { alph = 2; }
+				else if (code>5) {
+					var c = zalphabet[alph][code-6];
+					if (c=='*')
+						tenbit = -1;
+					else
+						temp = temp + c;
+					alph = 0;
+				}
+			} else if (tenbit==-1) {
+				tenbit = code;
+			} else {
+				temp = temp + zscii_char_to_ascii(
+					(tenbit<<5) + code);
+				tenbit = -2;
+			}
+		}
+	}
+	if (tell_length) {
+		return [temp, address];
+	} else {
+		return temp;
+	}
+}
+
+// This function is specifically for encoding ASCII to ZSCII to match
+// against dictionary words. It's not (yet) possible to implement
+// encode_text using it.
+function into_zscii(str) {
 	var temp = '';
 	var alph = 0;
 	var running = 1;
