@@ -4,7 +4,7 @@
 
 <!--
 
-$Header: /cvs/gnusto/src/gnusto/content/gnusto.xul,v 1.77 2005/01/28 06:37:58 naltrexone42 Exp $
+$Header: /cvs/gnusto/src/gnusto/content/gnusto.xul,v 1.78 2005/01/28 19:23:56 naltrexone42 Exp $
 
 Copyright (c) 2003 Thomas Thurman
 thomas@thurman.org.uk
@@ -162,8 +162,6 @@ function ensureHappiness() {
 <!-- <menuitem label="Open Guide..." accesskey="G" oncommand="openDialog('guide-wizard.xul');"/> -->
 <menuitem label="Open file..." accesskey="O" oncommand="command_open();"/>
 <menuitem id="restartmenuitem" label="Restart" accesskey="R" disabled="true" oncommand="if (engine != null) { engine.resetStory(); win_relax(); start_up(); glue_play();}" />
-<menuitem id="savemenuitem" label="Save Game" disabled="true" accesskey="S" oncommand="if (engine != null) {engine.answer(0, glue_save());}"/>
-<!-- <menuitem label="Save as..." disabled="true" accesskey="A"/> -->
 <menuseparator/>
 <menuitem id="transcript" label="Start transcript..." accesskey="T" oncommand="command_transcript();"/>
 <menuseparator/>

@@ -1,7 +1,7 @@
 // mozilla-glue.js || -*- Mode: Java; tab-width: 2; -*-
 // Interface between gnusto-lib.js and Mozilla. Needs some tidying.
 // Now uses the @gnusto.org/engine;1 component.
-// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.150 2005/01/28 06:37:59 naltrexone42 Exp $
+// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.151 2005/01/28 19:23:56 naltrexone42 Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -88,6 +88,8 @@ var glue__transcription_streams = [];
 // transcription, we ask the user for a filename. Otherwise we
 // copy the value out of this variable.
 var glue__transcription_saved_target = 0;
+
+var glue__transcription_filename = 0;
 
 // Set of terminating characters. If an integer ZSCII code is
 // a member of this set, then typing the key which gives that
@@ -322,8 +324,7 @@ function command_exec(args) {
 				case GNUSTO_EFFECT_QUIT:
 						if (prefs.getBoolStackablePref('gnusto', '', 'gameoverquit')) {
 								window.close();
-						}
-                                                document.getElementById('savemenuitem').setAttribute('disabled','true');
+						}                                                
 						win_relax();
 						win_show_status("Game over.");
 						break;
@@ -1046,6 +1047,13 @@ function glue__set_transcription(whether) {
 
 				// Turn the story's transcription on.
 
+                                // See if they want to continue logging to the same file or not
+ 				if ((glue__transcription_filename != 0) && (!confirm('Click OK to append this session to ' + glue__transcription_filename + '.\n' +
+ 				    'Click cancel to choose a different filename.'))) {
+ 				  glue__transcription_saved_target = 0;
+ 				  glue__transcription_filename = 0;    	
+ 				}
+
 				if (glue__transcription_saved_target==0) {
 
 						// We don't know where to send the information...
@@ -1066,12 +1074,12 @@ function glue__set_transcription(whether) {
 						var APPEND_CREATE_AND_WRITE_ONLY = 0x1A;
 						var PERMISSIONS = 0600;
 
-						var filename = picker.file.path;
-						filename = filename.replace('\\','\\\\', 'g');
+						glue__transcription_filename = picker.file.path;
+						glue__transcription_filename = glue__transcription_filename.replace('\\','\\\\', 'g');
 
 						try {
 								glue__transcription_saved_target =
-										output_stream(filename,
+										output_stream(glue__transcription_filename,
 																	APPEND_CREATE_AND_WRITE_ONLY,
 																	PERMISSIONS);
 						} catch (e) {
@@ -1095,6 +1103,7 @@ function glue__set_transcription(whether) {
 						return 0;
 				}
 				glue__transcription_on = 0;
+
 
 				return 1;
 		}
@@ -1145,7 +1154,7 @@ function load_from_file(file) {
 	
 		document.getElementById('gnbrowser').setAttribute('hidden','true');
 		document.getElementById('restartmenuitem').setAttribute('disabled','false');				
-		document.getElementById('savemenuitem').setAttribute('disabled','false');
+		
                 glue__command_history = [];
 
 		try {
