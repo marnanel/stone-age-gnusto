@@ -1,5 +1,5 @@
 // -*- Mode: Java; tab-width: 2; -*-
-// $Id: beret.js,v 1.16 2004/01/29 21:41:14 marnanel Exp $
+// $Id: beret.js,v 1.17 2004/02/09 05:35:42 naltrexone42 Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -19,7 +19,7 @@
 
 ////////////////////////////////////////////////////////////////
 
-const CVS_VERSION = '$Date: 2004/01/29 21:41:14 $';
+const CVS_VERSION = '$Date: 2004/02/09 05:35:42 $';
 const BERET_COMPONENT_ID = Components.ID("{ed0618e3-8b2b-4bc8-b1a8-13ae575efc60}");
 const BERET_DESCRIPTION  = "Checks file magic and routes them accordingly";
 const BERET_CONTRACT_ID  = "@gnusto.org/beret;1";
@@ -512,6 +512,25 @@ Module.canUnload = function m_canunload(compMgr) { return true; }
 ////////////////////////////////////////////////////////////////
 
 function NSGetModule(compMgr, fileSpec) {	return Module; }
+
+gnustoBeretInit(); // begin initialization
+
+// Initialization and registration
+function gnustoBeretInit() {
+
+        // this should only trigger when this js is being loaded as a subscript from within
+        // the profile... if it's stored in the components directory, the class will already
+        // be registered so this if will come back false
+	if (typeof(Components.classes[BERET_CONTRACT_ID]) == 'undefined') {
+	
+		// Component registration
+		var compMgr = Components.manager.QueryInterface(Components.interfaces.nsIComponentRegistrar);
+	        var gnustoBeret = new Beret();
+		compMgr.registerFactory(BERET_COMPONENT_ID, BERET_DESCRIPTION, BERET_CONTRACT_ID, gnustoBeret);
+	}
+
+}
+
 
 ////////////////////////////////////////////////////////////////
 

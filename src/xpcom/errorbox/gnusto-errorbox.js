@@ -1,5 +1,5 @@
 // Gnusto: error dialogue control. -*- Mode: Java; tab-width: 2; -*-
-// $Id: gnusto-errorbox.js,v 1.3 2003/12/16 01:42:55 marnanel Exp $
+// $Id: gnusto-errorbox.js,v 1.4 2004/02/09 05:35:42 naltrexone42 Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -20,7 +20,7 @@
 
 ////////////////////////////////////////////////////////////////
 
-const CVS_VERSION = '$Date: 2003/12/16 01:42:55 $';
+const CVS_VERSION = '$Date: 2004/02/09 05:35:42 $';
 const ERRORBOX_COMPONENT_ID = Components.ID("{ec3597d6-e302-437c-aeef-9880448dedca}");
 const ERRORBOX_DESCRIPTION  = "Displays error messages and does logging";
 const ERRORBOX_CONTRACT_ID  = "@gnusto.org/errorbox;1";
@@ -199,6 +199,21 @@ Module.canUnload = function m_canunload(compMgr) { return true; }
 ////////////////////////////////////////////////////////////////
 
 function NSGetModule(compMgr, fileSpec) {	return Module; }
+
+gnustoErrorBoxInit(); // begin initialization
+
+// Initialization and registration
+function gnustoErrorBoxInit() {
+
+	if (typeof(Components.classes[ERRORBOX_CONTRACT_ID ]) == 'undefined') {
+	
+		// Component registration
+		var compMgr = Components.manager.QueryInterface(Components.interfaces.nsIComponentRegistrar);
+	        var gnustoErrorBox = new ErrorBox;
+		compMgr.registerFactory(ERRORBOX_COMPONENT_ID, ERRORBOX_DESCRIPTION, ERRORBOX_CONTRACT_ID, gnustoErrorBox);
+
+
+}
 
 ////////////////////////////////////////////////////////////////
 

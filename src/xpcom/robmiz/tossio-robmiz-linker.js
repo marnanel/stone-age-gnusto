@@ -1,5 +1,5 @@
 // -*- Mode: Java; tab-width: 2; -*-
-// $Id: tossio-robmiz-linker.js,v 1.1 2004/01/30 06:49:49 marnanel Exp $
+// $Id: tossio-robmiz-linker.js,v 1.2 2004/02/09 05:35:42 naltrexone42 Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -19,7 +19,7 @@
 
 ////////////////////////////////////////////////////////////////
 
-const CVS_VERSION = '$Date: 2004/01/30 06:49:49 $';
+const CVS_VERSION = '$Date: 2004/02/09 05:35:42 $';
 
 const ROBMIZ_LINKER_COMPONENT_ID = Components.ID("{478e8d87-3120-46cd-941b-969cf885cdcf}");
 const ROBMIZ_LINKER_DESCRIPTION  = "Linker for Robmiz, a simple assembler.";
@@ -241,6 +241,22 @@ Module.canUnload = function m_canunload(compMgr) { return true; }
 ////////////////////////////////////////////////////////////////
 
 function NSGetModule(compMgr, fileSpec) { return Module; }
+
+gnustoRobmizLinkerInit(); // begin initialization
+
+// Initialization and registration
+function gnustoRobmizLinkerInit() {
+
+	if (typeof(Components.classes[ROBMIZ_LINKER_CONTRACT_ID ]) == 'undefined') {
+	
+		// Component registration
+		var compMgr = Components.manager.QueryInterface(Components.interfaces.nsIComponentRegistrar);
+	        var gnustoRobmizLinker = new Linker();
+		compMgr.registerFactory(ROBMIZ_LINKER_COMPONENT_ID, ROBMIZ_LINKER_DESCRIPTION, ROBMIZ_LINKER_CONTRACT_ID, gnustoRobmizLinker);
+
+
+}
+
 
 ////////////////////////////////////////////////////////////////
 
