@@ -1,4 +1,4 @@
-// $Header: /cvs/gnusto/src/gnusto/content/gnusto-base.js,v 1.1 2004/04/12 03:49:46 marnanel Exp $
+// $Header: /cvs/gnusto/src/gnusto/content/gnusto-base.js,v 1.2 2004/08/01 02:53:18 marnanel Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -38,6 +38,41 @@
 //   - command_open() -- nyi
 //
 ////////////////////////////////////////////////////////////////
+
+function command_open(nolaunch) {
+
+  var ifp = Components.interfaces.nsIFilePicker;
+  var picker = Components.classes["@mozilla.org/filepicker;1"].
+    createInstance(ifp);
+
+  // FIXME: This list should be made from components;
+  // it shouldn't be hard-coded like this.
+  picker.init(window, "Select a story file", ifp.modeOpen);
+  picker.appendFilter("Z-code", "*.z?");
+  picker.appendFilter("Blorb", "*.blb");
+  picker.appendFilter("Glulx", "*.ulx");
+  picker.appendFilter("Saved game", "*.sav; *.qtz");
+  picker.appendFilter("Play-testing script", "*.grimoire");
+				
+  if (picker.show()!=ifp.returnOK) return 0;
+						
+  load_from_file(picker.file);
+
+  if (!nolaunch) {
+    glue_play();
+  }
+
+  return 1;
+
+  // FIXME: At one point we had these lines; something similar
+  // should eventually be re-included here.
+  // filename = picker.file.path;
+  // filename = filename.replace('\\','\\\\', 'g');
+  //if (filename && result==1) {
+  //		sys_notify_of_load(filename);
+  //		sys_show_story_title(filename);
+  //}
+}
 
 ////////////////////////////////////////////////////////////////
 var GNUSTO_BASE_HAPPY = 1;
