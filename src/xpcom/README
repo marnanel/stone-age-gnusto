@@ -1,0 +1,14 @@
+These directories hold the source and interface for each Gnusto component.
+
+NAME     USED?  PURPOSE
+beret    yes    the sorting mechanism for files based on magic numbers
+doer     no     experimental command interface
+engine   yes    the z-code engine (will one day be engine/zcode)
+errorbox yes    shows, formats and logs error messages
+glulx    no     the Glulx engine (will one day be engine/glulx)
+gparams  yes    parameter storage
+replayer yes    plays through files
+robmiz   no     experimental assembler
+screen   no     screen handlers; currently done in chrome
+service  yes    Moz command-line and special MIME types
+
