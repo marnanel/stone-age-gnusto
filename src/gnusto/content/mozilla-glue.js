@@ -1,7 +1,7 @@
 // mozilla-glue.js || -*- Mode: Java; tab-width: 2; -*-
 // Interface between gnusto-lib.js and Mozilla. Needs some tidying.
 // Now uses the @gnusto.org/engine;1 component.
-// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.115 2003/11/16 18:31:02 marnanel Exp $
+// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.116 2003/11/16 21:37:17 marnanel Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -503,7 +503,6 @@ function glue__load_beret_from_args() {
 ////////////////////////////////////////////////////////////////
 
 function glue_init() {
-
 		glue__parse_arguments();
 
 		engine = new Components.Constructor('@gnusto.org/engine;1',
@@ -514,7 +513,12 @@ function glue_init() {
 
 		document.onkeypress=gotInput;
 
+		if ('seed' in glue__arguments && glue__arguments.seed[0]*1!=NaN) {
+				engine.setRandomSeed(glue__arguments.seed * 1);
+		}
+
 		glue__init_burin();
+
 		setTimeout("glue__load_beret_from_args();", 0);
 }
 
