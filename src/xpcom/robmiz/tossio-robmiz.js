@@ -1,5 +1,5 @@
 // -*- Mode: Java; tab-width: 2; -*-
-// $Id: tossio-robmiz.js,v 1.1 2003/11/24 16:23:28 marnanel Exp $
+// $Id: tossio-robmiz.js,v 1.2 2004/01/30 06:46:37 marnanel Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -20,7 +20,7 @@
 
 ////////////////////////////////////////////////////////////////
 
-const CVS_VERSION = '$Date: 2003/11/24 16:23:28 $';
+const CVS_VERSION = '$Date: 2004/01/30 06:46:37 $';
 const ROBMIZ_COMPONENT_ID = Components.ID("{e4064955-7fd1-493f-aa01-0f8ebde7c351}");
 const ROBMIZ_DESCRIPTION  = "Robmiz is a simple assembler.";
 const ROBMIZ_CONTRACT_ID  = "@gnusto.org/robmiz;1";
@@ -47,16 +47,18 @@ const FORM_SHORT = 'fs';
 const FORM_EXT = 'fe';
 const FORM_VAR = 'fv';
 
-////////////////////////////////////////////////////////////////
+const PRIORITY_HEADER = 1;
+const PRIORITY_EARLY = 50;
+const PRIORITY_ROUTINE = 100;
 
-function intinbytes(number, count) {
-		var result = '';
+const FORMAT_BYTEADDRESS = 1;
 
-		for (i=0; i<count; i++) {
-				result = String.fromCharCode(number % 0xFF) + result;
+function int_as_array(number, element_count) {
+		var result = [];
+		while (result.length < element_count) {
+				result.unshift(number & 0xFF);
 				number >>= 8;
 		}
-
 		return result;
 }
 
@@ -72,6 +74,13 @@ function keyword_option(caller, args) {
 
 function keyword_endproc(caller, args) {
 		dump('Endproc\n');
+
+		caller._link_chunk(caller.m_current_routine_name,
+											 PRIORITY_ROUTINE,
+											 caller.m_routines);
+
+		caller.m_current_routine_name = '';
+		caller.m_routines = [];
 }
 
 function keyword_locals(caller, args) {
@@ -200,29 +209,49 @@ Robmiz.prototype = {
 
 	assemble: function r_assemble(asm_file) {
 
-			dump(' ---- assemble\n');
+			try {
+					dump(' ---- assemble\n');
 
-			asm_file.openStreamForReading();
+					asm_file.openStreamForReading();
 
-			this.m_toke_context = CONTEXT_LIMBO;
-			this.m_toke_current_line = [];
-			this.m_toke_current_atom = '';
+					this.m_toke_context = CONTEXT_LIMBO;
+					this.m_toke_current_line = [];
+					this.m_toke_current_atom = '';
 
-			this.m_routines = '';
+					this.m_current_routine_name = '.bootstrap';
+					this.m_routines = [];
 
-			while (!(asm_file.eof())) {
-					var line = {};
-					asm_file.read(line, READ_BLOCK_SIZE);
-					this._tokenise(line.value.substring(0,READ_BLOCK_SIZE));
+					this.m_linker = Components.Constructor("@gnusto.org/robmiz/linker;1",
+																								 "gnustoILinker")();
+
+					while (!(asm_file.eof())) {
+							var line = {};
+							asm_file.read(line, READ_BLOCK_SIZE);
+							this._tokenise(line.value.substring(0,READ_BLOCK_SIZE));
+					}
+
+					for (i in this.m_options) {
+							dump(i); dump('='); dump(this.m_options[i]);
+							dump('\n');
+					}
+
+					this._link_chunk('.header', PRIORITY_HEADER, this._header());
+					this._link_main_chunk('.abbrevs', PRIORITY_EARLY+1, this._abbrevs(), 0x18);
+					this._link_main_chunk('.propdefaults', PRIORITY_EARLY+2, this._propdefaults(), 0x0A);
+					this._link_chunk('.objects', PRIORITY_EARLY+3, this._objects());
+					this._link_chunk('.objprops', PRIORITY_EARLY+4, this._objprops());
+					this._link_main_chunk('.globals', PRIORITY_EARLY+5, this._globals(), 0x0C);
+					this._link_main_chunk('.dictionary', PRIORITY_EARLY+6, this._dictionary(), 0x08);
+
+					this._write_out_zcode();
+					dump(' ---- assemble: done\n');
+			} catch(e) {
+					try {
+							this._error(e);
+					} catch (e) {
+							this._error('internal error');
+					}
 			}
-
-			for (i in this.m_options) {
-					dump(i); dump('='); dump(this.m_options[i]);
-					dump('\n');
-			}
-
-			this._write_out_zcode();
-			dump(' ---- assemble: done\n');
 
 	},
   
@@ -363,6 +392,11 @@ Robmiz.prototype = {
 	},
 
 	_set_label: function r_set_label(name) {
+
+			if (name[0]=='$') {
+					this._start_routine(name.substring(1,name.length-1));
+			}
+
 			dump('(Setting ');
 			dump(name);
 			dump(' to ');
@@ -437,7 +471,8 @@ Robmiz.prototype = {
 			dump(opcode.toString(16));
 			dump(')\n');
 
-			this.m_routines += String.fromCharCode(opcode);
+			this.m_routines.splice(this.m_routines.length, 0,
+														 opcode);
 
 
 			for (k in format[1]) {
@@ -452,29 +487,47 @@ Robmiz.prototype = {
 			this.m_messages += 'robmiz:'+this.m_filename+':'+this.m_line_number+': '+message+'\n';
 	},
 
+	_start_routine: function r_start_routine(name) {
+			if (this.m_routines.length!=0) {
+					keyword_endproc(this, []);
+			}
+
+			this.m_current_routine_name = name;
+	},
+
+	_link_chunk: function r_link_chunk(name, priority, contents) {
+			this.m_linker.addChunk(name, priority, contents.length, contents);
+	},
+
+	_link_main_chunk: function r_link_chunk(name, priority, contents, header_field) {
+			this._link_chunk(name, priority, contents);
+			this.m_linker.addFixup('.header', header_field, name, 0, FORMAT_BYTEADDRESS);
+	},
+
 	_write_out_zcode: function r_write_zcode() {
 			if ('output' in this.m_options) {
-					var stream = new Components.Constructor('@mozilla.org/filespec;1',
-																									'nsIFileSpec')();
+					var localfile= new Components.Constructor("@mozilla.org/file/local;1",
+																										"nsILocalFile",
+																										"initWithPath")(this.m_options.output);
+					var o = Components.Constructor('@mozilla.org/network/file-output-stream;1',
+																				 'nsIFileOutputStream',
+																				 'init')(
+																								 localfile,
+																								 10,
+																								 0600,
+																								 0);
+					var stream = Components.Constructor("@mozilla.org/binaryoutputstream;1",
+																							"nsIBinaryOutputStream",
+																							"setOutputStream")(o);
 
-					stream.nativePath = this.m_options.output;
-					stream.openStreamForWriting();
+					var q = this.m_linker.resultLength();
+					dump(q); dump(' rL\n');
+					objectFile = this.m_linker.resultData(q);
 
-					var dictionary = this._dictionary();
+					stream.writeByteArray(objectFile, objectFile.length);
 
-					var output = dictionary + this.m_routines;
-					output = this._header((output.length+64)/4,
-																64,
-																64 + dictionary.length) + output;
+					stream.close();
 
-					if (output.length < 1024) {
-							// infodump freaks out if the length is under 1K
-							output += intinbytes(0, 1024-output.length);
-					}
-
-					stream.write(output, output.length);
-
-					stream.closeStream();
 			} else {
 					this._error('No output filename given.');
 			}
@@ -486,41 +539,52 @@ Robmiz.prototype = {
 			var staticbase = 64;
 			var release = 177;
 
-			var header = intinbytes(  5, 1) + // version
-			intinbytes(  0, 1) + // flags 1
-			intinbytes(release, 2) + // release number
-			intinbytes(highmem, 2) + // base of high memory
-			intinbytes(codestart, 2) + // address of bootstrap
-			intinbytes(dictstart, 2) + // address of dictionary
-			intinbytes(  0, 2) + // address of objects
-			intinbytes(  0, 2) + // address of globals
-			intinbytes(staticbase, 2) + // base of static memory
-			intinbytes(  0, 1) + // flags 2
-			intinbytes(  0, 1) + // --
-			'SERIAL'+
-			intinbytes(  7, 2) + // address of abbrs
-			intinbytes(filelen, 2) + // length of file
-			intinbytes( 99, 2) + // checksum
-			intinbytes(177,11) + // terp number, version, screen & font size
-			intinbytes(  1, 2) + // routines
-			intinbytes(  2, 2) + // static strings
-			intinbytes(  3, 2) + // --
-			intinbytes(  4, 2) + // terminating chars table
-			intinbytes(  0, 7) + // --
-			'Gnusto0x';
+			var header = [5, // version
+										0, // flags 1
+										0, 0, // release number
+										0, 0, // base of high memory
+										0, 0, // address of bootstrap
+										0, 0, // address of dictionary
+										0, 0, // address of objects
+										0, 0, // address of globals
+										0, 0, // base of static memory
+										0, 0, // flags 2
+										0x73, 0x65, 0x72, 0x69, 0x61, 0x6c, // serial
+										0, 0, // address of abbrs
+										0, 0, // length of file
+										0, 0, // checksum
+										0,0,0,0,0,0,0,0,0,0,177, // terp number, version, screen & font size
+										0, 0, // routines
+										0, 0, // static strings
+										0, 0, // --
+										0, 0, // terminating chars table
+										0, 0, // --
+										99, 99, 99, 99, 99, // marnanel padding -- fix later
+										0x47, 0x6e, 0x75, 0x73, 0x74, 0x6f, 0x30, 0x78]; // Gnusto0x
 
 			if (header.length!=64) {
+					dump(header.length);
 					this._error('header is a bad length');
 			}
 
 			return header;
 	},
 
+	_abbrevs: function r_abbrevs() { return [0x46, 0x4F, 0x4F, 0x21]; }, // Arbitrary, I think
+
+	_propdefaults: function r_propdefaults() {
+			return int_as_array(0, 63*2);
+	},
+
+	_objects: function r_abbr3() { return []; }, // Minimal! FIXME!
+	_objprops: function r_abbr4() { return []; }, // Minimal! FIXME!
+	_globals: function r_abbr5() {
+			return int_as_array(0, 239*2);
+	}, // Minimal! FIXME!
+
 	_dictionary: function r_dictionary() {
 			// Minimal dictionary
-			return intinbytes(0, 1) +
-			intinbytes(177, 1) +
-			intinbytes(0, 2);
+			return [0, 177, 0, 0];
 	},
 	
   ////////////////////////////////////////////////////////////////
@@ -540,9 +604,12 @@ Robmiz.prototype = {
 	m_toke_current_line: [],
 	m_toke_current_atom: '',
 
-	m_routines: '',
+	m_current_routine_name: undefined,
+	m_routines: [],
 
 	m_options: {},
+
+	m_linker: undefined,
 };
 
 ////////////////////////////////////////////////////////////////
