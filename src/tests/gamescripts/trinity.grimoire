@@ -9,7 +9,6 @@ meta.name=Trinity
 # It's not an acceptable long-term solution.
 
 open=gamescripts/stdspells.h
-
 open=/home/marnanel/proj/gnusto/testrigs/trinity.z4
 
 #
@@ -55,6 +54,8 @@ act=get gnomon
 act=examine missile
 act=e
 act=e
+# End of the first act, so we have to press Enter to get past
+# the splash screen.
 act=
 act=n
 act=ne
