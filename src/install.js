@@ -1,6 +1,6 @@
 // install.js - installation script
 //   Heavily based on ForumZilla's install.js.
-// $Header: /cvs/gnusto/src/install.js,v 1.7 2003/08/29 07:07:52 naltrexone42 Exp $
+// $Header: /cvs/gnusto/src/install.js,v 1.8 2003/08/31 23:28:29 naltrexone42 Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -26,7 +26,7 @@ try {
     // initialize the install with the package name and version
     var err = initInstall("Gnusto Z-machine",
 			  "gnusto",
-			  "0.5.0");
+			  "0.6.0");
     if (err) throw ('initInstall: ' + err);
 
     // prepare to install package directory onto user's computer
