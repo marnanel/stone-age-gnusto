@@ -1,5 +1,5 @@
 // -*- Mode: Java; tab-width: 2; -*-
-// $Id: beret.js,v 1.5 2003/10/18 05:50:21 marnanel Exp $
+// $Id: beret.js,v 1.6 2003/10/27 00:25:50 marnanel Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -20,7 +20,7 @@
 
 ////////////////////////////////////////////////////////////////
 
-const CVS_VERSION = '$Date: 2003/10/18 05:50:21 $';
+const CVS_VERSION = '$Date: 2003/10/27 00:25:50 $';
 const BERET_COMPONENT_ID = Components.ID("{ed0618e3-8b2b-4bc8-b1a8-13ae575efc60}");
 const BERET_DESCRIPTION  = "Checks file magic and routes them accordingly";
 const BERET_CONTRACT_ID  = "@gnusto.org/beret;1";
@@ -143,10 +143,52 @@ Beret.prototype = {
 
 								// FIXME: We also don't check this yet. We should. We will.
 
-								this.m_filetype = 'ok saved quetzal z5';
+								dump(iff_details);
 
-								this.m_engine.loadSavedGame(content.length,
-																						content);
+								var umem = 0;
+								var stks = 0;
+								var pc = 0;
+
+								for (var i=1; i<iff_details.length; i++) {
+										var tag = iff_details[i][0];
+										if (tag=='IFhd') {
+												// FIXME: We should check the signature, too.
+												var pc_location = iff_details[i][1]+10;
+												pc = content[pc_location]<<16 |
+														content[pc_location+1]<<8 |
+														content[pc_location+2];
+												dump('(got pc: ');
+												dump(pc.toString(16));
+												dump(')\n');
+										} else if (tag=='Stks') {
+												if (stks!=0) {
+														dump('fixme: error: multiple Stks\n');
+												}
+												stks = content.slice(iff_details[i][1],
+																						 iff_details[i][2]+iff_details[i][1]);
+										} else if (tag=='CMem') {
+												dump('*** CMem: can\'t handle this yet ***\n');
+										} else if (tag=='UMem') {
+												if (umem!=0) {
+														dump('fixme: error: multiple Umem\n');
+												}
+												umem = content.slice(iff_details[i][1],
+																						 iff_details[i][2]+iff_details[i][1]);
+										}
+								}
+
+								if (umem==0) {
+										dump('fixme: error: no memory in quetzal\n');
+								} else if (stks==0) {
+										dump('fixme: error: no stacks in quetzal\n');
+								} else if (pc==0) {
+										dump('fixme: error: no header in quetzal\n');
+								} else {
+										this.m_filetype = 'ok saved quetzal z5';
+										this.m_engine.loadSavedGame(umem.length, umem,
+																								stks.length, stks,
+																								pc);
+								}
 
 						} else if (iff_details[0]=='IFRS') {
 
