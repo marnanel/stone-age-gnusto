@@ -573,6 +573,7 @@ function cleanHouse()
     unreg.removePrefs('gnusto');  
     deleteThisFolder("AChrom",'gnusto'); 
     deleteThisFolder("UChrom",'gnusto');	
+    deleteThisFolder("AppRegD",'registry.dat');    
     deleteThisFolder("ComsD",'beret.js');  
     deleteThisFolder("ComsD",'beret.xpt');
     deleteThisFolder("ComsD",'gnusto-baroco.js');    
