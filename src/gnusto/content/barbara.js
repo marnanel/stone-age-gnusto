@@ -1,7 +1,7 @@
 // barbara.js || -*- Mode: Java; tab-width: 2; -*-
 // Lightweight lower-window handler.
 //
-// $Header: /cvs/gnusto/src/gnusto/content/barbara.js,v 1.27 2004/09/29 15:56:11 naltrexone42 Exp $
+// $Header: /cvs/gnusto/src/gnusto/content/barbara.js,v 1.28 2004/09/29 16:28:50 naltrexone42 Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -245,7 +245,7 @@ function barbara_print_status() {
 	        }	
 }
 function barbara_get_input() {
- 	        
+ 	        //barbara_print_status();
 		return [
 						barbara__before_cursor.childNodes[0].data,
 						barbara__after_cursor.childNodes[0].data,
@@ -345,6 +345,7 @@ function barbara_relax() {
 
 				// This implies collapsing the upper screen (see bug 4050).
 				bocardo_collapse();
+				barbara_print_status();
 		}
 }
 
