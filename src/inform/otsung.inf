@@ -14,6 +14,14 @@ Constant MAGIC_END_TEST              = 2;
 Constant MAGIC_EXECUTE_JAVASCRIPT    = 3;
 
 [Magic subfunc args result;
+    ! When Gnusto is in testing mode, opcode EXT:177 is "@magic",
+    ! which performs various testing functions for us.
+    ! When it's not, the opcode does nothing.
+    !
+    ! * This isn't yet supported by Gnusto. It will be soon. *
+    !
+    ! txd gets confused with this routine, and prints it as "data"
+    ! rather than as code. But that's OK, because it's short.
     @"EXT:177S" subfunc args -> result;
     return result;
 ];
@@ -21,7 +29,7 @@ Constant MAGIC_EXECUTE_JAVASCRIPT    = 3;
 [Run_Tests;
 
     ! Say we're starting...
-    Magic(1, 0);    
+    Magic(MAGIC_BEGIN_TEST, 0);    
 ];
 
 [Check_Interpreter;
