@@ -1,5 +1,5 @@
 // -*- Mode: Java; tab-width: 2; -*-
-// $Id: beret.js,v 1.20 2005/02/09 07:17:45 naltrexone42 Exp $
+// $Id: beret.js,v 1.21 2005/02/09 07:29:30 naltrexone42 Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -19,7 +19,7 @@
 
 ////////////////////////////////////////////////////////////////
 
-const CVS_VERSION = '$Date: 2005/02/09 07:17:45 $';
+const CVS_VERSION = '$Date: 2005/02/09 07:29:30 $';
 const BERET_COMPONENT_ID = Components.ID("{ed0618e3-8b2b-4bc8-b1a8-13ae575efc60}");
 const BERET_DESCRIPTION  = "Checks file magic and routes them accordingly";
 const BERET_CONTRACT_ID  = "@gnusto.org/beret;1";
@@ -190,8 +190,19 @@ Beret.prototype = {
 											
 												// validate that saved game release number matches loaded game	
 												var release_num_location = iff_details[i][1];
-												if ((!this.m_engine) || (this.m_engine.getByte(0x02) != content[release_num_location]) || (this.m_engine.getByte(0x03) != content[release_num_location+1])){
-												    //The save game isn't for the currently loaded game. Bail out.
+												var serial_num_location = iff_details[i][1]+2;
+												if (
+												 // if no game is loaded...
+												(!this.m_engine) || 
+												 // or the game has a different release number...
+												(this.m_engine.getByte(0x02) != content[release_num_location]) || (this.m_engine.getByte(0x03) != content[release_num_location+1]) ||
+												 // or the game has a different serial number...
+												(this.m_engine.getByte(0x12) != content[serial_num_location]) || (this.m_engine.getByte(0x13) != content[serial_num_location+1]) ||
+												(this.m_engine.getByte(0x14) != content[serial_num_location+2]) || (this.m_engine.getByte(0x15) != content[serial_num_location+3]) ||
+												(this.m_engine.getByte(0x16) != content[serial_num_location+4]) || (this.m_engine.getByte(0x17) != content[serial_num_location+5])
+												// w\We should also validate checksum, but I don't believe we store this if a game is too old to have one.  So let's not risk it.																								
+												){
+												    //The save game isn't for the currently loaded game.  Bail out.
 												    this.m_filetype = 'mismatch';
 												    break;
 												}			
