@@ -6,15 +6,26 @@
 
 <p>gnusto-lib.js will be renamed to felapton.js at some point.</p>
 
-<p>The identifier prefixes for gnusto-lib are:</p>
+<h2>An overview of Felapton's operation</h2>
+
+<p><b>JIT compilation:</b> Gnusto is a virtual machine (a Z-machine) running on a virtual machine (Mozilla's JavaScript engine), just as a Z-machine <a href="http://www.inform-fiction.org/zmachine/emacs.html">for Emacs</a> <a href="http://www.inform-fiction.org/zmachine/java.html">or Java</a> is. However, Gnusto uses an interesting technique called <a href="http://whatis.techtarget.com/definition/0,,sid9_gci212423,00.html">just in time compilation</a>-- it does not <em>interpret</em> Z-code at all, but rather <em>compiles</em> it down to JavaScript functions. Strings of opcodes are converted to JavaScript function objects, which are stored in an array and executed the next time without having to re-read the code.</p>
+
+<p><b>Execution cycle:</b> After Felapton is set up, the user calls its <code>go</code> method with a dummy parameter. Felapton will then go off and do its work. <code>go()</code> will return when:</p>
+
 <ul>
-<li>Most identifiers are not prefixed.</li>
-<li><code>engine</code>, in newer identifiers.</li>
-<li>The handler function for the opcode <code>@<var>foo</var> is named <code>Z_<var>foo</var></code>.</li>
-<li>JIT functions constructed by gnusto-lib are named <code>J<var>pc</var></code>, where <var>pc</var> is the value of the program counter at the start of the function.</li>
+<li><b>The machine needs input</b> of some kind from the user.</li>
+<li><b>The machine needs to affect the outside world</b> somehow: it may want to save, restore, restart, quit, verify the game's integrity, make a sound, move the cursor, and so on. Simple writes to screen or transcript don't cause such breaks; for those, see below.
+<li><b>The machine has done a certain amount of work.</b> To allow for UI updates, and to let the system break infinite loops, <code>go()</code> will return after a few thousand opcodes whatever happens. This is called "wimping out".</li>
+<li><b>The machine hit a breakpoint</b> (if you're <a href="tossio.html">debugging</a>).</li>
 </ul>
 
-<h2>An overview of Felapton's operation</h2>
+<p>The return value of <code>go()</code> is known as an "effect". All effects have symbolic names of the form <code>GNUSTO_EFFECT_</code>*.</p>
+
+<p>For some effects, Felapton needs an answer. (For example, when it stops for user input, it needs to know what the input was.) You should supply the answer as the parameter of <code>go()</code> next time you call it; if the effect you were given doesn't need an answer, just supply 0.</p>
+
+<p><b>Simple writes to screen or transcript</b> don't cause <code>go()</code> to return. Instead, they get stored in a buffer ready to be read the next time the machine stops; when it does, you should call <code>engine_console_text()</code> and <code>engine_transcript_text()</code> to see what you should print. See the descriptions of those functions below.</p>
+
+<p><b>The future:</b> All JIT data is lost when Gnusto is closed. We should cache it somehow (can functions be serialised?) so that games play faster after the first time.</p>
 
 <h2>Exported functions</h2>
 
@@ -31,5 +42,15 @@
 <h3>engine_console_text, engine_transcript_text</h3>
 
 <h3>engine_effect_parameters</h3>
+
+<h2>Identifier prefixes</h2>
+
+<p>The identifier prefixes for gnusto-lib are:</p>
+<ul>
+<li>Most identifiers are not prefixed.</li>
+<li><code>engine</code>, in newer identifiers.</li>
+<li>The handler function for the opcode <code>@<var>foo</var> is named <code>Z_<var>foo</var></code>.</li>
+<li>JIT functions constructed by gnusto-lib are named <code>J<var>pc</var></code>, where <var>pc</var> is the value of the program counter at the start of the function.</li>
+</ul>
 
 <p align="right"><a href=".">Other bits of the code</a></p>
