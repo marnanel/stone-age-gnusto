@@ -1,7 +1,7 @@
 // mozilla-glue.js || -*- Mode: Java; tab-width: 2; -*-
 // Interface between gnusto-lib.js and Mozilla. Needs some tidying.
 // Now uses the @gnusto.org/engine;1 component.
-// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.131 2003/12/29 02:42:09 marnanel Exp $
+// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.132 2004/01/19 03:29:22 marnanel Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -625,6 +625,7 @@ function output_stream(filename, mode, permissions) {
 ////////////////////////////////////////////////////////////////
 
 function glue_init() {
+		try {
 		glue__parse_arguments();
 
 		if ('output' in glue__arguments) {
@@ -698,6 +699,10 @@ function glue_init() {
 				getService(Components.interfaces.gnustoIErrorBox);
 
 		setTimeout("glue__set_up_engine_from_args();", 0);
+		}catch(ex) {
+				alert(ex);
+				errorbox.alert(999, String(ex));
+		}
 }
 
 ////////////////////////////////////////////////////////////////
@@ -1009,7 +1014,23 @@ function quitGame() {
     window.close();
 }
 
-function gnusto_error(n) { errorbox.alert(n, 'fromtop'); }
+function gnusto_error(n) {
+		if ((typeof errorbox)=='object') {
+				errorbox.alert(n, 'fromtop');
+		} else {
+				// We don't have the standard error-reporting component;
+				// cope as best we can.
+				var message = 'Gnusto error';
+
+				for (var i=0; i<arguments.length; i++) {
+						if (arguments[i] && arguments[i].toString) {
+								message += '\n' + arguments[i].toString();
+						}
+				}
+
+				alert(message);
+		}
+}
 
 // Here we ask for a filename if |whether|, and we don't
 // already have a filename. Returns 0 if transcription
@@ -1362,7 +1383,6 @@ function glue_restore() {
 				return 0;
 		}
 }
-
 ////////////////////////////////////////////////////////////////
 MOZILLA_GLUE_HAPPY = 1;
 ////////////////////////////////////////////////////////////////
