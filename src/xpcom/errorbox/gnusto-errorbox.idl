@@ -1,0 +1,24 @@
+#include "nsISupports.idl"
+
+[scriptable, uuid(ec3597d6-e302-437c-aeef-9880448dedca)]
+interface gnustoIErrorBox : nsISupports
+{
+
+  // Puts up a dialogue box with a message in it.
+  //
+  // |code|    -- the Gnusto error code for the error.
+  //              These are listed at <http://gnusto.mozdev.org/errors.html>.
+  // |details| -- extra stuff to add in.
+  //              (For example, the engine typically adds the VM's call stack.)
+  void alert(in short code, in string details);
+
+  // Prints one line of logging information, if that's turned on.
+  // |department| -- the area of interest.
+  // |details|    -- what you need to know about it.
+  void burin(in string department, in string details);
+
+  // Sets whether to ignore transient errors.
+  // Default is not to.
+  void ignoreTransientErrors(in short whether);
+
+};
