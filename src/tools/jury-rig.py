@@ -1,11 +1,15 @@
-# maker.py $Id: jury-rig.py,v 1.1 2003/10/14 02:13:07 marnanel Exp $
+# $Id: jury-rig.py,v 1.2 2003/10/15 05:07:29 marnanel Exp $
 # Program to update all Gnusto components.
 # Licensed under the same terms as Gnusto itself.
 # Copyright (c) 2003, Thomas Thurman
 
+# TODO: This currently only updates XPCOM stuff.
+# It would be good if it also updated the chrome.
+
 import os.path
 import ConfigParser
 import sys
+import shutil
 
 verbose = 1
 
@@ -47,19 +51,18 @@ def is_good_idl_includes(dir):
 def is_good_xpidl_compiler(filename):
     return os.path.exists(filename) and os.popen3(filename)[2].read().find('nsIThing')!=-1
 
+################################################################
+
 def configuration():
     filename = os.path.expanduser('~/.gnusto-make.rc')
-
-    output('Loading results from '+filename+'... ')
 
     conf = ConfigParser.ConfigParser()
 
     if os.path.exists(filename):
-        output('ok\n')
 
         conf.read(filename)
     else:
-        output("not found.\nOK, we'll create one.\n\n")
+        output(filename+' not found.')
 
         conf.add_section('make')
         conf.set('make', 'makeversion', 1)
@@ -187,7 +190,46 @@ def configuration():
 
     return conf
 
-def walker(arg, dirname, filenames):
+################################################################
+
+def stale(original, derivative):
+    """Returns 1 if the file named |original| is newer than the
+    file named |derivative|."""
+
+    if os.path.exists(derivative) and (os.path.getmtime(original) <= os.path.getmtime(derivative)):
+        return 0
+    else:
+        return 1
+
+def maybe_copy(settings, dir, source):
+    components = settings.get('make', 'components')
+    target = os.path.join(components, source)
+    source = os.path.join(dir, source)
+
+    if stale(source, target):
+        output("Copying "+source+" to "+target+"... ")
+        shutil.copy(source, target)
+        output("done.\n")
+          
+def maybe_compile(settings, dir, source):
+    components = settings.get('make', 'components')
+    target = os.path.join(components, source[:-4]+'.xpt')
+    source = os.path.join(dir, source)
+
+    if stale(source, target):
+        xpidl = settings.get('make', 'xpidlcompiler')
+        inclusions = settings.get('make', 'idlinclude')
+
+        command = xpidl+ ' -m typelib -w -v -I'+inclusions+' -e '+target+' '+source
+        output(command+'\n');
+        result = os.system(command)
+        if result!=0:
+            print "The XPIDL compiler returned a failure code: "+`result`+"."
+            sys.exit(1)
+
+################################################################
+
+def walker(settings, dirname, filenames):
 
     if dirname.endswith('CVS'):
         # Ignore CVS data
@@ -195,9 +237,9 @@ def walker(arg, dirname, filenames):
     
     for name in filenames:
         if name.endswith('.js'):
-            output('Copying JS: '+name+'\n')
+            maybe_copy(settings, dirname, name)
         elif name.endswith('.idl'):
-            output('Compiling IDL: '+name+'\n')
+            maybe_compile(settings, dirname, name)
 
 try:
     settings = configuration()
@@ -206,11 +248,13 @@ try:
     xpcom = os.path.join(xpcom, 'src')
     xpcom = os.path.join(xpcom, 'xpcom')
 
-    os.path.walk(xpcom, walker, None)
+    os.path.walk(xpcom, walker, settings)
     
 except KeyboardInterrupt:
     print
     print 'Ctrl-C pressed. Goodbye.'
+except SystemExit:
+    pass # ignore
 except:
     print
     print '\aSomething went wrong. Probably our fault, not yours.'
