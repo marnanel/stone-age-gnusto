@@ -1,7 +1,7 @@
 // mozilla-glue.js || -*- Mode: Java; tab-width: 2; -*-
 // Interface between gnusto-lib.js and Mozilla. Needs some tidying.
 // Now uses the @gnusto.org/engine;1 component.
-// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.146 2004/10/02 22:21:31 naltrexone42 Exp $
+// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.147 2005/01/24 23:12:50 naltrexone42 Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -1106,14 +1106,18 @@ function command_transcript() {
 
     var menuItem = document.getElementById("transcript");
 
-		var flags = zGetByte(0x10);
+                if (engine!=null) {
+		  var flags = zGetByte(0x10);
+		} else {
+		  var flags = glue__transcription_on;	                             
+		}
 
 		if (flags & 1) {
 
 				// Transcription's on; turn it off.
 
 				alert('Turning transcription off now.');
-				zSetByte(flags & ~0x1, 0x10);
+				if (engine!=null) {zSetByte(flags & ~0x1, 0x10);}
 				glue__set_transcription(0);
 				menuItem.setAttribute('label','Start transcript...');
 
@@ -1121,7 +1125,7 @@ function command_transcript() {
 
 				alert('Turning transcription on.');
 
-				zSetByte(flags | 0x1, 0x10);
+				if (engine!=null) {zSetByte(flags | 0x1, 0x10);}
 				glue__set_transcription(1);
 				menuItem.setAttribute('label', 'Stop Transcript');
 		}
@@ -1269,6 +1273,13 @@ function load_from_file(file) {
 								//    6   Want sound effects    CLEAR
 								//  7 MSB Want menus (v6 only)  leave  : AND with 0x57
 								engine.setByte(engine.getByte(0x10) & 0x57, 0x10);
+								
+								// If transcription was turned on before a game
+								// was loaded, set the flag appropriately
+								if (glue__transcription_on==1) {
+								  engine.setByte(engine.getByte(0x10) | 0x1, 0x10);
+								}
+
 								
 								// It's not at all clear what architecture
 								// we should claim to be. We could decide to
