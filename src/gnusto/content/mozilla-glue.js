@@ -1,7 +1,7 @@
 // mozilla-glue.js || -*- Mode: Java; tab-width: 2; -*-
 // Interface between gnusto-lib.js and Mozilla. Needs some tidying.
 // Now uses the @gnusto.org/engine;1 component.
-// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.121 2003/11/18 04:59:43 marnanel Exp $
+// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.122 2003/11/18 15:52:29 marnanel Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -550,6 +550,10 @@ function glue__set_up_engine_from_args() {
 		if ('seed' in glue__arguments && glue__arguments.seed[0]*1!=NaN) {
 				engine.setRandomSeed(glue__arguments.seed * 1);
 				engine.setRandomSeed(glue__arguments.seed * 1);
+		}
+
+		if ('copper' in glue__arguments) {
+				engine.setCopperTrail(1);
 		}
 
 		if (engine!=0) {
