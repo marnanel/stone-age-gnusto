@@ -1,0 +1,75 @@
+<h1 class="page-header">Gnusto 0.4.0 Release Notes</h1>
+
+<p>  The purpose of this document is to provide testers and end-users with the information they need to install and use the latest version of Gnusto.  It also provides a quick summary of new features, bugfixes, and known issues.  We'll do our best to update this document based on any feedback we may receive, so please report any errors or omissions to <a href="mailto:gnusto@mozdev.org">gnusto@mozdev.org</a>.  Please report any bugs you may find in <a href="http://gnusto.mozdev.org/bugs.html">bugzilla</a>.  Checking for duplicates before submitting a bug report is appreciated.</p>  
+
+<p><b>Important!</b> Gnusto 0.4.0 still requires its story files to be in the <a href="http://gnusto.mozdev.org/nullbytes.html">mangled z-code</a> format.  Please see the first note under Known Issues for details.</p>
+
+<h4>What's New in Gnusto 0.4.0?</h4>
+
+<p>Gnusto 0.4.0 features <a href="http://mozdev.org/bugs/buglist.cgi?&chfield=resolution&chfieldfrom=03-23-2003&chfieldto=04-17-2003&chfieldvalue=FIXED&product=gnusto">many</a> bugfixes and enhancements over 0.3.0 and should be usable to play most Version-5 Z-Code games correctly.  Here are the highlights:</p>
+
+<ul>
+  <li>Total redesign of the way the game screen is modeled (bug <a href="http://mozdev.org/bugs/show_bug.cgi?id=3461">3461</a>)-- this allows many upper-window 
+  features like boxes and cursor positioning to work properly.  This dramatically increased the
+  number of games that are reasonably playable under Gnusto.</li>
+  <li>Substantially improved color handling (bugs <a href="http://mozdev.org/bugs/show_bug.cgi?id=3456">3456</a>, <a href="http://mozdev.org/bugs/show_bug.cgi?id=3460">3460</a>, <a href="http://mozdev.org/bugs/show_bug.cgi?id=3590">3590</a>)--
+  games that rely heavily on color (Photopia, for example) now look essentially correct.</li>
+  <li>Added support for (or greatly improved handling of) many opcodes, including @erase_window, @print_table,
+  @throw, @catch, @load, @sound_effect (beep only), @copy_table, @log_shift, @art_shift, and @random (now with seeding!).</li>
+  <li>Added a preliminary front-end for BAF's Guide to the default Gnusto window.</li> 
+  <li>Lots of bugfixes and tweaks, many of which aren't actually documented in Bugzilla even though they ought to be.</li>
+</ul>
+
+<h4>Known Issues</h4>
+
+<p>Gnusto is very much a work in progress and many known issues remain.  If Gnusto is giving you trouble, it's a good idea to consult 
+this list.  If the issue is not on the list, please check <a href="http://gnusto.mozdev.org/bugs.html">bugzilla</a>.  If it's not in bugzilla, please file a bug and we'll see what we can do to help.</p>
+
+<ul>
+  <li>Prior to the 1.4 builds of Mozilla, there was no good interface for loading a binary file in Javascript.  We intend
+    to support the new methods (and provide slow but functional legacy methods for older Mozilla builds) that will allow the
+    loading of unmodified z-code files.  However, 0.4.0 still requires story files to be pre-processed into a javascript-friendly
+    format (mangled z-5). There are simple utilities to perform this conversion, available (along with instructions) 
+    <a href="http://gnusto.mozdev.org/nullbytes.html">here</a>.</li>
+  <li>Custom unicode translation tables are not yet supported.  Neither are custom alphabet tables.  These are typically used by
+    non-English story files, and affected files may be difficult or impossible to play.  Both of these features are targeted for 0.5.0.   </li>
+  <li>The new screen model has indeed slowed down the interpreter.  We are working to address this, but it shouldn't be a show-stopper
+    for most users on most games.  Notable exceptions are upper-window-only games like zRogue and SpaceZ.  These are effectively 
+    unplayable for the time being.
+  </li>
+  <li> There are still a handful of unimplemented and not-fully-implemented opcodes.  They aren't commonly used, but it's possible
+    that some story files will not function without them.
+  </li>
+  <li>
+    Gnusto does not yet honor the fixed-width or transcription bits in the header.
+  </li>
+</ul>
+
+<h4>Compatibility Info</h4>
+
+<p> Currently Gnusto only supports Version-5 Z-code files.  Version-8 support should be fairly straightforward and will likely show
+  up sooner rather than later.  Support for other versions is on the agenda but is a lower priority than getting Version-5 support 
+  completely working.  Gnusto will notify you if you attempt to load a non-Version-5 file.</p>
+
+<h4>Version History</h4>
+
+<ul>
+  <li>Gnusto 0.3.0 (23 March 2003):  Added support for Mozilla 1.3, improved error handling.</li>
+  <li>Gnusto 0.2.0 (04 March 2003):  Allowed the loading of arbitrary (mangled) z-code files.</li>
+  <li>Gnusto 0.1.0 (04 February 2003):  Hardcoded to run an embedded, mangled copy of "Troll's Eye View".</li>
+  <li>Blorple 0.0.2 (23 December 2002):  Proof of concept demo.</li>
+  <li>Blorple 0.0.1:  Proof of concept demo.</li>    
+</ul>
+            
+
+<h4>Installation Notes</h4>
+
+<p>Click on the install link on the <a href="http://gnusto.mozdev.org/installation.html">installation</a> page, then restart the browser once the installation is complete.  "Interactive Fiction" will now show up in the Tool menu and will invoke Gnusto when selected.</p>
+
+<p> If you're feeling brave (or are just impatient to get the latest bugfix), you can always pull the latest source from <a href="http://gnusto.mozdev.org/source.html">CVS</a>.  If you've previously installed a recent version of Gnusto, you can simply delete the existing gnusto directory under mozilla\chrome and replace it with a copy of the gnusto subdirectory from gnusto\src.  Restart the browser and you're good to go.  It's worth noting, however, that pulling the latest source from CVS can easily land you with a non-working copy of Gnusto.  Try at your own risk.</p>
+
+<h4>Uninstalling</h4>
+
+<p>Currently, there is no automated way to uninstall Gnusto.  Simply deleting the gnusto directory under mozilla\chrome then restarting the browser does a fairly decent job of uninstalling the product.  But it leaves nasty residue behind, so purging all gnusto-related entries from chrome.rdf is probably wise also.  Yes, we're aware it's not a very good solution.  We'll try to work up something easier for 0.5.0.</p>
+
+<p align="right">Last Updated: 18 April 2003</p>
