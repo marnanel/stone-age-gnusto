@@ -10,8 +10,10 @@ interface gnustoIEngine : nsISupports
   void loadStory(in PRUint32 aLength,
 		 [size_is(aLength), array] in PRUint8 target);		 
 
-  void loadSavedGame(in PRUint32 aLength,
-		     [size_is(aLength), array] in PRUint8 target);		 
+  void loadSavedGame(in PRUint32 UMemLength,
+		     [size_is(UMemLength), array] in PRUint8 UMem,
+		     in PRUint32 StksLength,
+		     [size_is(StksLength), array] in PRUint8 Stks);
 
   long saveGame();
 
