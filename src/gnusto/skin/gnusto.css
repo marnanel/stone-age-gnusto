@@ -6,6 +6,11 @@ description.bodytext {
 	overflow: auto;
 }
 
+description.bocardo { 
+  font-family: monospace; 
+  margin: 0 0 0 0;
+}
+
 scrollbox {
 	overflow: auto;
 }
@@ -15,16 +20,8 @@ window {
 	border: 0;
 }
 
-description {
-	font-family: monospace;
-}
-
 #beforecursor {
 	border-right: 1px solid #000000;
-}
-
-.bocardo { 
-  margin: 0 0 0 0;
 }
 
 /****************************************************************
