@@ -1,5 +1,5 @@
 // -*- Mode: Java; tab-width: 2; -*-
-// $Id: beret.js,v 1.7 2003/10/28 01:45:44 marnanel Exp $
+// $Id: beret.js,v 1.8 2003/11/24 22:46:42 marnanel Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -20,7 +20,7 @@
 
 ////////////////////////////////////////////////////////////////
 
-const CVS_VERSION = '$Date: 2003/10/28 01:45:44 $';
+const CVS_VERSION = '$Date: 2003/11/24 22:46:42 $';
 const BERET_COMPONENT_ID = Components.ID("{ed0618e3-8b2b-4bc8-b1a8-13ae575efc60}");
 const BERET_DESCRIPTION  = "Checks file magic and routes them accordingly";
 const BERET_CONTRACT_ID  = "@gnusto.org/beret;1";
@@ -108,7 +108,7 @@ Beret.prototype = {
 						// with the component manager. You tell it the file prefix and the
 						// Blorb signature of the files you want to be passed.)
 				
-				} else if (content[0]==5 || content[0]==7 || content[0]==8) {
+				} else if (content[0]<9) {
 						// Infocom file, naked.
 
 						// FIXME: This check is way too simple. We should look at
