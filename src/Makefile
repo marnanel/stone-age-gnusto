@@ -1,6 +1,6 @@
 # Makefile - makefile for gnusto
 #
-# $Header: /cvs/gnusto/src/Makefile,v 1.7 2003/04/15 23:47:03 marnanel Exp $
+# $Header: /cvs/gnusto/src/Makefile,v 1.8 2003/04/17 21:56:38 marnanel Exp $
 #
 # Copyright (c) 2003 Thomas Thurman
 # thomas@thurman.org.uk
@@ -20,7 +20,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
 
 APPLICATION = gnusto
-VERSION = 0.3.2
+VERSION = 0.4.0
 XPIFILE = ../downloads/${APPLICATION}-${VERSION}.xpi
 
 xpi:

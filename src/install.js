@@ -1,6 +1,6 @@
 // install.js - installation script
 //   Heavily based on ForumZilla's install.js.
-// $Header: /cvs/gnusto/src/install.js,v 1.2 2003/02/04 02:45:13 marnanel Exp $
+// $Header: /cvs/gnusto/src/install.js,v 1.3 2003/04/17 21:56:38 marnanel Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -19,56 +19,55 @@
 // http://www.gnu.org/copyleft/gpl.html ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
 
- try {
+try {
 
-  // initialize the install with the package name and version
-  var err = initInstall(
-    "Gnusto Z-machine", // the name that will be displayed to the user
-    "gnusto"  ,           // the path and name under which the software
-                             // will appear in the Mozilla/Netscape registry
-    "0.0.1"                  // version
-  );
-  if (err) throw ('initInstall: ' + err);
+    // initialize the install with the package name and version
+    var err = initInstall("Gnusto Z-machine",
+			  "gnusto",
+			  "0.4.0");
+    if (err) throw ('initInstall: ' + err);
 
-  // prepare to install package directory onto user's computer
-  var chromeDir = getFolder("Chrome");
-  err = addDirectory(
-    "" ,                   // "The pathname in the Client Version Registry for the root 
-                           // directory of the files that are to be installed." ???
-                           // http://developer.netscape.com/docs/manuals/xpinstall/chap22.html
-    "gnusto" ,          // path to source directory in XPI file
-    chromeDir ,            // target directory on user's computer
-    "gnusto"            // subdirectory of target directory in which to install package
-  );
-  if (err) throw ('addDirectory: ' + err);
+    // prepare to install package directory onto user's computer
+    var chromeDir = getFolder("Chrome");
+    err = addDirectory("" , "gnusto", chromeDir, "gnusto");
+    if (err) throw ('addDirectory: ' + err);
 
-  // register package in chrome registry
-  err = registerChrome(
-    PACKAGE | DELAYED_CHROME,   // the kind of chrome to register
-    chromeDir,                  // where the chrome is being installed into
-    "gnusto/content/"        // the path to the contents.rdf file in the XPI
-  );
-  if (err) throw ('registerChrome: ' + err);
+    ////////////////////////////////////////////////////////////////
+    // register content's contents.rdf in chrome registry
 
-  // register locale in chrome registry
-  err = registerChrome(
-    LOCALE | DELAYED_CHROME,   // the kind of chrome to register
-    chromeDir,                 // where the chrome is being installed into
-    "gnusto/locale/"        // the path to the contents.rdf file in the XPI
-  );
-  if (err) throw ('registerChrome: ' + err);
+    err = registerChrome(PACKAGE | DELAYED_CHROME,
+			 chromeDir,
+			 "gnusto/content/");
+    if (err) throw ('registerChrome: ' + err);
 
-  // install package
-  err = performInstall();
-  if (err) throw ('performInstall: ' + err);
+    ////////////////////////////////////////////////////////////////
+    // register locale's contents.rdf in chrome registry
+
+    err = registerChrome(LOCALE | DELAYED_CHROME,
+			 chromeDir,
+			 "gnusto/locale/en-US/");
+    if (err) throw ('registerChrome: ' + err);
+
+    ////////////////////////////////////////////////////////////////
+    // register skin's contents.rdf in chrome registry
+
+    err = registerChrome(SKIN | DELAYED_CHROME,
+			 chromeDir,
+			 "gnusto/skin/classic/");
+    if (err) throw ('registerChrome: ' + err);
+
+    ////////////////////////////////////////////////////////////////
+    // install package
+    err = performInstall();
+    if (err) throw ('performInstall: ' + err);
 
 } catch(e) {
 
-  // write the error to Mozilla/bin/install.log
-  logComment(e);
-  // and warn the user...
-  alert(e);
-  // cancel the installation and return an error
-  cancelInstall(err);
+    // write the error to Mozilla/bin/install.log
+    logComment(e);
+    // and warn the user...
+    alert(e);
+    // cancel the installation and return an error
+    cancelInstall(err);
 }
 

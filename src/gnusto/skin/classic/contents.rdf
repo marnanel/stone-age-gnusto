@@ -16,4 +16,7 @@
 	</chrome:packages>
   </RDF:Description>
 
+  <RDF:Description about="urn:mozilla:skin:classic/1.0:gnusto"
+    chrome:skinVersion="0.3"/>
+
 </RDF:RDF>
