@@ -73,7 +73,7 @@
   	zargc = 0;
   
 *** /usr/src/frotz-2.40/frotz.h	Sat Nov  4 20:20:47 2000
---- ./frotz.h	Tue Jun 10 23:25:27 2003
+--- ./frotz.h	Tue Jun 10 23:28:51 2003
 ***************
 *** 240,250 ****
   #define FILE_SAVE_AUX 6
@@ -93,7 +93,7 @@
   /*** Data access macros ***/
   
   #define SET_BYTE(addr,v)  { zmp[addr] = v; }
-! #define LOW_BYTE(addr,v)  { char ZZ[200]; v = zmp[addr]; sprintf(ZZ,"get: %x==%x\n", addr, zmp[addr]); gnusto_print(ZZ); }
+! #define LOW_BYTE(addr,v)  { char ZZ[200]; v = zmp[addr]; sprintf(ZZ,"get: %x==%x\n", addr, zmp[addr]); golden_print(ZZ); }
   #define CODE_BYTE(v)	  { v = *pcp++;    }
   
   #if defined (AMIGA)
