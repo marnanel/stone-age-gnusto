@@ -1,7 +1,7 @@
 // mozilla-glue.js || -*- Mode: Java; tab-width: 2; -*-
 // Interface between gnusto-lib.js and Mozilla. Needs some tidying.
 // Now uses the @gnusto.org/engine;1 component.
-// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.127 2003/12/06 00:25:17 marnanel Exp $
+// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.128 2003/12/07 04:47:47 marnanel Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -1169,6 +1169,12 @@ function load_from_file(file) {
 								engine.setByte(  1, 0x26); // font width, units
 								engine.setByte(  1, 0x27); // font height, units
 
+								// This check is only temporary. Eventually we should
+								// claim compliance for all versions.
+								if (engine.getByte(0) in {5:1, 7:1, 8:1}) {
+										engine.setByte(1, 0x32);
+										engine.setByte(0, 0x33);
+								}
 								return 1;
 						}
 
