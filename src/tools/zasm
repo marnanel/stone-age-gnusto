@@ -1,0 +1,748 @@
+#!/usr/bin/perl -w
+#
+#   zasm  --  a Z-machine assembler
+#   Copyright (C) 1998  Matt Kimball
+#
+#   This program is free software; you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation; either version 2 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with this program; if not, write to the Free Software
+#   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+#
+
+my $version = "0.01";
+my $mult = 4;
+
+# # # #
+#
+#  First, we have a table of the well behaved instructions
+# 
+# # # #
+
+$optable = [ [ 'add', 			'2op', 	20, 	'result'	],
+             [ 'and', 			'2op', 	9, 	'result'	],
+	     [ 'art_shift',		'ext',	3,	'result'	],
+	     [ 'buffer_mode', 		'var',	242,	''		],
+	     [ 'call_1n',	 	'1op',	143,	''		],
+	     [ 'call_1s', 		'1op',	136,	'result'	],
+	     [ 'call_2n', 		'2op',	26,	''		],
+	     [ 'call_2s', 		'2op',  25,	'result'	],
+	     [ 'call_vn', 		'var',	249,	''		],
+	     [ 'call_vs',		'var', 	224,	'result'	],
+	       #  call_vn2 and call_vs2 are included below
+	     [ 'catch',			'0op',  185,	'result'	],
+	     [ 'check_arg_count',	'var',	255, 	'branch'	],
+	     [ 'check_unicode',		'ext',	12,	'result'	],
+	     [ 'clear_attr',		'2op',  12,	''		],
+	     [ 'copy_table',		'var',	253,	''		],
+	     [ 'dec',			'1op',	134, 	''		],
+	     [ 'dec_chk',		'2op',  4, 	'branch'	],
+	     [ 'div', 			'2op',	23,	'result'	],
+	     [ 'draw_picture',		'ext', 	5, 	''		],
+	     [ 'encode_text',		'var',	252,	''		],
+	     [ 'erase_line', 		'var', 	238,	''		],
+	     [ 'erase_picture',		'ext',	7,	''		],
+	     [ 'erase_window',		'var',  237,	''		],
+	     [ 'get_child',		'1op',	130,	'result.branch'	],
+	     [ 'get_cursor',		'var',	240, 	''		],
+	     [ 'get_next_prop',		'2op',	19, 	'result'	],
+	     [ 'get_parent',		'1op', 	131,	'result'	],
+	     [ 'get_prop',		'2op', 	17,	'result'	],
+	     [ 'get_prop_addr',		'2op', 	18,	'result'	],
+	     [ 'get_prop_len',		'1op', 	132,	'result'	],
+	     [ 'get_sibling',		'1op', 	129,	'result'	],
+	     [ 'get_wind_prop',		'ext',	19,	'result'	],
+	     [ 'inc',			'1op', 	133,	''		],
+	     [ 'inc_chk',		'2op',	5, 	'branch'	],
+	     [ 'input_stream',		'var',	244,	''		],
+	     [ 'insert_obj',		'2op', 	14,	''		],
+	     [ 'je',			'2op',	1,	'branch'	],
+	     [ 'jg',			'2op', 	3,	'branch'	],
+	     [ 'jin',			'2op',	6,	'branch'	],
+	     [ 'jl',			'2op', 	2,	'branch'	],
+	       #  jump is included below
+	     [ 'jz',			'1op', 	128,	'branch'	],
+	     [ 'load',			'1op', 	142,	'result'	],
+	     [ 'loadb',			'2op', 	16,	'result'	],
+	     [ 'loadw',			'2op',	15,	'result'	],
+	     [ 'log_shift',		'ext',	2,	'result'	],
+	     [ 'make_menu',		'ext',	27,	'branch'	],
+	     [ 'mod', 			'2op', 	24,	'result'	],
+	     [ 'mouse_window',		'ext', 	23,	''		],
+	     [ 'move_window',		'ext',	16,	''		],
+	     [ 'mul',			'2op', 	22,	'result'	],
+	     [ 'new_line',		'0op',	187,	''		],
+	     [ 'nop',			'0op', 	180,	''		],
+	     [ 'not',			'var',	248,	'result'	],
+	     [ 'or',			'2op', 	8,	'result'	],
+	     [ 'output_stream',		'var',	243,	''		],
+	     [ 'picture_data',		'ext',	6,	'branch'	],
+	     [ 'picture_table',		'ext', 	28,	''		],
+	     [ 'piracy',		'0op',	191,	'branch'	],
+	     [ 'pop',			'0op',	185,	''		],
+	     [ 'pop_stack',		'ext',	21,	''		],
+	       #  print is included below 
+	     [ 'print_addr',		'1op',	135,	''		],
+	     [ 'print_char',		'var',	229,	''		],
+	     [ 'print_form',		'ext',	26,	''		],
+	     [ 'print_num', 		'var',	230,	''		],
+	     [ 'print_obj',		'1op',	138,	''		],
+	     [ 'print_paddr',		'1op',	141,	''		],
+	     [ 'print_ret',		'0op',	179,	''		],
+	     [ 'print_table',		'var',	254,	''		],
+	     [ 'print_unicode',		'ext',	11,	''		],
+	     [ 'pull',			'var',	233,	''		],
+	     [ 'push',			'var',	232,	''		],
+	     [ 'push_stack',		'ext',	24,	'branch'	],
+	     [ 'put_prop',		'var',	227,	''		],
+	     [ 'put_wind_prop',		'ext',	25,	''		],
+	     [ 'quit',			'0op',	186,	''		],
+	     [ 'random',		'var',	231,	'result'	],
+	     [ 'read',			'var',	228,	'result'	],
+	     [ 'read_char',		'var',	246,	'result'	],
+	     [ 'read_mouse',		'ext',	22,	''		],
+	     [ 'remove_obj',		'1op',	137,	''		],
+	     [ 'restart',		'0op',	183,	''		],
+	     [ 'restore',		'ext',	1,	'result'	],
+	     [ 'restore_undo',		'ext',	10,	'result'	],
+	     [ 'ret',			'1op',	139,	''		],
+	     [ 'ret_popped',		'0op',	184,	''		],
+	     [ 'rfalse',		'0op',	177,	''		],
+	     [ 'rtrue',			'0op',	176,	''		],
+	     [ 'save',			'ext',	0,	'result'	],
+	     [ 'save_undo',		'ext',	9,	'result'	],
+	     [ 'scan_table',		'var',	247,	'result'	],
+	     [ 'scroll_window',		'ext',	20,	''		],
+	     [ 'set_attr',		'2op',	11, 	''		],
+	     [ 'set_colour',		'2op',	27,	''		],
+	     [ 'set_cursor',		'var',	239,	''		],
+	     [ 'set_font',		'ext',	4,	'result'	],
+	     [ 'set_margins',		'ext',	8,	''		],
+	     [ 'set_text_style',       	'var',	241,	''		],
+	     [ 'set_window',		'var',	235,	''		],
+	     [ 'show_status',		'0op',	188,	''		],
+	     [ 'sound_effect',		'var',	245,	''		],
+	     [ 'split_window',		'var',	234,	''		],
+	     [ 'store',			'2op',	13,	''		],
+	     [ 'storeb',		'var',	226,	''		],
+	     [ 'storew',		'var',	225,	''		],
+	     [ 'sub',			'2op',	21,	'result'	],
+	     [ 'test',			'2op',	7,	'branch'	],
+	     [ 'test_attr',		'2op',	10,	'branch'	],
+	     [ 'throw',			'2op',	28,	''		],
+	     [ 'tokenise',		'var',	251,	''		],
+	     [ 'verify',		'0op',	189,	'branch'	],
+	     [ 'window_size',		'ext',	17,	''		],
+	     [ 'window_style',		'ext',	18,	''		] ];
+	    
+# # # #
+#  
+#  Next, we have some unusual instructions. 
+#  (These don't follow the normal rules for one reason or another.)
+#
+# # # #
+
+$instruction{"jump"} = sub {
+	my ($arg) = @_;
+
+	my $name = $arg->[0];
+
+	my $ret = pack('C', 140);
+
+	if($name =~ /^\@/) {
+		$name = substr($name, 1);
+	} else {
+		print "Label $name isn't a jump label\n";
+	}
+
+	my $pos = $produce_begin + length($produce_work) + length($ret);
+	
+	if($label{$name}) {
+		$ret = $ret . pack('n', ($label{$name} - $pos) & 0xFFFF);
+	} else {
+		print "Invalid jump label $name\n"  if($pass);
+
+		$ret = $ret . pack('n', 0);
+	}
+
+	return $ret;
+};
+
+$instruction{"call_vn2"} = sub {
+    my $arguments = $_[0];
+    my $code = '';
+    
+    print "Too many arguments to call_vn2\n" if($#$arguments > 7);
+    
+    $code = pack('C', 250);
+    $code = $code . pack('C', (argcode($arguments->[0]) << 6) |
+			 (argcode($arguments->[1]) << 4) |
+			 (argcode($arguments->[2]) << 2) |
+			 (argcode($arguments->[3])));
+    $code = $code . pack('C', (argcode($arguments->[4]) << 6) |
+			 (argcode($arguments->[5]) << 4) |
+			 (argcode($arguments->[6]) << 2) |
+			 (argcode($arguments->[7])));
+    foreach $arg (@$arguments) {
+	$code = $code . argbin($arg);
+    }
+    
+    return $code;
+};
+
+$instruction{"call_vs2"} = sub {
+    my $arguments = $_[0];
+    my $code = '';
+    
+    $result_op = pop(@$arguments);
+    
+    print "Too many arguments to call_vs2\n" if($#$arguments > 7);
+    
+    $code = pack('C', 236);
+    $code = $code . pack('C', (argcode($arguments->[0]) << 6) |
+			 (argcode($arguments->[1]) << 4) |
+			 (argcode($arguments->[2]) << 2) |
+			 (argcode($arguments->[3])));
+    $code = $code . pack('C', (argcode($arguments->[4]) << 6) |
+			 (argcode($arguments->[5]) << 4) |
+			 (argcode($arguments->[6]) << 2) |
+			 (argcode($arguments->[7])));
+    foreach $arg (@$arguments) {
+	$code = $code . argbin($arg);
+    }
+    
+    (print("Resulting operand isn't a variable\n"), return "") 
+	if(argcode($result_op) ne 2);
+    $code = $code . argbin($result_op);
+    $result_op = push(@$arguments, $result_op);
+    
+    return $code;
+};
+
+$instruction{"print"} = sub {
+    my $arguments = $_[0];
+    
+    (print("Wrong number of arguments to print\n"), return '') if($#$arguments != 0);
+    
+    my $str = $arguments->[0];
+    (print("print argument isn't a string\n"), return '') if($str !~ /^"(.*)"$/);
+    $str = $1;
+
+    return pack('C', 178) . zencode(backslashinterp($str));
+};
+
+
+# # # #
+#
+#  Next, we get the code for the directives which we understand
+#
+# # # #
+
+#  Label is used to set a jump point within a routine.
+$directive{"label"} = sub {
+	my ($ops) = @_;
+
+	push(@lcode, { proc => sub {
+				set_label($ops->[0], 0);
+
+				return '';
+		       },
+		       op => $ops });
+};
+
+#  The routine directive is used to declare a global function
+#  entry point.  
+$directive{"routine"} = sub {
+	my ($ops) = @_;
+
+	push(@lcode, { proc => sub {
+				while(length($produce_work) % $mult) {
+					$produce_work .= pack('C', 0);
+				}
+
+				set_label($ops->[0], 1);
+				return pack('C', $ops->[1]);
+		       },
+		       op => $ops });
+};
+
+#  The include directive can be used to cause other Z-code files
+#  to be processed
+$directive{"include"} = sub {
+	my ($ops) = @_;
+
+	$handle = IN . $fileopen++;
+	if(open($handle, "<$ops->[0]")) {
+		push(@readfile, $handle);
+	} else {	
+		print "Unable to open $ops->[0]\n";
+	}
+};
+
+#  Write out a zencoded string in the data segment
+$directive{"zstring"} = sub {
+    my ($ops) = @_;
+
+    push(@lstatic, { proc => sub {
+                         set_label($ops->[0], 0);
+			 my $str = $ops->[1];
+			 (print("zstring isn't a string\n"), return '')
+			     if($str !~ /^"(.*)"$/);
+			 $str = $1;
+			 
+			 return zencode(backslashinterp($str));
+                     },
+		     op => $ops });
+};
+
+#  Write out an ASCIIZ string in the data segment 
+$directive{"string"} = sub {
+    my ($ops) = @_;
+
+    push(@lstatic, { proc => sub {
+                         set_label($ops->[0], 0);
+			 my $str = $ops->[1];
+			 (print("string isn't a string\n"), return '')
+			     if($str !~ /^"(.*)"$/);
+			 $str = $1;
+			 
+			 return backslashinterp($str) . pack('C', 0);
+                     },
+		     op => $ops });
+};
+
+#  Write out a single byte in the data segment
+$directive{"byte"} = sub {
+    my ($ops) = @_;
+
+    push(@lstatic, { proc => sub {
+                         set_label($ops->[0], 0);
+
+			 return pack('C', $ops->[1]);
+                     },
+		     op => $ops });
+};
+
+#  Write out a single byte in the data segment
+$directive{"word"} = sub {
+    my ($ops) = @_;
+
+    push(@lstatic, { proc => sub {
+	                 while(length($produce_work) % 2) {
+			     $produce_work .= pack('C', 0);
+			 }
+                         set_label($ops->[0], 0);
+
+			 return pack('n', $ops->[1]);
+                     },
+		     op => $ops });
+};
+
+# # # # 
+#
+#  Now, supporting routines for the assembler 
+#
+# # # #
+
+sub set_label {
+	my ($name, $div) = @_;
+
+	my $ofs = $produce_begin + length($produce_work);
+	$ofs /= $mult  if($div);
+
+	$label{$name} = $ofs;
+}
+
+sub backslashinterp {
+    my ($str) = @_;
+
+    if($str =~ /\\(.)/) {
+	if($1 eq 'n') {
+	    return $` . "\n" . backslashinterp($');
+	} elsif($1 eq 't') {
+	    return $` . "\t" . backslashinterp($');
+	} elsif($1 eq 'b') {
+	    return $` . "\b" . backslashinterp($');
+	} elsif($1 eq '\\') {
+	    return $` . "\\" . backslashinterp($');
+	} else {
+	    return $` . $& . backslashinterp($');
+	}
+    } else {
+	return $str;
+    }
+}
+
+sub zcharseq {
+    my ($char) = @_;
+
+    my $a0 = 'abcdefghijklmnopqrstuvwxyz';
+    my $a1 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    my $a2 = "\n0123456789.,!?_#'\"/\\-:()";
+    
+    if($char eq ' ') {
+	return [ 0 ];
+    }
+    
+    my $at;
+    for($at = 0; $at < length($a0); $at++) {
+	if(substr($a0, $at, 1) eq $char) {
+	    return [ 6 + $at ];
+	}
+    }
+    for($at = 0; $at < length($a1); $at++) {
+	if(substr($a1, $at, 1) eq $char) {
+	    return [ 4, 6 + $at ];
+	}
+    }
+    for($at = 0; $at < length($a2); $at++) {
+	if(substr($a2, $at, 1) eq $char) {
+	    return [ 5, 7 + $at ];
+	}
+    }
+
+    return [ 5, 6, ord($char) >> 5, ord($char) & 0x1f ];
+}
+
+sub zencode {
+    my ($str) = @_;
+    my @seq = ();
+
+    while(length($str)) {
+	push(@seq, @{zcharseq(substr($str, 0, 1))});
+	$str = substr($str, 1);
+    }
+
+    while(($#seq + 1) % 3 || $#seq < 0) {
+	push(@seq, 5);
+    }
+    
+    my $ret = '';
+    while($#seq > 2) {
+	$ret = $ret . pack('n', (shift(@seq) << 10) | (shift(@seq) << 5) | (shift(@seq)));
+    }
+    $ret = $ret . pack('n', 0x8000 | (shift(@seq) << 10) | (shift(@seq) << 5) | (shift(@seq)));
+
+    return $ret;
+}
+
+sub argcode {
+	my ($arg) = @_;
+
+	if(!defined($arg)) {
+		return 3;
+	}	
+	if($arg =~ /^\$/) {
+		return 2;
+	}	
+	if($arg =~ /^:/) {
+		return 0;
+	}
+	if($arg < 256 && $arg >= 0) {
+		return 1;
+	}
+	return 0;
+}
+
+sub arg2opcode {
+    my ($arg) = @_;
+    
+    my $code = argcode($arg);
+    return 0 if($code == 1);
+    return 1 if($code == 2);
+    return 'none';
+}
+
+sub argbin {
+	my ($arg) = @_;
+
+	my $code = argcode($arg);
+
+	if($code == 2) {
+		return pack('C', hex(substr($arg, 1)));
+	}
+	if($code == 1) {
+		return pack('C', $arg);
+	}
+	if($code == 0) {
+		if($arg =~ /^:/) {
+			$arg = substr($arg, 1);
+			if(defined($label{$arg})) {
+				$arg = $label{$arg};
+			} else {
+				print "Undefined label $arg\n"  if($pass);
+				$arg = 0;
+			}
+		}
+
+		return pack('n', $arg);
+	}
+
+	return '';
+}
+
+sub jump_label {
+	my ($name, $code, $invert) = @_;
+
+	return $code . pack('n', $invert ? 0 : 0x8000)  if($name eq '@rfalse');
+	return $code . pack('n', $invert ? 1 : 0x8001)  if($name eq '@rtrue');
+
+	if($name =~ /^\@/) {
+		$name = substr($name, 1);
+	} else {
+		print "Label $name isn't a jump label\n";
+	}
+
+	my $pos = $produce_begin + length($produce_work) + length($code);
+
+	if($label{$name}) {
+		return $code . pack('n', ($invert ? 0 : 0x8000) | (($label{$name} - $pos) & 0x3FFF));
+	} else {
+		print "Invalid jump label $name\n"  if($pass);
+
+		return $code . pack('n', 0);
+	}
+}
+
+sub add_instruction {
+    my ($name, $type, $opcode, $flags, $invert) = @_;
+
+    $instruction{$name} = sub {
+	my $arguments = $_[0];
+	my $code = '';
+	my $jump_name = '';
+	
+	if($flags =~ /branch/) {
+	    $jump_name = pop(@$arguments);
+	}
+
+	if($flags =~ /result/) {
+	    $result_op = pop(@$arguments);
+	}
+
+	if($type eq '0op') {
+	    $code = pack('C', 0xB0 | $opcode);
+	    print "Too many arguments to $name\n"  if($#$arguments != -1);
+	} elsif($type eq '1op') {
+	    (print("Wrong number of arguments to $name\n"), return "") 
+		if($#$arguments != 0);
+	    
+	    $code = pack('C', 0x80 | (argcode($arguments->[0]) << 4) | $opcode);
+	    $code = $code . argbin($arguments->[0]);
+	} elsif($type eq '2op') {
+	    (print("Wrong number of arguments to $name\n"), return "") 
+		if($#$arguments != 1);
+	    
+	    if(arg2opcode($arguments->[0]) ne 'none' 
+	       && arg2opcode($arguments->[1]) ne 'none') {
+		$code = pack('C', (arg2opcode($arguments->[0]) << 6) |
+			     (arg2opcode($arguments->[1]) << 5) |
+			     $opcode);
+		$code = $code . argbin($arguments->[0]);
+		$code = $code . argbin($arguments->[1]);
+	    } else {
+		$code = pack('C', 0xC0 | $opcode);
+		$code = $code . pack('C', (argcode($arguments->[0]) << 6) |
+				     (argcode($arguments->[1]) << 4) |
+				     0x0F);
+		$code = $code . argbin($arguments->[0]);
+		$code = $code . argbin($arguments->[1]);
+	    }
+	} elsif($type eq 'var') {
+	    print "Too many arguments to $name\n" if($#$arguments > 3);
+	    
+	    $code = pack('C', 0xE0 | $opcode);
+	    $code = $code . pack('C', (argcode($arguments->[0]) << 6) |
+				 (argcode($arguments->[1]) << 4) |
+				 (argcode($arguments->[2]) << 2) |
+				 (argcode($arguments->[3])));
+	    foreach $arg (@$arguments) {
+		$code = $code . argbin($arg);
+	    }
+	} elsif($type eq 'ext') {
+	    print "Too many arguments to $name\n" if($#$arguments > 3);
+	    
+	    $code = pack('CC', 0xBE, $opcode);
+	    $code = $code . pack('C', (argcode($arguments->[0]) << 6) |
+				 (argcode($arguments->[1]) << 4) |
+				 (argcode($arguments->[2]) << 2) |
+				 (argcode($arguments->[3])));
+	    foreach $arg (@$arguments) {
+		$code = $code . argbin($arg);
+	    }		
+	} else {
+	    print "Invalid instruction type for $name\n";
+	}
+	
+	if($flags =~ /result/) {
+	    (print("Resulting operand isn't a variable\n"), return "") 
+		if(argcode($result_op) ne 2);
+	    $code = $code . argbin($result_op);
+	    $result_op = push(@$arguments, $result_op);
+	}
+
+	if($flags =~ /branch/) {
+	    $code = jump_label($jump_name, $code, $invert);
+	    push(@$arguments, $jump_name);
+	}
+	return $code;
+    }	
+}
+
+sub instantiate_table {
+    my ($table) = @_;
+
+    foreach $inst (@$table) {
+	my ($name, $type, $opcode, $flags) = @$inst;
+
+	add_instruction($name, $type, $opcode, $flags, 0);
+	add_instruction($name . '!', $type, $opcode, $flags, 1) if($flags =~ /branch/);
+    }
+}
+
+sub produce {
+	my ($begin, $litem) = @_;
+	$produce_work = '';
+	$produce_begin = $begin;
+
+	foreach $item (@$litem) {
+		my $tmp = &{$item->{proc}}($item->{op});
+
+		$produce_work .= $tmp;
+	}
+
+
+	return $produce_work;
+}
+
+sub write_zcode {
+	$pass = 0;
+
+	my $static = produce(0, \@lstatic);
+	my $code = produce(0x10000, \@lcode);
+
+	$static .= pack("C", 0)  while(length($static) % $mult);
+	$code .= pack("C", 0)  while(length($code) % $mult);
+
+	$pass = 1;
+
+	$static = produce(0xFFF0 - length($static), \@lstatic);
+	$code = produce(0x10000, \@lcode);
+
+	$static .= pack("C", 0)  while(length($static) % $mult);
+	$code .= pack("C", 0)  while(length($code) % $mult);
+
+	if(!defined($label{"_start"})) {
+		print "No _start label!\n";
+		return;
+	}
+
+	my $header = pack("CCnnnnnnnCCCCCCCCnnnn" . "nnnnnnnnnnnnnnnn", 
+				5, 0, 0, 0xFFF0, 0xFFF0, 
+				0, 0, 0, 0xFFF0 - length($static),
+				0, 0, 0, 0, 0, 0, 0, 0,
+				0, (0x10000 + length($code)) / $mult, 0, 0,
+
+				0, 0, 0, 0,
+				0, 0, 0, 0,
+				0, 0, 0, 0,
+				0, 0, 0, 0);
+
+	my $heap = pack("n", 0xFFF0 - length($header) - length($static));
+	while(length($static) + length($heap) + length($header) < 0xFFF0) {
+		$heap .= pack("S", 0);
+	}
+ 
+	my $main = pack("CnC", 143, $label{"_start"}, 186);
+	while(length($main) + length($static) + length($heap) + length($header) < 0x10000) {
+		$main .= pack("C", 0);
+	}
+
+	open(OUT, ">out.z5");
+	binmode(OUT);
+
+	print OUT $header . $heap . $static . $main . $code;
+
+	close(OUT);
+}
+
+sub zasm {
+	my ($line) = @_;
+
+	if($line =~ /(\S+)/) {
+		my $insn = $1;
+		$line = $';
+
+		my $ops = [];
+		while($line =~ /(\S+)/) {
+			my $op = $1;
+			$line = $';
+
+			if($op =~ /\"/) {
+			    $line = $op . $line;
+			    $line =~ /\"[^\"]*\"?/;
+			    $op = $&;
+			    $line = $';
+			}
+
+			if($op =~ /^0x/) {
+				$op = hex($op);
+			}
+	
+			push(@$ops, $op);
+		}		
+
+		if(defined($instruction{$insn})) {
+			push(@lcode, { proc => $instruction{$insn},
+				       op => $ops });
+		} elsif(defined($directive{$insn})) {
+			&{$directive{$insn}}($ops);
+		} else {
+		  print "Unknown instruction $insn\n";
+		}
+	}
+}
+
+
+# # # #
+#
+#  Finally, the main section of the assembler
+#
+# # # # 
+
+print "zasm $version\nCopyright (C) 1998  Matt Kimball\n\n";
+instantiate_table($optable);
+
+if($#ARGV < 0) {
+	print "Usage: zasm <file.z>\n";
+	exit 0;
+}
+
+$fileopen = 0;
+$handle = IN . $fileopen++;
+open($handle, "<$ARGV[0]");
+push(@readfile, $handle);
+
+while($#readfile >= 0) {
+	$handle = $readfile[$#readfile];
+	if($_ = <$handle>) {
+		s/\#.*//;
+		zasm($_);
+	} else {
+		close($handle);
+		pop(@readfile);
+	}
+}
+
+write_zcode();
+
+
+
