@@ -1,0 +1,28 @@
+! Gnusto tests: random number generator
+! Copyright (c) 2003 Thomas Thurman. Distributed under v2 of the GNU GPL.
+!
+! Note:
+!  This file can't be part of the final version of Gnusto, since
+!  (obviously) it depends on Inform, and Inform is nonfree, which
+!  will keep Gnusto out of the main parts of some distributions
+!  (notably Debian). I'm figuring out a solution to this, but for
+!  now this file can stay here.
+!
+! This program performs the "@verify" instruction and prints
+! "YES" if the verification works and "NO" if it doesn't.
+
+Release 177;
+
+
+[ Main;
+
+
+    @verify ?works;
+
+    .doesntwork;
+    @print_ret "NO^";
+
+    .works;
+    @print_ret "YES^";
+];
+
