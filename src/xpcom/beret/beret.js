@@ -1,5 +1,5 @@
 // -*- Mode: Java; tab-width: 2; -*-
-// $Id: beret.js,v 1.19 2004/02/18 00:35:40 naltrexone42 Exp $
+// $Id: beret.js,v 1.20 2005/02/09 07:17:45 naltrexone42 Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -19,7 +19,7 @@
 
 ////////////////////////////////////////////////////////////////
 
-const CVS_VERSION = '$Date: 2004/02/18 00:35:40 $';
+const CVS_VERSION = '$Date: 2005/02/09 07:17:45 $';
 const BERET_COMPONENT_ID = Components.ID("{ed0618e3-8b2b-4bc8-b1a8-13ae575efc60}");
 const BERET_DESCRIPTION  = "Checks file magic and routes them accordingly";
 const BERET_CONTRACT_ID  = "@gnusto.org/beret;1";
@@ -187,7 +187,15 @@ Beret.prototype = {
 								for (var i=1; i<iff_details.length; i++) {
 										var tag = iff_details[i][0];
 										if (tag=='IFhd') {
-												// FIXME: We should check the signature, too.
+											
+												// validate that saved game release number matches loaded game	
+												var release_num_location = iff_details[i][1];
+												if ((!this.m_engine) || (this.m_engine.getByte(0x02) != content[release_num_location]) || (this.m_engine.getByte(0x03) != content[release_num_location+1])){
+												    //The save game isn't for the currently loaded game. Bail out.
+												    this.m_filetype = 'mismatch';
+												    break;
+												}			
+												
 												var pc_location = iff_details[i][1]+10;
 												pc = content[pc_location]<<16 |
 														content[pc_location+1]<<8 |

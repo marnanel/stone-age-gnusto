@@ -1,7 +1,7 @@
 // mozilla-glue.js || -*- Mode: Java; tab-width: 2; -*-
 // Interface between gnusto-lib.js and Mozilla. Needs some tidying.
 // Now uses the @gnusto.org/engine;1 component.
-// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.151 2005/01/28 19:23:56 naltrexone42 Exp $
+// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.152 2005/02/09 07:17:45 naltrexone42 Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -1336,6 +1336,13 @@ function load_from_file(file) {
 						break;
 				}
 				break;
+                case 'mismatch':
+                               alert('Gnusto can currently only restore a saved-game if \n' +
+                                   'the game from which it was saved is currently loaded.\n' +
+                                   'This saved game does not appear to match the currently \n' +
+                                   'loaded game.  Please load the game, then restore this \n' +
+                                   'save game from the Load menu or by entering a Restore command.');
+                                return 0;
 
 		case 'nyi':
 				gnusto_error(101, '(from beret)');
