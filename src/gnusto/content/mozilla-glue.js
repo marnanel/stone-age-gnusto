@@ -1,7 +1,7 @@
 // mozilla-glue.js || -*- Mode: Java; tab-width: 2; -*-
 // Interface between gnusto-lib.js and Mozilla. Needs some tidying.
 // Now uses the @gnusto.org/engine;1 component.
-// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.144 2004/09/30 00:02:32 marnanel Exp $
+// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.145 2004/09/30 00:31:28 naltrexone42 Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -671,7 +671,7 @@ function output_stream(filename, mode, permissions) {
 function glue_init() {
 		try {
 
-				engine = null; // The beret will make this for us
+				//engine = null; // The beret will make this for us
 
 				errorbox = Components.classes['@gnusto.org/errorbox;1'].
 						getService(Components.interfaces.gnustoIErrorBox);
