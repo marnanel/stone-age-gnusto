@@ -1,6 +1,6 @@
-# Makefile - makefile for archangel
+# Makefile - makefile for gnusto
 #
-# $Header: /cvs/gnusto/src/Makefile,v 1.4 2003/02/04 21:56:56 marnanel Exp $
+# $Header: /cvs/gnusto/src/Makefile,v 1.5 2003/02/08 05:25:04 marnanel Exp $
 #
 # Copyright (c) 2003 Thomas Thurman
 # thomas@thurman.org.uk
