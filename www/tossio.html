@@ -1,0 +1,72 @@
+<h5 class="page-header">Tossio-- Gnusto's debugger</h5>
+
+<p><a href="/">Gnusto</a> has a built-in debugger, named <dfn>Tossio</dfn> after the spell to turn granite into <a href="http://www.vikingrange.com/recipes/cajun_fettucine.html">fettucine</a>.</p>
+
+<p>Tossio is in its early stages at present. One day, it will have a GUI; until then, you can execute a tossio command by giving an instruction starting with a slash, in place of a command to the story. Tossio is <strong>not yet recommended for general use</strong>, though it's interesting to play with and occasionally useful in solving problems. It only works at the z-code level at present; eventually it will also work with <a href="http://www.inform-fiction.org/introduction/">Inform</a> source files.</p>
+
+<p>These Tossio commands are defined at present:</p>
+
+<dl>
+<dt>/help</dt>
+<dd>
+lists all the tossio commands.
+</dd>
+<dt>/open <var>xxx</var></dt>
+<dd>
+open mangled story file <var>xxx</var>.
+</dd>
+<dt>/status</dt>
+<dd>
+print the value of the program counter and so on
+</dd>
+<dt>/on</dt>
+<dd>
+turn on debug mode. (This is too vague!)
+</dd>
+<dt>/dis</dt>
+<dd>
+dissembles current story file. This can take a few seconds.
+Tossio won't dissemble again if it already has the information.
+Some commands will invoke this automatically.
+</dd>
+<dt>/showjs</dt>
+<dd>
+make /status show current JIT JavaScript.
+</dd>
+<dt>/parser</dt>
+<dd>
+make tossio show some additional parser debugging
+</dd>
+<dt>/step</dt>
+<dd>
+step one place through (unlikely to be one opcode because of JIT; this should be cleaner)
+</dd>	
+<dt>/run</dt>
+<dd>
+runs on until something interesting happens
+</dd>
+<dt>/context</dt>
+<dd>
+shows dissembly around program counter
+</dd>
+<dt>/set</dt>
+<dd>
+sets a breakpoint
+</dd>
+<dt>/clear</dt>
+<dd>
+clears a breakpoint
+</dd>
+<dt>/show <var>type</var> <var>id</var></dt>
+<dd>
+shows the value of a variable
+</dd>
+<dt>/put</dt>
+<dd>
+sets the value of a variable
+</dd>
+<dt>/about</dt>
+<dd>
+displays the about box
+</dd>
+</dl>
