@@ -1,7 +1,7 @@
 // mozilla-glue.js || -*- Mode: Java; tab-width: 2; -*-
 // Interface between gnusto-lib.js and Mozilla. Needs some tidying.
 // Now uses the @gnusto.org/engine;1 component.
-// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.139 2004/01/31 23:16:51 marnanel Exp $
+// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.140 2004/02/17 06:28:54 marnanel Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -234,7 +234,6 @@ function command_exec(args) {
 
 				glue__reason_for_stopping = engine.effect(0);
 
-				//burin('effect', glue__reason_for_stopping.toString(16));
 				var ct = engine.consoleText();
 				glue_print(ct);
 
@@ -292,7 +291,6 @@ function command_exec(args) {
 								looping = 1;
 
 						} else {
-
 								var timeout_deciseconds = engine.effect(1)*1;
 
 								if (timeout_deciseconds) {
@@ -331,15 +329,13 @@ function command_exec(args) {
 						break;
 						
 				case GNUSTO_EFFECT_RESTART:
+						// FIXME: bug 5784 makes this redundant. Implement.
 						win_relax();
 						start_up();
 						// FIXME: The beret needs to do this!
 						load_from_file(local_game_file);
 						glue_play();
-						// FIXME: We are circumventing dealWith until we integrate it
-						// properly into the component system.
-						//
-						// var result = dealWith(content);
+						looping = 1;
 						break;
 
 				case GNUSTO_EFFECT_PIRACY:
@@ -651,6 +647,7 @@ function glue__set_up_engine_from_args() {
 
 		if (engine!=null) {
 				glue_play();
+				dispatch('exec');
 		}
 }
 
@@ -768,13 +765,10 @@ function start_up() {
 }
 
 function glue_play() {
-
 		win_start_game();
 		barbara_start_game();
 		bocardo_start_game();
     win_clear(-1);
-
-		dispatch('exec');
 }
 
 var glue__command_history = [];
@@ -1256,7 +1250,7 @@ function load_from_file(file) {
 				case 'grimoire': // NB: r[3] won't be right; will be fixed by bug 5653
 		
 						engine = beret.engine;
-						
+				
 						// result[2] is how it's wrapped, which doesn't interest us.
 
 						switch (result[3]) {
@@ -1309,7 +1303,7 @@ function load_from_file(file) {
 										engine.setByte(1, 0x32);
 										engine.setByte(0, 0x33);
 								}
-
+								
 						}
 						return 1;
 
