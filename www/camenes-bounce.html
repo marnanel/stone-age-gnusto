@@ -11,7 +11,7 @@
 <p>Here's the way we do it in Gnusto; it's not elegant, but if you have a better solution I'd like to hear it.</p>
 
 <p>The hyperlink in the inner document looks like this:</p>
-<blockquote><pre>&lt;a href="javascript://<var>arbitrary javascript</var>" onclick="javascript:camenesbounce_throw(this);"&gt;click this to make something happen&lt;/a&gt;</pre></blockquote>
+<blockquote><code>&lt;a href="javascript://<var>arbitrary javascript</var>" onclick="javascript:camenesbounce_throw(this);"&gt;click this to make something happen&lt;/a&gt;</code></blockquote>
 
 <p>Note the double slash in the <code>javascript</code> URL. This is needed because clicking the link will have two effects: firstly, Mozilla will do whatever's specified in <code>onclick</code>, and secondly, it will try to resolve the URL. Because we're going to try to do everything in the first step, we want nothing to happen in the second step. So we make the target URL a JavaScript comment.</p>
 
@@ -31,6 +31,6 @@
    eval(e.target.toString().substring(13));
 }</pre></blockquote>
 
-<p>which looks at the target URL of the hyperlink that caused the event, strips the first thirteen characters away (since they will be "javascript://"), and evaluates the remaining string <strong>in the context of the outer window</strong>, which achieves our purpose.</p>
+<p>which looks at the target URL of the hyperlink that caused the event, strips the first thirteen characters away (since they will be "<code>javascript://</code>"), and evaluates the remaining string <strong>in the context of the outer window</strong>, which achieves our purpose.</p>
 
 <p>Thanks to the folk on <a href="http://www.mozdev.org/irc.html"><tt>#mozilla</tt></a> who helped me hash this out.</p>
