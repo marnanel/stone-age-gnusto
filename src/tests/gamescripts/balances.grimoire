@@ -7,13 +7,11 @@ GNUSTO.MAGIC.GRIMOIRE=1
 meta.name=Balances
 meta.success=*** You have won ***
 
-set.seed=1234
-set.nowin=1
-set.gameoverquit=1      # Currently the only way to stop; see bug 5657
-set.output=/dev/stdout
-
 # FIXME: Absolute paths are necessary here at present.
 # It's not an acceptable long-term solution.
+
+open=gamescripts/stdspells.h
+
 open=/home/marnanel/proj/gnusto/testrigs/balances.z5
 
 #
