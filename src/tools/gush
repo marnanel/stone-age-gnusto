@@ -1,12 +1,6 @@
 #!/usr/bin/env xpcshell
-// gush, copyright (c) 2003 the gnusto project
-
-// Should be defined inside g-l, but doesn't seem to be.
-var zalphabet = {
-  0: 'abcdefghijklmnopqrstuvwxyz',
-  1: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
-  2: 'T\n0123456789.,!?_#\'"/\\-:()', // T = magic ten bit flag
-}
+// gush v2.0, copyright (c) 2003 the gnusto project
+// now supports the xpcshell
 
 function gnusto_error(number) {
   dump('Gnusto error: '+number+'\n\n');
@@ -33,7 +27,7 @@ function burin(reason, text) {
 }
 
 if (arguments.length==0) {
-  print('gush - gnusto for the unix shell. dev tool. licence as for gnusto itself.');
+  print('gush v2.0 - gnusto for the unix shell. dev tool. licence as for gnusto itself.');
   print();
   print('syntax: gush <story> [<argument> [<argument> ...]]');
   print();
@@ -43,103 +37,100 @@ if (arguments.length==0) {
   print('  the first letter of an argument dictates its function');
   print('   . (dot) = command read from keyboard. "_"s are replaced with spaces.');
   print('         k = keypress with zscii value. "k" alone is space.');
-  print('- (hyphen) = affect the whole process (none defined yet)');
+  print('- (hyphen) = affect the whole process; should come first');
+  print('               -g = turn on Golden Trail');
   print('    and others we might think of later.');
   quit(1);
+}
+
+var use_golden_trail = 0;
+
+while (arguments.length > 0 && arguments[0][0]=='-') {
+  var switcher = arguments.shift();
+  if (switcher[1]=='g') {
+    use_golden_trail = 1;
+  } else {
+    print('gush: Unknown switch: '+switcher);
+    quit(1);
+  }
 }
 
 dump('Loading story... ');
 f = new Components.Constructor('@mozilla.org/file/local;1',
 			       'nsILocalFile',
 			       'initWithPath')(arguments.shift());
-
-var fc = Components.classes["@mozilla.org/network/file-input-stream;1"].createInstance(Components.interfaces.nsIFileInputStream);
-  	 
-fc.init(f, 1, 0, 0); 	 
-
-var sis = new Components.Constructor("@mozilla.org/scriptableinputstream;1", 	 
-				     "nsIScriptableInputStream")(); 	 
-sis.init(fc);
-var content = sis.read(f.fileSize); 	 
-fc.close(); 	 
 dump('done.\n');
 
-if (content.length!=f.fileSize) { 	 
-  dump('\nYou seem to have opened an ordinary, non-encoded story file.\n\n');
-  quit(1);
-}
+//var fc = Components.classes["@mozilla.org/network/file-input-stream;1"].createInstance(Components.interfaces.nsIFileInputStream);
+//fc.init(f, 1, 0, 0);
 
-dump('Translating story... ');
-var halfsize = content.length/2;
-var memory = [];
-
-for (var i=0; i<halfsize; i++) {
-  if (content[halfsize+i]=='Y') {
-    memory.push(0);
-  } else {
-    memory.push(content.charCodeAt(i));
-  }
-}
-
-content = '';
-dump('done.\n');
+var fc = Components.Constructor('@mozilla.org/network/file-input-stream;1',
+				'nsIFileInputStream',
+				'init')(f, 1, 0, 0);
 
 dump('Loading engine... ');
-load('/home/marnanel/proj/mozdev/gnusto/src/gnusto/content/gnusto-lib.js');
-engine_start_game(memory);
+engine = new Components.Constructor('@gnusto.org/engine;1',
+				    'gnustoIEngine',
+				    'loadStory')(fc, f.fileSize);
+fc.close();
 dump('done.\n');
 
-zSetByte(25, 0x20); // screen h, chars
-zSetByte(80, 0x21); // screen w, chars
-zSetWord(80, 0x22); // screen w, units
-zSetWord(25, 0x24); // screen h, units
-zSetByte( 1, 0x26); // font w, units
-zSetByte( 1, 0x27); // font h, units
+if (use_golden_trail) {
+  engine.goldenTrail = 1;
+}
 
-var result = 0x500;
-var answer = 0;
+engine.setByte(25, 0x20); // screen h, chars
+engine.setByte(80, 0x21); // screen w, chars
+engine.setWord(80, 0x22); // screen w, units
+engine.setWord(25, 0x24); // screen h, units
+engine.setByte( 1, 0x26); // font w, units
+engine.setByte( 1, 0x27); // font h, units
 
-var ignorables = {0x500: 1,
-		  0x520: 1,
-		  0x700: 1,
-		  0x800: 1,
-		  0x900: 1,
-		  0x910: 1,
-		  0x920: 1,
-		  0x930: 1,
-		  0x940: 1,
-		  0x950: 1,
-		  0x960: 1};
+var result = 'WO';
+
+var ignorables = {'WO': 1,
+		  'XC': 1,
+		  'SS': 1,
+		  'FX': 1,
+		  'TW': 1,
+		  'SW': 1,
+		  'YW': 1,
+		  'YL': 1,
+		  'SC': 1,
+		  'SB': 1,
+		  'SI': 1};
 
 while(1) {
   do {
-    result = engine_run(answer);
-    answer = 0;
-    dump(engine_console_text());
+    engine.run();
+    dump(engine.consoleText());
+    result = engine.effect(0);
   } while (result in ignorables);
 
-  if (result==0x100) {
+  if (result=='RS') {
     var nextanswer = next_argument();
     if (nextanswer[0]=='.') {
-      answer = String(nextanswer).substring(1).replace('_',' ','g');
+      var answer = String(nextanswer).substring(1).replace('_',' ','g');
+      engine.answer(0, answer);
       print('\n>'+answer);
     } else {
       print('Need a response here (starting with a dot).');
       quit(1);
     }
-  } else if (result==0x110) {
+  } else if (result=='RC') {
     var nextanswer = next_argument();
     if (nextanswer=='k') {
-      answer = 32;
+      engine.answer(0, '32');
     } else if (nextanswer[0]=='k') {
-      answer = nextanswer.substring(1) * 1;
+      engine.answer(0, String(nextanswer.substring(1) * 1));
     } else {
       print('Need a keypress here (try just "k").');
       quit(1);
     }
-  } else if (result==0xa00) {
+  } else if (result=='PT') {
+    // fixme: won't work any more
     dump(engine__effect_parameters);
-  } else if (result==0x400) {
+  } else if (result=='QU') {
     if (next_argument()=='Q') {
       print('Story quit as expected.\n');
       quit(0);
@@ -148,7 +139,7 @@ while(1) {
       quit(1);
     }
   } else {
-    print('Not sure what to do with this effect: '+result.toString(16));
+    print('Not sure what to do with this effect: '+result);
     quit(1);
   }
 
