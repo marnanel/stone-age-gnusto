@@ -1,0 +1,44 @@
+#!/usr/bin/perl
+# mz5 - program to encode files into mz5 encoding.
+# See http://gnusto.mozdev.org/nullbytes.html for why you'd want to.
+#
+# $Header: /cvs/gnusto/downloads/mz5,v 1.1 2003/02/24 13:29:41 marnanel Exp $
+#
+# Copyright (c) 2003 Thomas Thurman - thomas@thurman.org.uk
+# 
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have be able to view the GNU General Public License at 
+# http:#www.gnu.org/copyleft/gpl.html ; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
+
+use strict;
+undef $/; # slurp entire file
+
+my $file_with_nulls = <>;
+my $replaced = '';
+my $fixups = '';
+
+for (my $i=0; $i<length($file_with_nulls); $i++) {
+    my $candidate = substr($file_with_nulls, $i, 1);
+
+    if ($candidate eq "\000") {
+	$replaced = $replaced . "0";
+	$fixups = $fixups . 'Y';
+    } else {
+	$replaced = $replaced . $candidate;
+	$fixups = $fixups . 'n';
+    }
+}
+
+print $replaced.$fixups;
+
+# eof mz5
