@@ -5,7 +5,7 @@
 /* toolbar buttons */
 
 #gnusto-button {
-  list-style-image: url("chrome://gnusto/skin/images/gnusto-icon.png");
+  list-style-image: url("chrome://gnusto/skin/images/gnusto-icon-lrg.png");
 }
 
 #gnusto-button:hover {
