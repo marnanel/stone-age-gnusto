@@ -1,0 +1,26 @@
+! Gnusto tests: sundries-- tandy, standard version)
+! Copyright (c) 2003 Thomas Thurman. Distributed under v2 of the GNU GPL.
+!
+! Note:
+!  This file can't be part of the final version of Gnusto, since
+!  (obviously) it depends on Inform, and Inform is nonfree, which
+!  will keep Gnusto out of the main parts of some distributions
+!  (notably Debian). I'm figuring out a solution to this, but for
+!  now this file can stay here.
+!
+Release 3814;
+
+! The Tandy bit only exists in version 3.
+Version 3;
+
+[Main a;
+    @loadb 0 1 -> a;             ! load up the flags byte
+    @and 8 a -> a;               ! check the Tandy bit
+    @je a 8 ?tandy;              ! is it set?
+    @print "no-tandy^";          ! no, so tell them
+    @je 0 0 ?aftertandy;         ! and go on to the next test.
+    .tandy; @print "tandy^";     ! yes, so tell them
+    .aftertandy;                 ! and there we have it.
+
+    @print "end-test^";          ! all done.
+];
