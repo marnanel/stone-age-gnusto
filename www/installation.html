@@ -18,8 +18,6 @@ function triggerURL(url) {
 <!-- MAIN CONTENT -->
 <h5 class="page-header">Installation</h5>
 
-<p><big><b>Don't bother downloading v0.1.0; a new release is imminent. The site is being rewritten in preparation.</b></big> Check back soon!</p>
-
 <p>If you're running under Unix, <strong>you must be running Mozilla as root to install add-ons</strong>. (You're adding new software, after
 all.) The exception is if you installed Mozilla originally as a non-root user, in which case you should run it as that user.</p>
 
@@ -40,15 +38,15 @@ all.) The exception is if you installed Mozilla originally as a non-root user, i
 <p><b><a href="http://mozdev.org/bugs/show_bug.cgi?id=3191">Mozilla 1.3b has a known problem with both the above methods</a></b> which may crash the browser. We're looking into it. The Mozilla 1.0 branch does not have this problem. The workaround is:</p>
 <ol>
 <li>Restart Mozilla as an ordinary user</li>
-<li>Type the following into the location bar:<blockquote><kbd>chrome://gnusto/chrome</kbd></blockquote>You should see Gnusto load inside the Mozilla window.</li>
+<li>Type this into the location bar:<blockquote><kbd>chrome://gnusto/content</kbd></blockquote>You should see Gnusto load inside the Mozilla window.</li>
 <li>Close all Mozilla windows.</li>
 </ol>
 
-<p>You can then start Gnusto as described above.</p>
+<p>From then on, you should be able to start Gnusto as described above. [bug ID: <a href="http://mozdev.org/bugs/show_bug.cgi?id=3191">3191</a>]</p>
 
 <h5>The null byte problem</h5>
 
-<p><b><a href="nullbytes.html">Everyone will need the mz5 program</a></b> until the Mozilla null byte bug is fixed. Sorry. Follow the link to find out why, and where you can get the program.</p>
+<p><b><a href="nullbytes.html">Everyone will need the mz5 program</a></b> until the Mozilla null byte bug is fixed. Sorry. Follow the link to find out why, and where you can get the program. [bug ID: <a href="http://mozdev.org/bugs/show_bug.cgi?id=3064">3064</a>]</p>
 
 <p>To begin your testing, you may download Dylan O'Donnell's game <a href="http://downloads.mozdev.org/gnusto/troll.mz5"><cite>A Troll's Eye View</cite> in mz5 encoding</a> from mozdev, all ready to play.</p>
 
