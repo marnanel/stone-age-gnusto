@@ -1,5 +1,5 @@
 #include "nsISupports.idl"
-#include "nsIFile.idl"
+#include "nsIFileSpec.idl"
 
 // The replayer is in charge of playback files.
 
@@ -7,12 +7,12 @@
 interface gnustoIReplayer : nsISupports
 {
   // Adds a file to the replay list.
-  void replay(in nsIFile playback_file);
+  void replay(in nsIFileSpec playback_file);
 
   // Nonzero iff a line is available from a playback file.
   // If this is zero and you want a line, you must take it
   // from the keyboard.
-  readonly attribute short lineWaiting;
+  short lineIsWaiting();
 
   // Returns the next line from the current playback file.
   // lineWaiting must be nonzero.
