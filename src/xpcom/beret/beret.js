@@ -1,5 +1,5 @@
 // -*- Mode: Java; tab-width: 2; -*-
-// $Id: beret.js,v 1.3 2003/10/17 05:59:20 marnanel Exp $
+// $Id: beret.js,v 1.4 2003/10/17 06:58:52 marnanel Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -20,12 +20,11 @@
 
 ////////////////////////////////////////////////////////////////
 
-const CVS_VERSION = '$Date: 2003/10/17 05:59:20 $';
+const CVS_VERSION = '$Date: 2003/10/17 06:58:52 $';
 const BERET_COMPONENT_ID = Components.ID("{ed0618e3-8b2b-4bc8-b1a8-13ae575efc60}");
 const BERET_DESCRIPTION  = "Checks file magic and routes them accordingly";
 const BERET_CONTRACT_ID  = "@gnusto.org/beret;1";
 
-/*
 ////////////////////////////////////////////////////////////////
 //
 // iff_parse
@@ -58,6 +57,11 @@ function iff_parse(s) {
 				var chunk = [string_from(cursor)];
 				var chunk_length = num_from(cursor+4);
 
+				if (chunk_length<0 || (chunk_length+cursor)>s.length) {
+						// fixme: do something sensible here
+						return [];
+				}
+
 				chunk.push(cursor+8);
 				chunk.push(chunk_length);
 
@@ -69,13 +73,13 @@ function iff_parse(s) {
 
 		return result;
 }
-*/
+
 ////////////////////////////////////////////////////////////////
 
 function Beret() { }
 
 Beret.prototype = {
-		/*
+
 		////////////////////////////////////////////////////////////////
 		////////////////////////////////////////////////////////////////
 		//                                                            //
@@ -86,7 +90,7 @@ Beret.prototype = {
 		////////////////////////////////////////////////////////////////
 		////////////////////////////////////////////////////////////////
 
-		load: function b_load(aLength, info) {
+		load: function b_load(aLength, content) {
 
 				this.m_engine = null;
 
@@ -94,7 +98,7 @@ Beret.prototype = {
 						// An empty file was passed in; it's not really worth
 						// going any further.
 
-						this.m_filetype = 'none unseen';
+						this.m_filetype = 'error none given';
 						return;
 				}
 
@@ -113,34 +117,40 @@ Beret.prototype = {
 						// FIXME: This check is way too simple. We should look at
 						// some of the other fields as well for sanity-checking.
 
-						this.m_filetype = 'story naked z'+info[0];
+						this.m_filetype = 'ok story naked z'+content[0];
 
 				} else if (content[0]==70 && content[1]==79 && content[2]==82 && content[3]==77) {
 						// "F, O, R, M". An IFF file, then...
 
-						dump('! IFF !\n');
 						var iff_details = iff_parse(content);
-						dump(iff_details[0]);
 
-						if (iff_details[0]=='IFZS') {
+						if (iff_details.length==0) {
+
+								// Invalid IFF file.
+
+								this.m_filetype = 'invalid unknown iff';
+
+						} else if (iff_details[0]=='IFZS') {
 						
 								// Quetzal saved file.
 
-								this.m_filetype = 'saved quetzal z5 ok';
+								this.m_filetype = 'ok saved quetzal z5';
 
 						} else if (iff_details[0]=='IFRS') {
 
 								// Blorb resources file, possibly containing
 								// Z-code.
 
-								this.m_filetype = 'story blorb unimplemented';
+								this.m_filetype = 'invalid story blorb';
 
 								// OK, so go digging for it.	
 								// For the curious, the full list of executable
 								// formats is:
 								//    ZCOD: z-code,  GLUL: Glulx,  TADG: Tads,
-								//    ALAN: Alan,    HUGO: Hugo,   SAII: Scott Adams
-								// (from <http://bang.dhs.org/if/raif/1999/msg02924.html>)
+								//    ALAN: Alan,    HUGO: Hugo,   SAAI: Scott Adams,
+								//    MSRL: Magnetic Scrolls        (sometimes given as SAII)
+								//
+								// see: <news:82283c$uab$1@nntp9.atl.mindspring.net>
 								//
 								// FIXME: It's (obviously) technically invalid if
 								// a file's Blorb type signature doesn't match with its
@@ -149,29 +159,24 @@ Beret.prototype = {
 								// to be z-code?
 
 								for (var j=1; j<iff_details.length; j++) {
-										dump(' check ');
-										dump(iff_details[j][0]);
 
 										if (iff_details[j][0]=='ZCOD') {
-												// This will work better once we have an
-												//	example to test it against.
+												this.m_filetype = 'nyi story blorb';
+
 												dump("Should be able to read this... "+
 														 "still need to implement "+
 														 "scooping the middle out.");
-												return;
 										}
 								}
 
-								dump('No code\n');
-								// FIXME: Error. Blorb file with no code.
 						} else {
-								dump('Unknown IFF\n');
-								// FIXME: Unknown IFF type.
+								this.m_filetype = 'error unknown iff';
 						}
-				}
 
-				// OK, just give up.
-				this.m_filetype = 'unknown';
+				} else {
+						// OK, just give up.
+						this.m_filetype = 'error unknown general';
+				}
 		},
 
 		get filetype() {
@@ -190,9 +195,8 @@ Beret.prototype = {
 		////////////////////////////////////////////////////////////////
 		////////////////////////////////////////////////////////////////
 
-		m_filetype: 'none unseen',
+		m_filetype: 'error none unseen',
 		m_engine: null,
-*/
 
 };
 
