@@ -114,6 +114,19 @@ preferences: jury-rig
 
 ################################################################
 
+# simplerestore
+
+simplerestore: simplerestorez5 simplerestorez4 simplerestorez3
+
+simplerestorez3: jury-rig simplerestore.z3
+	$(GNUSTO) simplerestore.z3,gamescripts/simplerestore.grimoire
+simplerestorez4: jury-rig simplerestore.z4
+	$(GNUSTO) simplerestore.z4,gamescripts/simplerestore.grimoire
+simplerestorez5: jury-rig simplerestore.z5
+	$(GNUSTO) simplerestore.z5,gamescripts/simplerestore.grimoire
+
+################################################################
+
 jury-rig:
 	cd ..;$(MAKE)
 
