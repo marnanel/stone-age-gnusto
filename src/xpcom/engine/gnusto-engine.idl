@@ -22,6 +22,9 @@ interface gnustoIEngine : nsISupports
 
   void walk(in string answer);
 
+  // obsolescent:
+  string consoleText();
+
   readonly attribute string architecture;
 
   attribute short goldenTrail;
