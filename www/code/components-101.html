@@ -1,10 +1,33 @@
 <h1 class="page-header" style="text-align: center"><img src="http://gnusto.org/lanterns/lantern.png" alt="" width="32" height="64" /><br />What are components?</h1>
 
-<p>(write me-- coming soon.)</p>
+<p style="border-left: 2em; border-right: 2em; font-size: 14pt; font-family: cursive">Your spell book begins to glow softly. Slowly, ornately, the words of the QueryInterface spell are inscribed, glowing even more brightly then the book itself. The book's brightness fades, but the spell remains! However, the scroll on which it was written vanishes as the last word is copied.</p>
 
-<p>Component-based design is used all over the place: there's
+<p>Programming has always had a problem: programs grow. A small program can fit in your head, but a large one needs some way of organising the complexity-- "programming in the large", as <a href="http://portal.acm.org/citation.cfm?id=808431&dl=ACM&coll=GUIDE">[DeRemer and Kron, 1975]</a> put it. One way of doing that is with components.</p>
+
+<p>A program is built out of components a little like the way a federal country is <a href="http://www.greatseal.com/mottoes/unum.html">one big state made up of lots of little states</a>. Each component is like a semi-independent program in its own right.</p>
+
+<p>On the other hand, one of the most important rules of component-based design is that <strong>components should know as little about one another as possible</strong>. If a component needs to ask another component for something, it should have access only to a few functions and so on, not to the internals of the other component. You can make a request, but it's none of your business how the component carries the job out.</p>
+
+<p>To this end, everything you might need to know about a particular component-- all the names of the functions you can call, and what parameters you must pass along with them-- is collected up into an <dfn>interface</dfn>. (Inside an interface, functions are known as <dfn>methods</dfn>.) For example, a component which controls a printer might have an interface containing methods to:</p>
+<ul>
+<li>print the text <var>X</var> at the current position</li>
+<li>turn on italics</li>
+<li>turn off italics</li>
+<li>start a new line</li>
+<li>spit out a whole page (form feed)</li>
+</ul>
+
+<p>If an interface describes the way a component works, the component is said to <dfn>implement</dfn> that interface.</p>
+
+<p>Interfaces are handled separately from components. That way you can have multiple components (controlling, for example, different kinds of printer) and treat them both the same way. It also means that a component can support multiple interfaces.</p>
+
+<p>One last problem: how do you get started? If you're handed a component, how do you know whether it supports a particular interface? Well, there's a basic interface that every component must implement, containing the really basic methods. (The name of this interface differs on different component systems-- XPCOM calls it nsISupports, Microsoft call it IUnknown, and CORBA calls it something like CORBA::Object.) One of these really basic methods, generally called QueryInterface, takes an interface ID, tells you whether the component supports it, and (if it does) sets it up for you to use it.</p>
+
+
+<p><b>Further reading:</b> Component-based design is used all over the place: there's
 <a href="http://www.microsoft.com/com/about.asp">COM</a> in Microsoft Windows,
 <a href="http://www.gnome.org/gnome-office/bonobo.shtml">Bonobo</a> in Gnome,
-<a href="http://www.omg.org/gettingstarted/corbafaq.htm">CORBA</a> all over the place,
+(which is based on <a href="http://www.omg.org/gettingstarted/corbafaq.htm">CORBA</a>,
+found pretty much everywhere),
 and of course
 <a href="http://www.mozilla.org/projects/xpcom/">XPCOM</a> in Mozilla.</p>
