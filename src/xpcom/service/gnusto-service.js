@@ -1,5 +1,5 @@
 // -*- Mode: Java; tab-width: 2; -*-
-// $Id: gnusto-service.js,v 1.9 2005/02/10 19:09:20 naltrexone42 Exp $
+// $Id: gnusto-service.js,v 1.10 2005/03/24 07:54:49 naltrexone42 Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -57,7 +57,7 @@ const mime_types = {
 
 ////////////////////////////////////////////////////////////////
 
-const CVS_VERSION = '$Date: 2005/02/10 19:09:20 $';
+const CVS_VERSION = '$Date: 2005/03/24 07:54:49 $';
 
 const CONTENT_HANDLER_CONTRACT_ID_PREFIX = // Only the start of it:
 		"@mozilla.org/uriloader/content-handler;1?type=";
@@ -77,6 +77,7 @@ const Z_MACHINE_MIME_TYPE ='application/x-zmachine';
 
 // I think this is the magic number we want:
 const NS_BINDING_ABORTED = 0x804B0002;
+
 
 ////////////////////////////////////////////////////////////////
 
@@ -129,7 +130,7 @@ function openInNewWindow(url, filename) {
 				var ass = Components.
 						classes['@mozilla.org/appshell/appShellService;1'].
 						getService(Components.interfaces.nsIAppShellService);
-				ass.hiddenDOMWindow.openDialog(url,
+				return ass.hiddenDOMWindow.openDialog(url,
 																			 '_blank',
 																			 'chrome,all,dialog=no',
 																			 filename);
@@ -197,15 +198,29 @@ GnustoStreamListener.prototype = {
     onStopRequest: function gsl_onstop(request, context, status) {
 				try {
 						if (Components.isSuccessCode(status)) {
+							
+							// success is true, so moz thinks the file should exist
+							// but if it does not, it probably is still being copied
+							// from the cache.  Hang out while this happens.
+							while ((!this.m_file.exists()) || (!this.m_file.isReadable())) {
+							  // do nothing... is there a way to do this that's not
+							  // such a busy wait?	
+							}
 
 								openInNewWindow(GNUSTO_MAIN_WINDOW_URL, this.m_file.path);
 
 						} else {
 
 								dump('gnusto: download screwed up\n');
-								this.m_file.remove(false);
+								this.m_file.remove(false); 
 
-						}								
+					}								
+//					if (this.m_progwin != null) {
+//					  this.m_progwin.close();
+//					  this.m_progwin = null;
+//					  	
+//					}
+					
 
 				} catch (e) {
 						dump('ERROR (osr): ');
@@ -217,6 +232,7 @@ GnustoStreamListener.prototype = {
 		setTargetFile: function gsl_stf(file) {
 				with (Components) {
 						this.m_file = file;
+						//this.m_progwin = openInNewWindow('http://batmantis.com','');
 						var stream = Constructor('@mozilla.org/network/file-output-stream;1',
 																				 'nsIFileOutputStream',
 																				 'init')(
@@ -238,6 +254,8 @@ GnustoStreamListener.prototype = {
 
 		// an nsIFileOutputStream which is where the downloaded story goes.
 		m_sink: null,
+		
+		//m_progwin: null,
 };
 
 ////////////////////////////////////////////////////////////////
@@ -277,6 +295,7 @@ ContentHandler.prototype.handleContent = function ch_hc(content_type,
 						throw Components.results.NS_ERROR_NULL_POINTER;
 				}
 
+
 				// FIXME: Find value of NS_ERROR_WONT_HANDLE_CONTENT
 				//if (!(content_type in mime_types)) {
 				//		// Don't know how to handle stuff that isn't in |mime_types|.
@@ -308,7 +327,7 @@ ContentHandler.prototype.handleContent = function ch_hc(content_type,
 				cd_and_maybe_mkdir(local_copy, 'gnusto');
 				cd_and_maybe_mkdir(local_copy, 'downloads');
 				local_copy.append(filename);
-
+				
 				// An ugly problem:
 				//
 				// * In order to read the document, we need to set a listener.
@@ -331,6 +350,7 @@ ContentHandler.prototype.handleContent = function ch_hc(content_type,
 				var newchan = Components.classes['@mozilla.org/network/io-service;1'].getService(Components.interfaces.nsIIOService).newChannelFromURI(uri);
 
 				var listener = new GnustoStreamListener();
+                                
 				listener.setTargetFile(local_copy);
 				newchan.asyncOpen(listener, this);
 		

@@ -1,7 +1,7 @@
 // mozilla-glue.js || -*- Mode: Java; tab-width: 2; -*-
 // Interface between gnusto-lib.js and Mozilla. Needs some tidying.
 // Now uses the @gnusto.org/engine;1 component.
-// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.153 2005/02/09 22:49:03 naltrexone42 Exp $
+// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.154 2005/03/24 07:54:42 naltrexone42 Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -1217,6 +1217,19 @@ function load_from_file(file) {
 		var nsIBinaryInputStream = Components.interfaces.nsIBinaryInputStream;
 		
 		var ios = Components.classes[IOS_CTR].getService(nsIIOService);
+
+		// We can get burned if the file is still in mid-copy from the cache.
+		// If so, wait.
+		while ((!file.exists()) || (!file.isReadable()) || (file.fileSize == 0)) {
+		  // do nothing... is there a way to do this that's not
+		  // such a busy wait?	
+		}
+		var dummyFile = file.clone();
+		while (dummyFile.exists()) {
+		  dummyFile.leafName = dummyFile.leafName + 'a';
+  		}		
+
+		file.copyTo(null, dummyFile.leafName);
 
 		var uri = ios.newFileURI(file);
 		var is = ios.newChannelFromURI(uri).open();

@@ -70,24 +70,39 @@ function registerHelperApp() {
        entry.saveToDisk       = false;
        entry.useSystemDefault = false;
        entry.handleInternal   = false;
-       entry.appPath = 'c:\\program files\\mozilla firefox\\firefox.exe';
-
-
-       
-       // Do RDF magic.
-       try {
-         entry.buildLinks();
-       } catch (e) {
-         // ignore errors	
+       entry.appPath = '';
+       var pathToBrowser = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties).get("CurProcD", Components.interfaces.nsILocalFile);
+       var fnBrowser = pathToBrowser.clone();
+       fnBrowser.append('firefox');
+       if (fnBrowser.exists()) {
+         entry.appPath = fnBrowser.path;
+       } else {
+         fnBrowser = pathToBrowser.clone();
+         fnBrowser.append('firefox.exe');
+         if (fnBrowser.exists()) {
+           entry.appPath = fnBrowser.path;
+         }
+       	
        }
        
-       // flush the ds to disk.
-       var remoteDS = gDS.QueryInterface(Components.interfaces.nsIRDFRemoteDataSource);
-       if (remoteDS)
-         remoteDS.Flush();   
-  
+       if (entry.appPath != '') {
+       
+       		// Do RDF magic.
+       		try {
+       		  entry.buildLinks();
+       		} catch (e) {
+       		  // ignore errors	
+       		}
+       
+       		// flush the ds to disk.
+       		var remoteDS = gDS.QueryInterface(Components.interfaces.nsIRDFRemoteDataSource);
+       		if (remoteDS)
+       		  remoteDS.Flush();   
+       		  
+       }
 }
 try {
+	 
   registerHelperApp();
 } catch (e) {
 	//ignore errors
