@@ -1,0 +1,19 @@
+#include "nsISupports.idl"
+#include "nsIFileSpec.idl"
+
+[scriptable, uuid(478e8d87-3120-46cd-941b-969cf885cdcf)]
+interface gnustoILinker : nsISupports
+{
+  void addChunk(in string name, in short priority,
+		in PRUint32 dataLength,
+		[size_is(dataLength), array] in PRUint8 data);
+
+  void addFixup(in string embedChunk, in long embedOffset,
+		in string targetChunk, in long targetOffset,
+		in short format);
+
+  PRUint32 resultLength();
+
+  void resultData(in PRUint32 aLength,
+		  [size_is(aLength), array, retval] out PRUint8 target);
+};
