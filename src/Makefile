@@ -1,6 +1,6 @@
 # Makefile - makefile for gnusto
 #
-# $Header: /cvs/gnusto/src/Makefile,v 1.14 2004/01/10 02:45:27 marnanel Exp $
+# $Header: /cvs/gnusto/src/Makefile,v 1.15 2004/01/26 05:04:53 marnanel Exp $
 #
 # Copyright (c) 2003 Thomas Thurman
 # thomas@thurman.org.uk
@@ -27,6 +27,8 @@ MOZILLAARGS = -P smoke
 BALANCES_GAME = ~/balances.z5
 
 # jury-rig should be the default, please.
+
+jury-rig: juryrig
 
 juryrig:
 	python tools/jury-rig.py
