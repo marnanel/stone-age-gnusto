@@ -1,6 +1,6 @@
 # Makefile - makefile for archangel
 #
-# $Header: /cvs/gnusto/src/Makefile,v 1.3 2003/02/04 02:56:07 marnanel Exp $
+# $Header: /cvs/gnusto/src/Makefile,v 1.4 2003/02/04 21:56:56 marnanel Exp $
 #
 # Copyright (c) 2003 Thomas Thurman
 # thomas@thurman.org.uk
@@ -20,7 +20,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
 
 APPLICATION = gnusto
-VERSION = 0.0.1
+VERSION = 0.1.0
 XPIFILE = ../downloads/${APPLICATION}-${VERSION}.xpi
 
 xpi:
