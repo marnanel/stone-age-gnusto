@@ -21,9 +21,9 @@ function triggerURL(url) {
 <p>If you're running under Unix, <strong>you must be running Mozilla as root to install add-ons</strong>. (You're adding new software, after
 all.) The exception is if you installed Mozilla originally as a non-root user, in which case you should run it as that user.</p>
 
-<p>To install gnusto v0.2.0, click on the picture below:</p>
+<p>To install gnusto v0.3.0, click on the picture below:</p>
 
-<p align="center"><a href="#" onclick="triggerURL('http://downloads.mozdev.org/gnusto/gnusto-0.2.0.xpi');"><img src="hand.png" width="187" height="190" alt="[ Install gnusto v0.2.0 ]" border="0"></a></p>
+<p align="center"><a href="#" onclick="triggerURL('http://downloads.mozdev.org/gnusto/gnusto-0.3.0.xpi');"><img src="hand.png" width="187" height="190" alt="[ Install gnusto v0.3.0 ]" border="0"></a></p>
 
 <h5>Starting gnusto</h5>
 
@@ -33,12 +33,11 @@ all.) The exception is if you installed Mozilla originally as a non-root user, i
 <li><b>or</b> start Mozilla from the command line thus:<blockquote><kbd>mozilla -chrome chrome://gnusto/content</kbd></blockquote></li>
 </ul>
 
-<h5>The crash in Mozilla v1.3b</h5>
-
-<p><b><a href="http://mozdev.org/bugs/show_bug.cgi?id=3191">Mozilla 1.3b has a known problem with both the above methods</a></b> which may crash the browser. We're looking into it. The Mozilla 1.0 branch does not have this problem. The workaround is:</p>
+<h5>The crash in Mozilla v1.3</h5>
+<p><b><a href="http://mozdev.org/bugs/show_bug.cgi?id=3191">Mozilla 1.3 has a known problem with both the above methods</a></b> which may crash the browser. We're looking into it. The Mozilla 1.0 branch does not have this problem. The workaround is:</p>
 <ol>
 <li>Restart Mozilla as an ordinary user</li>
-<li>Type this into the location bar:<blockquote><kbd>chrome://gnusto/content</kbd></blockquote>You should see Gnusto load inside the Mozilla window.</li>
+<li>Type this into the location bar:<blockquote><kbd>chrome://gnusto/content</kbd></blockquote>You should see Gnusto load inside the Mozilla window. (This method works on 1.3 and 1.0 branches alike.)</li>
 <li>Close all Mozilla windows.</li>
 </ol>
 
@@ -46,24 +45,12 @@ all.) The exception is if you installed Mozilla originally as a non-root user, i
 
 <h5>The null byte problem</h5>
 
-<p><b><a href="nullbytes.html">Everyone will need the mz5 program</a></b> until the Mozilla null byte bug is fixed. Sorry. Follow the link to find out why, and where you can get the program. [bug ID: <a href="http://mozdev.org/bugs/show_bug.cgi?id=3064">3064</a>]</p>
+<p><b><a href="nullbytes.html">Everyone will need the mz5 program</a></b> until the Mozilla null byte bug is fixed. Follow the link to find out why, and where you can get the program. Sorry about this-- it looks like they'll get the fix out in Mozilla v1.4. [bug ID: <a href="http://mozdev.org/bugs/show_bug.cgi?id=3064">3064</a>]</p>
 
-<p>To begin your testing, you may download Dylan O'Donnell's game <a href="http://downloads.mozdev.org/gnusto/troll.mz5"><cite>A Troll's Eye View</cite> in mz5 encoding</a> from mozdev, all ready to play. [Note: Gnusto 0.2.0 has a problem in playing this game, so it's probably not a good idea to download it after all. <a href="http://mozdev.org/bugs/show_bug.cgi?id=3343">Bug 3343.</a> This will be fixed in 0.3.0, due out in a few days.]</p>
+<p>To begin your testing, you may download Dylan O'Donnell's game <a href="http://downloads.mozdev.org/gnusto/troll.mz5"><cite>A Troll's Eye View</cite> in mz5 encoding</a> from mozdev, all ready to play.</p>
 
 <h5>Finding stories to use</h5>
 
 <p>You can get other story files from the IF Archive-- try <a href="http://www.wurb.com/if/platform/1">searching <cite>Baf's Guide</cite> for Z-machine games</a>. (In the future, Gnusto will let you do this from within the program.) Please feed back on which games work and which don't by <a href="bugs.html">raising bugs</a>. Currently:</p>
-
-<h5>Games that don't work</h5>
-<ul>
-<li>Curses (seems to be a parsing problem [bug ID: <a href="http://mozdev.org/bugs/show_bug.cgi?id=3315">3315</a>])</li>
-<li>Christminster (strange property errors [bug ID: <a href="http://mozdev.org/bugs/show_bug.cgi?id=3314">3314</a>])</li>
-<li>A whole lot of games because of [bug <a href="http://mozdev.org/bugs/show_bug.cgi?id=3343">3343</a>]-- see above.</li>
-</ul>
-<h5>Games that do</h5>
-<ul>
-<li>A Troll's Eye View.</li>
-<li>Jailbait on I-0.</li>
-</ul>
 
 <p>Note that Gnusto currently only supports version 5. Most of these games are v5, but some may be v3 or v8. The site will tell you which.</p>
