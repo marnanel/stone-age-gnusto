@@ -1,7 +1,7 @@
 // mozilla-glue.js || -*- Mode: Java; tab-width: 2; -*-
 // Interface between gnusto-lib.js and Mozilla. Needs some tidying.
 // Now uses the @gnusto.org/engine;1 component.
-// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.123 2003/11/24 16:17:24 marnanel Exp $
+// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.124 2003/12/03 08:43:03 marnanel Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -95,6 +95,12 @@ var glue__transcription_streams = [];
 // copy the value out of this variable.
 var glue__transcription_saved_target = 0;
 
+// Set of terminating characters. If an integer ZSCII code is
+// a member of this set, then typing the key which gives that
+// ZSCII code will terminate a string read. This set is populated
+// by glue__set_terminating_characters.
+var glue__terminating_characters = {};
+
 ////////////////////////////////////////////////////////////////
 
 // Goes "beep".
@@ -107,6 +113,14 @@ function glue__beep() {
 // (Actually, it just bleeps at the moment.)
 function glue__sound_effect(number, effect, volume, callback) {
 		glue__beep();
+}
+
+// Sets up the glue__terminating_characters array, q.v.
+function glue__set_terminating_characters(terminators) {
+		glue__terminating_characters = {};
+		for (i in terminators) {
+				glue__terminating_characters[terminators.charCodeAt(i)] = 1;
+		}
 }
 
 // Outputs to the screen, and the transcription file if necessary.
@@ -225,6 +239,7 @@ function command_exec(args) {
 								win_relax();
 								glue__input_buffer_max_chars = engine.effect(2)*1;
 								win_set_input([win_recaps(engine.effect(1)*1), '']);
+								glue__set_terminating_characters(engine.effect(3));
 								glue__command_history_position = -1;		
 						}
 						break;
@@ -653,7 +668,91 @@ function glue_play() {
 var glue__command_history = [];
 var glue__command_history_position = -1;
 
+const keycode_to_zscii_mappings = {
+
+		// Arrow keys.
+		37 : 131, 38 : 129, 39 : 132, 40 : 130,
+
+		// Function keys, F1 to F12.
+		// Note: WinFrotz requires the user to
+		// press Ctrl-F<n>, so that F<n> can
+		// be used for their usual Windows functions
+		// (in particular, so that F1 can still
+		// invoke help).
+		112 : 133, 113 : 134, 114 : 135, 115 : 136,
+		116 : 137, 117 : 138, 118 : 139, 119 : 140,
+		120 : 141, 121 : 142, 122 : 143, 123 : 144,
+
+		// Keypad.
+		//
+		//    "I see Esk, Catarl, and Pig-Up..."
+		//              -- Homer Simpson (#3F05)
+		//
+		// The way Mozilla reports keypresses leaves us unable
+		// to detect any keypad keypress separately if NumLock
+		// is on. If it's off, we can't detect any of the
+		// keypad's four arrow keys separately from the main
+		// arrows, and we can't detect keypad 5 at all. We
+		// can reliably detect only 1, 3, 7, 9, and 0.
+		//
+		// Faced with a similar problem, Unix Frotz decided not
+		// to allow access to the keypad at all. I'm going to
+		// allow those codes, though: it provides *some* way to
+		// detect five very important keys (PgUp, PgDn, Ins,
+		// Home and End) which would otherwise be undetectable.
+		// (It would also mean that we couldn't simply switch by ZSCII
+		// code for keypresses when the user's entering a string.)
+		36  :  152, // keypad 7 / Home
+		33  :  154, // keypad 9 / PgUp
+		35  :  146, // keypad 1 / End
+		34  :  148, // keypad 3 / PgDn
+		45  :  145, // keypad 0 / Ins
+
+		// Other keys.
+		46  :  8, // delete    } both map to
+		8   :  8, // backspace } ZSCII BS (called "delete" in the docs)
+
+		9   :  9, // tab
+
+		10  : 13, // newline   } both map to
+		13  : 13, // return    } ZSCII CR (called "newline" in the docs)
+
+		27  : 27, // escape
+};
+
 function gotInput(e) {
+
+		// Returns the ZSCII code for the keypress represented by the
+		// event |e|. If there's no appropriate ZSCII code, returns 0.
+		// More than one key might map to the same ZSCII code, even ones
+		// we otherwise want to distinguish (e.g. Del and Backspace)--
+		// so you might want to examine the event yourself if you need
+		// to tell the difference between those.
+		function zscii_from_event(e) {
+
+				if (e.keyCode==0) {
+
+						// An ordinary keypress.
+
+						var code = e.charCode;
+						if (code>=32 && code<=126) {
+								// Regular ASCII; just pass it straight through
+								return code;
+						}
+
+				}	else {
+
+						// Something extended, like a function key.
+
+						if (e.keyCode in keycode_to_zscii_mappings) {
+								return keycode_to_zscii_mappings[e.keyCode];
+						}
+				}
+
+				return 0;
+		}
+
+		////////////////////////////////////////////////////////////////
 
 		if (win_waiting_for_more()) {
 
@@ -665,13 +764,28 @@ function gotInput(e) {
 				return false;
 		}
 
-		if (glue__reason_for_stopping==GNUSTO_EFFECT_INPUT) {
+		var zscii_code = zscii_from_event(e);
+
+		if (zscii_code == 0) {
+				return;
+		}
+
+		// Now, were we in line-at-a-time or character-at-a-time mode?
+
+		switch (glue__reason_for_stopping) {
+
+		case GNUSTO_EFFECT_INPUT: // Line at a time.
+
+				var keypress_considered_function_key =
+						(zscii_code>=128 && zscii_code<=154) ||
+						(zscii_code>=252 && zscii_code<=255);
 
 				var current = win_get_input();
 
-				if (e.keyCode==13) {
+				if (zscii_code in glue__terminating_characters) {
 
-						// Carriage return. So we've got a line of input.
+						// It's a code we've been asked to terminate on,
+						// so we have a full line of input.
 
 						var result = current[0]+current[1];
 
@@ -683,134 +797,114 @@ function gotInput(e) {
 						win_destroy_input();
 
 						glue_print(result+'\n');
-						//VERBOSE burin('COMMAND:',result);
 
 						glue__command_history.unshift(result);
-
+								
 						engine.answer(0, result);
+						engine.answer(1, zscii_code);
 						dispatch('exec');
 
-				} else if (e.keyCode==0) {
+				} else {
 
-						// Just an ordinary character. Insert it.
+						// There are a few keys which, even if they aren't really
+						// function keys, have effects other than inserting a
+						// character (e.g. backspace). These go in this section
+						// because they're only valid when we're reading a string.
+						// Some of these, such as cursor up, can appear in
+						// glue__terminating_characters, but if they do they'll
+						// have been caught before this part gets its hands on them.
 
-						if ((current[0].length + current[1].length) <
-								glue__input_buffer_max_chars) {
+						switch (zscii_code) {
 
-								if (e.charCode==32) {
-										// Special case for space: use a non-breaking space.
-										current[0] = current[0] + '\u00A0';
+						case 8:	// Backspace. Or maybe delete.
+
+								if (e.keyCode==46) {
+										// delete (to the right)
+										if (current[1].length>0) {
+												current[1] = current[1].substring(1);
+										} else glue__beep();
 								} else {
-										current[0] = current[0] + String.fromCharCode(e.charCode);
+										// backspace (to the left)
+										if (current[0].length>0) {
+												current[0] = current[0].substring(0, current[0].length-1);
+										} else glue__beep();
 								}
 								win_set_input(current);
+								break;
 
-						} else glue__beep();
+						case 129: // cursor up
+								if (glue__command_history_position >= glue__command_history.length-1) {
+										glue__beep();
+								} else {
+										current[0] = glue__command_history[++glue__command_history_position];
+										current[1] = '';
+										win_set_input(current);
+								}
+								break;
 
-				} else if (e.keyCode==8) {
-						// backspace
-						if (current[0].length>0) {
-								current[0] = current[0].substring(0, current[0].length-1);
-						} else glue__beep();
-						win_set_input(current);
+						case 130: // cursor down
+								if (glue__command_history_position < 1) {
+										glue__beep();
+								} else {
+										current[0] = glue__command_history[--glue__command_history_position];
+										current[1] = '';
+										win_set_input(current);
+								}
+								break;
 
-				} else if (e.keyCode==37) {
-						// cursor left
-						if (current[0].length>0) {
-								current[1] = current[0].substring(current[0].length-1)+current[1];
-								current[0] = current[0].substring(0, current[0].length-1);
-						} else glue__beep();
-						win_set_input(current);
+						case 131: // cursor left
+								if (current[0].length>0) {
+										current[1] = current[0].substring(current[0].length-1)+current[1];
+										current[0] = current[0].substring(0, current[0].length-1);
+										win_set_input(current);
+								} else glue__beep();
+								break;
+								
+						case 132: // cursor right
+								if (current[1].length>0) {
+										current[0] = current[0]+current[1].substring(0, 1);
+										current[1] = current[1].substring(1);
+										win_set_input(current);
+								} else glue__beep();
+								break;
 
-				} else if (e.keyCode==39) {
-						// cursor right
-						if (current[1].length>0) {
-								current[0] = current[0]+current[1].substring(0, 1);
-								current[1] = current[1].substring(1);
-						} else glue__beep();
-						win_set_input(current);
+						case 9: // tab (for tab completion)
+								glue__beep(); // we don't support it yet: bug 5169
+								break;
 
-				} else if (e.keyCode==38) {
-						// cursor up
-						if (glue__command_history_position >= glue__command_history.length-1) {
-								glue__beep();
-						} else {
-								current[0] = glue__command_history[++glue__command_history_position];
-								current[1] = '';
-								win_set_input(current);
-						}
+						default:
+								if (keypress_considered_function_key) {
+										// It's a function key, but not a special one, and
+										// somehow it got this far...
+										glue__beep();
+										
+								} else if ((current[0].length + current[1].length) >=
+													 glue__input_buffer_max_chars) {
+										// It would overrun.
+										glue__beep();
 
-				} else if (e.keyCode==40) {
-						// cursor down
-						if (glue__command_history_position < 1) {
-								glue__beep();
-						} else {
-								current[0] = glue__command_history[--glue__command_history_position];
-								current[1] = '';
-								win_set_input(current);
-						}
+								} else {
+										// Just an ordinary character, then. Insert it.
+												
+										if (zscii_code==32) {
+												// Special case for space: use a non-breaking space.
+												// Otherwise Gecko will wrap the line. Ick.
+												current[0] = current[0] + '\u00A0';
+										} else {
+												current[0] = current[0] + String.fromCharCode(zscii_code);
+										}
+										win_set_input(current);
+								}
 
-				} else if (e.keyCode==46) {
-						// delete (to the right)
-						if (current[1].length>0) {
-								current[1] = current[1].substring(1);
-						} else glue__beep();
-						win_set_input(current);
-
-				}
-
-				return false;
-
-		} else if (glue__reason_for_stopping==GNUSTO_EFFECT_INPUT_CHAR) {
-
-				if (e.keyCode==0) {
-						var code = e.charCode;
-
-						if (code>=32 && code<=126) {
-								// Regular ASCII; just pass it straight through
-								engine.answer(0, code); dispatch('exec');
-						}
-
-				}	else {
-						switch (e.keyCode) {
-
-								// Arrow keys
-						case  37 : engine.answer(0, 131); dispatch('exec'); break;
-						case  38 : engine.answer(0, 129); dispatch('exec'); break;
-						case  39 : engine.answer(0, 132); dispatch('exec'); break;
-						case  40 : engine.answer(0, 130); dispatch('exec'); break;
-
-								// Function keys
-								// Note: WinFrotz requires the user to
-								// press Ctrl-F<n>, so that F<n> can
-								// be used for their usual Windows functions
-								// (in particular, so that F1 can still
-								// invoke help).
-						case 112 : engine.answer(0, 133); dispatch('exec'); break;
-						case 113 : engine.answer(0, 134); dispatch('exec'); break;
-						case 114 : engine.answer(0, 135); dispatch('exec'); break;
-						case 115 : engine.answer(0, 136); dispatch('exec'); break;
-						case 116 : engine.answer(0, 137); dispatch('exec'); break;
-						case 117 : engine.answer(0, 138); dispatch('exec'); break;
-						case 118 : engine.answer(0, 139); dispatch('exec'); break;
-						case 119 : engine.answer(0, 140); dispatch('exec'); break;
-						case 120 : engine.answer(0, 141); dispatch('exec'); break;
-						case 121 : engine.answer(0, 142); dispatch('exec'); break;
-
-								// delete / backspace
-						case  46 : engine.answer(0, 8); dispatch('exec'); break;
-						case   8 : engine.answer(0, 8); dispatch('exec'); break;
-
-								// newline / return
-						case  10 : engine.answer(0, 13); dispatch('exec'); break;
-						case  13 : engine.answer(0, 13); dispatch('exec'); break;
-
-								// escape
-						case  27 : engine.answer(0, 27); dispatch('exec'); break;
 						}
 				}
 
 				return false;
+
+		case GNUSTO_EFFECT_INPUT_CHAR:
+				engine.answer(0, zscii_code); dispatch('exec');
+				return false;
+
 		}
 }
 
