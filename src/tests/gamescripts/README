@@ -1,11 +1,27 @@
-README
-	this file
+Gamescripts
+===========
+
+These are some scripts to use as input to Gnusto to play a game
+right through.
+
+There are two kinds of scripts: ".ini" scripts and ".playback"
+scripts. ".playback" scripts just contain what to type into the
+story, line by line. There is a list of these below. ".ini"
+scripts are more structured; they contain all that a ".playback"
+script contains, and also show how to tell whether the game
+has been won, amongst other things. They are made to be played by
+the $/src/tools/playthrough.py program.
+
+The ".playback" scripts
+-----------------------
 
 balances.playback
 	playback for Balances, based on solution by Gareth Rees
-	Known to work.
+	Known to work. (Now superseded by balances.ini; may be
+	deleted.)
 zork1.playback
 	playback for Zork, based on solution by Jacob Gunness (sic)
+	Does not yet work.
 
 gntests.playback
 strictz.playback
