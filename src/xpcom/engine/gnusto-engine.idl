@@ -55,6 +55,9 @@ interface gnustoIEngine : nsISupports
   // The copper trail prints JIT information to the burin
   // as the engine runs.
   void setCopperTrail(in short whether);
+  
+  // Passes back a 'terp generated status line for pre-z5 games
+  string getStatusLine(in short width);
 };
 
 ////////////////////////////////////////////////////////////////

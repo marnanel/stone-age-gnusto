@@ -1,7 +1,7 @@
 // barbara.js || -*- Mode: Java; tab-width: 2; -*-
 // Lightweight lower-window handler.
 //
-// $Header: /cvs/gnusto/src/gnusto/content/barbara.js,v 1.26 2004/09/28 19:40:30 naltrexone42 Exp $
+// $Header: /cvs/gnusto/src/gnusto/content/barbara.js,v 1.27 2004/09/29 15:56:11 naltrexone42 Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -46,6 +46,13 @@ var barbara__after_cursor = null;
 // Y-coordinate of the most the user's seen, in pixels.
 // (For example, when the screen's cleared, this becomes 0px.)
 var barbara__most_seen = 0;
+
+var barbara_zalphabet = {
+		0: 'abcdefghijklmnopqrstuvwxyz',
+		1: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+		2: 'T\n0123456789.,!?_#\'"/\\-:()', // T = magic ten bit flag
+}
+
 
 ////////////////////////////////////////////////////////////////
 
@@ -147,7 +154,98 @@ function barbara_set_input(textlist) {
 		barbara__after_cursor .childNodes[0].data = textlist[1];
 }
 
+function barbara_zscii_char_to_ascii(zscii_code) {
+		if (zscii_code<0 || zscii_code>1023) {
+				gnusto_error(702, zscii_code); // illegal zscii code
+		}
+
+		var result;
+
+		if (zscii_code==13)
+				result = 10;
+		else if ((zscii_code>=32 && zscii_code<=126) || zscii_code==0)
+				result = zscii_code;
+		else {
+				gnusto_error(703, zscii_code); // unknown zscii code
+		}
+
+		return String.fromCharCode(result);
+}
+
+function barbara_zscii_from(address, max_length, tell_length) {
+		var temp = '';
+		var alph = 0;
+		var running = 1;
+		var abbr_start = engine.getUnsignedWord(0x18);
+
+		// Should be:
+		//   -2 if we're not expecting a ten-bit character
+		//   -1 if we are, but we haven't seen any of it
+		//   n  if we've seen half of one, where n is what we've seen
+		var tenbit = -2;
+
+		// Should be:
+		//    0 if we're not expecting an abbreviation
+		//    z if we are, where z is the prefix
+		var abbreviation = 0;
+
+		if (!max_length) max_length = 65535;
+		var stopping_place = address + max_length;
+
+		while (running) {
+				var word = engine.getUnsignedWord(address);
+				address += 2;
+
+				running = !(word & 0x8000) && address<stopping_place;
+
+				for (var j=2; j>=0; j--) {
+						var code = ((word>>(j*5))&0x1f)
+
+								if (abbreviation) {
+										temp = temp + barbara_zscii_from(engine.getUnsignedWord((32*(abbreviation-1)+code)*2+abbr_start)*2);
+										abbreviation = 0;
+								} else if (tenbit==-2) {
+										if (code<1) { temp = temp + ' '; alph=0; }
+										else if (code<4) { abbreviation = code; }
+										else if (code<6) { alph = code-3; }
+										else {
+												if (alph==2 && code==6)
+														tenbit = -1;
+												else
+														temp = temp +
+																barbara_zalphabet[alph][code-6];
+												alph = 0;
+										}
+								} else if (tenbit==-1) {
+										tenbit = code;
+								} else {
+										temp = temp + barbara_zscii_char_to_ascii(
+																											(tenbit<<5) + code);
+										tenbit = -2;
+								}
+				}
+		}
+		if (tell_length) {
+				return [temp, address];
+		} else {
+				return temp;
+		}
+}
+
+function barbara_print_status() {
+	
+	        var zVersion = engine.getByte(0);
+	        if (zVersion < 5) {                  
+	          win_clear(1);
+                  win_set_top_window_size(1);	          	
+                  bocardo_gotoxy(1,0,2);
+                  win_set_text_style(1,0,0);
+                  bocardo_chalk(1,engine.getStatusLine(bocardo_get_screen_size()[0]));                  
+                  win_set_text_style(0,0,0);
+	        }	
+}
 function barbara_get_input() {
+ 	        
 		return [
 						barbara__before_cursor.childNodes[0].data,
 						barbara__after_cursor.childNodes[0].data,
@@ -206,6 +304,12 @@ function barbara_chalk(text, monospace) {
 				barbara__holder.
 						appendChild(document.createTextNode(lines[i]));
 		}
+		
+	        // After each chalk may not be the best place to be painting the status bar 
+	        // in pre v5 games.  Very much open to suggestions.  But it seems semi-logical
+	        // to me, and I can't yet think of a better place.  So here goes. -eric
+                barbara_print_status();
+		
 }
 
 ////////////////////////////////////////////////////////////////

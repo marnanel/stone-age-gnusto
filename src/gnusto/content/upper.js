@@ -1,7 +1,7 @@
 // gnusto-lib.js || -*- Mode: Java; tab-width: 2; -*-
 // upper.js -- upper window handler.
 //
-// $Header: /cvs/gnusto/src/gnusto/content/upper.js,v 1.49 2003/08/30 07:56:02 naltrexone42 Exp $
+// $Header: /cvs/gnusto/src/gnusto/content/upper.js,v 1.50 2004/09/29 15:56:11 naltrexone42 Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -99,6 +99,10 @@ function bocardo_get_font_metrics() {
 function bocardo_set_screen_size(width, height) {
 		bocardo__screen_width = width;
 		bocardo__screen_height = height;
+}
+
+function bocardo_get_screen_size() {
+		return [bocardo__screen_width,bocardo__screen_height];
 }
 
 ////////////////////////////////////////////////////////////////
