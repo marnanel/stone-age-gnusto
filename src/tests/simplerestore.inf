@@ -17,6 +17,13 @@
 
 Release 177;
 
+! Somewhere to put the results of the @read.
+Array readbuffer -> 100;
+
+! Useless place to put the tokenisation results (it'll always fail,
+! but we can't tell the machine not to tokenise before z5).
+Array tokebuffer -> 100;
+
 ! "register" is a global because of an infelicity in the
 ! design of Quetzal: local variables of the bootstrap function
 ! (the one first on the call stack) are not saved. This is OK
@@ -30,12 +37,23 @@ Global register;
 
     .top;
 
-    @read_char keypress;
+    ! The different versions handle their read arrays differently...
 
-    @je keypress 46 ?do_fullstop; ! .
-    @je keypress 83 ?do_save;     ! S
-    @je keypress 82 ?do_restore;  ! R
-    @je keypress 85 ?do_undo;     ! U
+#Iftrue (#version_number <= 3);
+    @storeb readbuffer 0 0; ! Read at most one byte
+    @sread readbuffer tokebuffer;
+    @loadb readbuffer 1 -> keypress;
+#Ifnot;
+    @storeb readbuffer 0 1; ! Read at most one byte
+    @storeb readbuffer 1 0; ! No recaps
+    @aread readbuffer tokebuffer -> result; ! read; we ignore result
+    @loadb readbuffer 2 -> keypress;
+#Endif;
+    
+    @je keypress  46 ?do_fullstop; ! .
+    @je keypress 115 ?do_save;     ! s
+    @je keypress 114 ?do_restore;  ! r
+    @je keypress 117 ?do_undo;     ! u
     
     @add keypress 0 -> register;
     @print_char register;
@@ -49,12 +67,22 @@ Global register;
     @je 0 0 ?top;
 
     .do_save;
+#Iftrue (#version_number <= 3);
+    @save ?top; ! jump if successful
+    @je 0 0 ?fail;
+#Ifnot;
     @save -> result;
+#Endif;
     @je result 0 ?fail;
     @je 0 0 ?top;
     
     .do_restore;
+#Iftrue (#version_number <= 3);
+    @restore ?top; ! but the branch is never made :)
+    @je 0 0 ?fail;
+#Ifnot;
     @restore -> result;
+#Endif;
     @je 0 0 ?fail;
 
     .do_undo;
