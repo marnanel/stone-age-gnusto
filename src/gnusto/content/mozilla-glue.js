@@ -1,7 +1,7 @@
 // mozilla-glue.js || -*- Mode: Java; tab-width: 2; -*-
 // Interface between gnusto-lib.js and Mozilla. Needs some tidying.
 // Now uses the @gnusto.org/engine;1 component.
-// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.126 2003/12/05 08:43:39 marnanel Exp $
+// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.127 2003/12/06 00:25:17 marnanel Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -465,7 +465,8 @@ function glue__init_burin() {
 
 function glue__parse_arguments() {
 		// Do we have any arguments passed on the command-line?
-		if (window.arguments.length>0 && typeof window.arguments[0]=='string') {
+		if ('arguments' in window && 'length' in window.arguments &&
+				window.arguments.length>0 && typeof window.arguments[0]=='string') {
 				var args = window.arguments[0].split(',');
 
 				// Ugly hack: Mozilla often munges the argument
