@@ -1,7 +1,7 @@
 // mozilla-glue.js || -*- Mode: Java; tab-width: 2; -*-
 // Interface between gnusto-lib.js and Mozilla. Needs some tidying.
 // Now uses the @gnusto.org/engine;1 component.
-// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.116 2003/11/16 21:37:17 marnanel Exp $
+// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.117 2003/11/16 23:47:03 marnanel Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -78,6 +78,23 @@ var glue__input_buffer_max_chars = 255;
 //     {'a':['p','q','s'],'b':['r']}
 var glue__arguments = {};
 
+// Nonzero iff we're transcribing the output (as far as the game
+// knows). You can have multiple transcription files at once,
+// but only one that the story knows about. If this is nonzero,
+// the stream on the end of glue__transcription_streams is the
+// story's stream. If this is zero, there is no story's stream.
+var glue__transcription_on = 0;
+
+// List of streams to transcribe lower window output to.
+var glue__transcription_streams = [];
+
+// ZSD requires that if the story's stream is closed and reopened
+// it must be the same stream as before with no user intervention.
+// If this variable holds the digit zero when the story requests
+// transcription, we ask the user for a filename. Otherwise we
+// copy the value out of this variable.
+var glue__transcription_saved_target = 0;
+
 ////////////////////////////////////////////////////////////////
 
 // Goes "beep".
@@ -97,16 +114,23 @@ function glue_print(text) {
 
 		win_chalk(current_window, text);
 
-		if (glue__transcription_file && current_window==0) {
-				if (!glue__transcription_file) {
-						if (!glue__set_transcription(1)) {
-								// bah, couldn't create the file;
-								// clear the bit
-								zSetByte(zGetByte(0x11) & ~0x1);
+		if (current_window==0) {
+
+				// We only transcribe for window 0.
+				// (This should probably be configurable for
+				// commandline transcription, and for v6.)
+
+				for (i in glue__transcription_streams) {
+
+						glue__transcription_streams[i].write(text, text.length);
+
+						try {
+								glue__transcription_streams[i].flush();
+						} catch (e) {
+								// ignore flush errors.
 						}
 				}
-				glue__transcription_file.write(text, text.length);
-				glue__transcription_file.flush();
+
 		}
 }
 
@@ -209,7 +233,7 @@ function command_exec(args) {
 						start_up();
 						// FIXME: The beret needs to do this!
 						load_from_file(local_game_file);
-						// @@@FIXME: We are circumventing dealWith until we integrate it
+						// FIXME: We are circumventing dealWith until we integrate it
 						// properly into the component system.
 						//
 						// var result = dealWith(content);
@@ -502,8 +526,40 @@ function glue__load_beret_from_args() {
 
 ////////////////////////////////////////////////////////////////
 
+function output_stream(filename, mode, permissions) {
+		return new Components.
+				Constructor("@mozilla.org/network/file-output-stream;1",
+										"nsIFileOutputStream",
+										"init")
+				(new Components.
+				 Constructor("@mozilla.org/file/local;1",
+										 "nsILocalFile",
+										 "initWithPath")
+				 (filename),
+				 mode,
+				 permissions,
+				 0);
+}
+
+////////////////////////////////////////////////////////////////
+
 function glue_init() {
 		glue__parse_arguments();
+
+		if ('output' in glue__arguments) {
+				// permissions (gleaned from prio.h)
+				var APPEND_AND_WRITE_ONLY = 0x12;
+				var PERMISSIONS = 0600;
+
+				for (i in glue__arguments.output) {
+						glue__transcription_streams.
+								push(output_stream(glue__arguments.output[i],
+																	 APPEND_AND_WRITE_ONLY,
+																	 PERMISSIONS,
+																	 0));
+				}
+
+		}
 
 		engine = new Components.Constructor('@gnusto.org/engine;1',
 																				'gnustoIEngine')();
@@ -561,11 +617,14 @@ function glue_store_screen_size(width_in_chars,
 // Calls the various *_init() functions.
 function start_up() {
 
-		glue_init();
-		bocardo_init();
-		win_init();
-		sys_init();
-
+		try {
+				glue_init();
+				bocardo_init();
+				win_init();
+				sys_init();
+		} catch (e) {
+				gnusto_error(307, e);
+		}
 }
 
 function glue_play() {
@@ -838,66 +897,66 @@ function gnusto_error(n) {
 		if (n<500) throw -1;
 }
 
-var glue__transcription_file = 0;
-var glue__transcription_filename = 0;
-
 // Here we ask for a filename if |whether|, and we don't
 // already have a filename. Returns 0 if transcription
 // shouldn't go ahead (e.g. the user cancelled.)
 function glue__set_transcription(whether) {
 
-		if (whether) {
-				if (!glue__transcription_file) {
+		if (whether && !glue__transcription_on) {
 
-						if (!glue__transcription_filename) {
-								var ifp = Components.interfaces.nsIFilePicker;
-								var picker = Components.classes["@mozilla.org/filepicker;1"].
-										createInstance(ifp);
+				// Turn the story's transcription on.
 
-								picker.init(window, "Create a transcript", ifp.modeSave);
-								picker.appendFilter("Transcripts", "*.txt");
+				if (glue__transcription_saved_target==0) {
+
+						// We don't know where to send the information...
+
+						var ifp = Components.interfaces.nsIFilePicker;
+						var picker = Components.classes["@mozilla.org/filepicker;1"].
+								createInstance(ifp);
+
+						picker.init(window, "Create a transcript", ifp.modeSave);
+						picker.appendFilter("Transcripts", "*.txt");
 								
-								if (picker.show()==ifp.returnOK) {
-								
-										glue__transcription_filename = picker.file.path;
-										glue__transcription_filename = glue__transcription_filename.replace('\\','\\\\', 'g');
-										
-								} else {
-										return 0;
-								}
+						if (picker.show()!=ifp.returnOK) {
+								// They cancelled. Bail.
+								return 0;
 						}
 
 						// permissions (gleaned from prio.h)
 						var APPEND_CREATE_AND_WRITE_ONLY = 0x1A;
 						var PERMISSIONS = 0600;
 
-						glue__transcription_file =
-								new Components.
-										Constructor("@mozilla.org/network/file-output-stream;1",
-																"nsIFileOutputStream",
-																"init")
-										(new Components.
-												Constructor("@mozilla.org/file/local;1",
-																		"nsILocalFile",
-																		"initWithPath")
-												(glue__transcription_filename),
-										 APPEND_CREATE_AND_WRITE_ONLY,
-										 PERMISSIONS,
-										 0);
+						var filename = picker.file.path;
+						filename = filename.replace('\\','\\\\', 'g');
 
-						if (!glue__transcription_file) {
+						try {
+								glue__transcription_saved_target =
+										output_stream(filename,
+																	APPEND_CREATE_AND_WRITE_ONLY,
+																	PERMISSIONS);
+						} catch (e) {
+								gnusto_error(301, e);
 								return 0;
-						} else {
-								return 1;
 						}
 				}
 
-		} else {
+				glue__transcription_streams.
+						push(glue__transcription_saved_target);
 
-				if (glue__transcription_file) {
-						glue__transcription_file.close();
-						glue__transcription_file = 0;
+				glue__transcription_on = 1;
+
+				return 1;
+
+		} else if (!whether && glue__transcription_on) {
+
+				if (glue__transcription_streams.pop()!=glue__transcription_saved_target) {
+						gnusto_error(170,
+												 'Unexpectedly different transcription streams');
+						return 0;
 				}
+				glue__transcription_on = 0;
+
+				return 1;
 		}
 
 		return 1;
@@ -919,9 +978,7 @@ function command_transcript() {
 
 		} else {
 
-				if (glue__transcription_filename) {
-						alert('Turning transcription on again.');
-				}
+				alert('Turning transcription on.');
 
 				zSetByte(flags | 0x1, 0x11);
 				glue__set_transcription(1);
