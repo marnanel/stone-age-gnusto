@@ -18,38 +18,24 @@ function triggerURL(url) {
 <!-- MAIN CONTENT -->
 <h1 class="page-header">Installation</h1>
 
-<p><strong>Please read <a href="releasenotes040.html">the release notes for v0.4.0</a> before installing it.</strong> Thanks.</p>
+<p><strong>Please read <a href="releasenotes050.html">the release notes for v0.5.0</a> before installing it.</strong> Thanks. Gnusto is still under development, and the release notes tell you the pitfalls you should be aware of.</p>
+
+<p>The old <a href="nullbytes.html">null bytes problem</a> has been <strong>fixed</strong>.</p>
 
 <p>If you're running under Unix, <strong>you must be running Mozilla as root to install add-ons</strong>. (You're adding new software, after
 all.) The exception is if you installed Mozilla originally as a non-root user, in which case you should run it as that user.</p>
 
-<p>To install gnusto v0.4.0, click on the picture below:</p>
+<p>To install gnusto v0.5.0 (the July 2003 release), click on the picture below:</p>
 
-<p align="center"><a href="#" onclick="triggerURL('http://downloads.mozdev.org/gnusto/gnusto-0.4.0.xpi');"><img src="http://gnusto.org/hand" width="187" height="190" alt="[ Install gnusto v0.4.0 ]" border="0"></a></p>
+<p align="center"><a href="#" onclick="triggerURL('http://downloads.mozdev.org/gnusto/gnusto-0.5.0.xpi');"><img src="http://gnusto.org/hand" width="187" height="190" alt="[ Install gnusto v0.4.0 ]" border="0"></a></p>
 
 <h2>Starting gnusto</h2>
 
 <p>Then either:</p>
 <ul>
-<li>restart Mozilla (as an ordinary user) and choose "Interactive Fiction" from the Tools menu.</li>
-<li><b>or</b> start Mozilla from the command line thus:<blockquote><kbd>mozilla -chrome chrome://gnusto/content</kbd></blockquote></li>
+<li>restart Mozilla Firebird (as an ordinary user) and choose "Gnusto" from the Tools menu.</li>
+<li><b>or</b> start Mozilla Firebird from the command line thus:<blockquote><kbd>MozillaFirebird -chrome chrome://gnusto/content</kbd></blockquote></li>
 </ul>
-
-<h2>The crash in Mozilla v1.3</h2>
-<p><b><a href="http://mozdev.org/bugs/show_bug.cgi?id=3191">Mozilla 1.3 has a known problem with both the above methods</a></b> which may crash the browser. We're looking into it. The Mozilla 1.0 branch does not have this problem. The workaround is:</p>
-<ol>
-<li>Restart Mozilla as an ordinary user</li>
-<li>Type this into the location bar:<blockquote><kbd>chrome://gnusto/content</kbd></blockquote>You should see Gnusto load inside the Mozilla window. (This method works on 1.3 and 1.0 branches alike.)</li>
-<li>Close all Mozilla windows.</li>
-</ol>
-
-<p>From then on, you should be able to start Gnusto as described above. [bug ID: <a href="http://mozdev.org/bugs/show_bug.cgi?id=3191">3191</a>]</p>
-
-<h2>The null byte problem</h2>
-
-<p><b><a href="nullbytes.html">Everyone will need the mz5 program</a></b> until the Mozilla null byte bug is fixed. Follow the link to find out why, and where you can get the program. Sorry about this. [bug ID: <a href="http://mozdev.org/bugs/show_bug.cgi?id=3064">3064</a>]</p>
-
-<p>To begin your testing, you may download Dylan O'Donnell's game <a href="http://downloads.mozdev.org/gnusto/troll.mz5"><cite>A Troll's Eye View</cite> in mz5 encoding</a> from mozdev, all ready to play.</p>
 
 <h2>Finding stories to use</h2>
 
