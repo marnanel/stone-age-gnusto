@@ -13,10 +13,32 @@
 
     <groupbox flex="1">
         <caption label="Gnusto Options" />
-            <description>
-                Settings go here ...
-            </description>
-            <button label="Uninstall" oncommand="cleanHouse();"/>             
+	  <description>
+	    Caution: these probably don't work yet.
+	  </description>
+
+	  <checkbox id="tandy" label="Tandy bit"/>
+	    <html:a href="http://mozillazine.org">(What's this?)</html:a>
+	  <checkbox id="piracy" label="Piracy"/>
+	    <html:a href="http://mozillazine.org">(What's this?)</html:a>
+
+	  <menulist id="hardware" label="Claim to be">
+	    <menupopup>
+	      <menuitem selected="true" label="DECSystem-20"/>
+	      <menuitem label="Apple ][e"/>
+	      <menuitem label="Macintosh"/>
+	      <menuitem label="Amiga"/>
+	      <menuitem label="Atari ST"/>
+	      <menuitem label="IBM PC"/>
+	      <menuitem label="Commodore 128"/>
+	      <menuitem label="Commodore 64"/>
+	      <menuitem label="Apple ][c"/>
+	      <menuitem label="Apple ][gs"/>
+	      <menuitem label="Tandy Color"/>
+	    </menupopup>
+	  </menulist>
+
+	  <button label="Uninstall" oncommand="cleanHouse();"/>             
     </groupbox>
 
 </dialog>
