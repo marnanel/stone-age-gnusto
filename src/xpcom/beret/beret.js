@@ -1,5 +1,5 @@
 // -*- Mode: Java; tab-width: 2; -*-
-// $Id: beret.js,v 1.14 2004/01/29 05:39:51 marnanel Exp $
+// $Id: beret.js,v 1.15 2004/01/29 06:00:51 marnanel Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -19,7 +19,7 @@
 
 ////////////////////////////////////////////////////////////////
 
-const CVS_VERSION = '$Date: 2004/01/29 05:39:51 $';
+const CVS_VERSION = '$Date: 2004/01/29 06:00:51 $';
 const BERET_COMPONENT_ID = Components.ID("{ed0618e3-8b2b-4bc8-b1a8-13ae575efc60}");
 const BERET_DESCRIPTION  = "Checks file magic and routes them accordingly";
 const BERET_CONTRACT_ID  = "@gnusto.org/beret;1";
@@ -309,8 +309,7 @@ Beret.prototype = {
 										lhs = trim(entry.substring(0, equalspos));
 										rhs = trim(entry.substring(equalspos+1));
 								} else {
-										lhs = 'act';
-										rhs = trim(entry);
+										lhs = '';
 								}
 
 								lhs = lhs.toLowerCase().split('.');
@@ -404,7 +403,13 @@ Beret.prototype = {
 										break;
 
 								case 'act':
-										// FIXME: deal with this
+										if (this.m_replayer) {
+												this.m_replayer.playString(rhs);
+										}
+										break;
+
+								case '':
+										// ignore blank lines
 										break;
 												
 								default:
@@ -442,6 +447,10 @@ Beret.prototype = {
 				return this.m_engine;
 		},
 
+		setReplayer: function b_setReplayer(replayer) {
+				this.m_replayer = replayer;
+		},
+
 		////////////////////////////////////////////////////////////////
 		////////////////////////////////////////////////////////////////
 		//                                                            //
@@ -452,7 +461,7 @@ Beret.prototype = {
 
 		m_filetype: 'error none unseen',
 		m_engine: null,
-
+		m_replayer: null, // temp
 };
 
 ////////////////////////////////////////////////////////////////
