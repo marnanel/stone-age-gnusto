@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+
+<RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:em="http://www.mozilla.org/2004/em-rdf#">
+
+  <Description about="urn:mozilla:install-manifest">
+    <em:id>{74B26BEF-281C-4EB0-B23E-9DE4FCA489B9}</em:id>
+    <em:version>0.7</em:version>
+    
+    <!-- Target Application this extension can install into, 
+        with minimum and maximum supported versions. --> 
+    <em:targetApplication>
+      <Description>
+        <em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
+        <em:minVersion>0.9</em:minVersion>
+        <em:maxVersion>0.9+</em:maxVersion>
+      </Description>
+    </em:targetApplication>
+    
+    <!-- Front End MetaData -->
+    <em:name>Gnusto</em:name>
+    <em:description>Javascript Z-Machine Emulator</em:description>
+    <em:creator>Thomas Thurman</em:creator>
+    <em:contributor>Eric Liga</em:contributor>
+    <em:homepageURL>http://gnusto.mozdev.org/</em:homepageURL>
+
+    <!-- Front End Integration Hooks (used by Extension Manager)-->    
+    <em:iconURL>chrome://gnusto/skin/images/gnusto-icon-lrg.png</em:iconURL>    
+    
+    <!-- Packages, Skins and Locales that this extension registers -->
+    <em:file>
+      <Description about="urn:mozilla:extension:file:gnusto.jar">
+        <em:package>content/</em:package>
+        <em:locale>locale/en-US/</em:locale>
+        <em:skin>skin/</em:skin>
+      </Description>
+    </em:file>
+  </Description>      
+</RDF>

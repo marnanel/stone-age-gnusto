@@ -1,5 +1,4 @@
 <?xml version="1.0"?>
-
 <?xml-stylesheet href="chrome://gnusto/skin/gnustooverlay.css" type="text/css"?>
 
 <!DOCTYPE overlay SYSTEM "chrome://gnusto/locale/gnustooverlay.dtd">
@@ -7,32 +6,12 @@
 <overlay id="gnustooverlay"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
-  <!-- functions -->
-  <script type="application/x-javascript" src="chrome://gnusto/content/gnustooverlay.js" />
-  <script>
-  		<![CDATA[
-		
-// Nixed most of the runtime component loading here to be done in a better fashion in gnusto.xul
-// However, left a bit of it here but commented out-- will eventually be modified so that support
-// for launching gnusto when clicking .z? files is installed when the browser comes up.  Phase 2 or something.
-
-//    if (typeof(Components.classes["@mozilla.org/commandlinehandler/general-startup;1?type=gnusto"]) == 'undefined') {
-//       var appShell = Components.classes["@mozilla.org/appshell/appShellService;1"].getService(Components.interfaces.nsIAppShellService);
-//       var wnd = appShell.hiddenDOMWindow;
-//       wnd.setTimeout('Components.classes["@mozilla.org/moz/jssubscript-loader;1"].getService(Components.interfaces.mozIJSSubScriptLoader).loadSubScript("chrome://gnusto/content/gnusto-service.js")', 0);
-//    }
-		]]>
-  </script>
-    
-  <!-- Tools menu item -->
+<script type="application/x-javascript" src="chrome://gnusto/content/gnustooverlay.js" />
+   
   <menupopup id="menu_ToolsPopup">
-    <menuitem 
-        id="gnusto-item" 
-        label="&gnustoMenu.label;" 
-        insertafter="prefSep"
-        oncommand="toGnusto();" />
-  </menupopup>
-
+    <menuitem id="gnusto-item" label="&gnustoMenu.label;" position="7" oncommand="toGnusto();"/>
+  </menupopup> 
+  
   <!-- Button for customisation and addition to toolbar -->
   <toolbarpalette id="BrowserToolbarPalette">
     <toolbarbutton class="toolbarbutton-1" 
@@ -41,6 +20,6 @@
                    oncommand="toGnusto();" 
                    tooltiptext="&gnustoButton.tooltip;" 
                    type="menu-button;" />
-  </toolbarpalette>
-
+  </toolbarpalette>  
+  
 </overlay>
