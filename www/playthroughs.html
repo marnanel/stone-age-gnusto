@@ -12,6 +12,41 @@
 <dt>Playback (<a href="http://www.mozdev.org/source/browse/gnusto/src/tests/gamescripts/zork1.playback?rev=1.2&content-type=text/x-cvsweb-markup">example of playback format</a>)</dt>
 <dd>Playback is an older form: it's simply a list of commands which Gnusto can play back (as the Z-spec requires). You may run a playback file by passing it as an <a href="http://www.livejournal.com/community/gnusto/12910.html">"input" parameter to Gnusto</a>.</dd>
 <dt>Ini (<a href="http://www.mozdev.org/source/browse/gnusto/src/tests/gamescripts/balances.ini?rev=1.1&content-type=text/x-cvsweb-markup">example of ini format</a>)</dt>
-<dd>Ini is a newer and rarer format which can specify what it means to win a game. It can also give instructions about how to run Gnusto, and can contain comments.</dd>
+<dd>Ini is a newer and rarer format which can specify what it means to win a game. It can also give instructions about how to run Gnusto, and can contain comments. You need to use the program <a href="http://www.mozdev.org/source/browse/gnusto/src/tools/playthrough.py">$/src/tools/playthrough.py</a> to run an ini playthrough; it requires <a href="http://www.python.org">Python</a>. Ini files often begin as playback files.</dd>
 </dl></li>
 </ul>
+
+<table border>
+
+<tr>
+<th>Game</th>
+<th>Reason</th>
+<th>Type</th>
+<th>Status</th>
+</tr>
+
+
+<tr>
+<td>Balances</td>
+<td>Fair-sized modern game</td>
+<td>Both <a href="http://www.mozdev.org/source/browse/gnusto/src/tests/gamescripts/balances.playback">playback</a> and <a href="http://www.mozdev.org/source/browse/gnusto/src/tests/gamescripts/balances.ini">ini</a>; use the ini version for preference</td>
+<td>Working</td>
+</tr>
+
+<tr>
+<td>Hitchhiker's</td>
+<td>Infocom game, version 5</td>
+<td><a href="http://www.mozdev.org/source/browse/gnusto/src/tests/gamescripts/hhgg.playback">playback</a></td>
+<td>Fails. Possibly a terp bug. <a href="http://mozdev.org/bugs/show_bug.cgi?id=5492">Tracking bug.</a></td>
+</tr>
+
+<tr>
+<td>Zork 1</td>
+<td>Infocom game, version 3</td>
+<td><a href="http://www.mozdev.org/source/browse/gnusto/src/tests/gamescripts/zork1.playback">playback</a></td>
+<td>Fails. Needs work.</td>
+</tr>
+
+</table>
+
+<p>The "gamescripts" directory also contains many playback-format playthroughs for some of the <a href="http://www.mozdev.org/source/browse/gnusto/src/tests/">test stories</a> that come with Gnusto.</p>
