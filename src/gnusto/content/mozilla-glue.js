@@ -1,7 +1,7 @@
 // mozilla-glue.js || -*- Mode: Java; tab-width: 2; -*-
 // Interface between gnusto-lib.js and Mozilla. Needs some tidying.
 // Now uses the @gnusto.org/engine;1 component.
-// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.135 2004/01/27 21:12:25 naltrexone42 Exp $
+// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.136 2004/01/29 05:36:46 marnanel Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -628,6 +628,7 @@ function glue__parse_arguments() {
 						}
 						// else complain about unknown parameter?
 				}
+
 		}
 
 		glue__is_printing = !prefs.getBoolStackablePref('gnusto', '', 'nowin');
@@ -675,6 +676,11 @@ function output_stream(filename, mode, permissions) {
 function glue_init() {
 		try {
 
+				engine = null;
+
+				errorbox = Components.classes['@gnusto.org/errorbox;1'].
+						getService(Components.interfaces.gnustoIErrorBox);
+
 				beret = new Components.Constructor('@gnusto.org/beret;1',
 																					 'gnustoIBeret')();
 
@@ -699,8 +705,6 @@ function glue_init() {
 				}
 		}
 		*/
-
-		engine = null;
 
 		/*
 			FIXME: "input" suspended for now.
@@ -735,9 +739,6 @@ function glue_init() {
 		document.onkeypress=gotInput;
 
 		glue__init_burin();
-
-		errorbox = Components.classes['@gnusto.org/errorbox;1'].
-				getService(Components.interfaces.gnustoIErrorBox);
 
 		setTimeout("glue__set_up_engine_from_args();", 0);
 		}catch(ex) {
@@ -1269,19 +1270,29 @@ function load_from_file(file) {
 
 		beret.load(contents.length, contents);
 
+
 		var result = beret.filetype.split(' ');
 
-		if (result[0]=='ok') {
+		switch (result[0]) {
 
+		case 'ok':
 				// OK, that's good, then.
 
-				if (result[1]=='story') {
+				switch (result[1]) {
+
+				case 'story':
+				case 'grimoire': // NB: r[3] won't be right; will be fixed by bug 5653
+		
 						engine = beret.engine;
 						
-						if (result[3]=='zcode') {
+						// result[2] is how it's wrapped, which doesn't interest us.
+
+						switch (result[3]) {
+
+						case 'zcode':
 								// We're required to modify some bits
 								// according to what we're able to supply.
-								// FIXME: This should probably be done somewhere else.
+								// FIXME: This should be done somewhere else. Bug 5653
 
 								engine.setByte(0x1D, 0x01); // Flags 1
 								// Flags 2:
@@ -1326,21 +1337,26 @@ function load_from_file(file) {
 										engine.setByte(1, 0x32);
 										engine.setByte(0, 0x33);
 								}
-								return 1;
+
 						}
+						return 1;
 
-				} else if (result[1]=='saved') {
-
+				case 'saved':
 						// By the time we see this, the game's been loaded.
 						// FIXME: We should clear the screen and all.
-
+						break;
 				}
+				break;
 
-		} else if (result[0]=='nyi') {
+		case 'nyi':
 				gnusto_error(101, '(from beret)');
-		} else if (result[0]=='invalid') {
+				break;
+
+		case 'invalid':
 				gnusto_error(311, 'Invalid story file.');
-		} else {
+				break;
+
+		default:
 				gnusto_error(311, '(from beret)');
 		}
 
