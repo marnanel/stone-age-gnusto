@@ -23,8 +23,9 @@ GLULXDEMO = $(TESTRIGS)/hello-world.ulx
 STANDARDGAMES = ~/proj/gnusto/bug3481
 GAMESCRIPTS = gamescripts
 
-GNUSTOARGS = nowin=1,gameoverquit=1,seed=1234,output=$(STDOUT)
-GNUSTO = $(MOZILLA) $(MOZARGS) -gnusto $(GNUSTOARGS)
+# was: GNUSTOARGS = nowin=1,gameoverquit=1,seed=1234,output=$(STDOUT)
+# but setting args this way is deprecated
+GNUSTO = $(MOZILLA) $(MOZARGS) -gnusto
 
 test: marnrandom standards
 
@@ -67,8 +68,11 @@ trinitygnusto: jury-rig
 
 # Glulx support...
 
-helloglulxe:
+glglulxe:
 	$(GLULXE) $(GLULXEARGS) $(GLULXDEMO)
+
+glgnusto:
+	$(GNUSTO),$(GLULXDEMO)
 
 ################################################################
 
@@ -81,7 +85,7 @@ bug4284:
 # Playthrough.
 
 balances: jury-rig
-	$(GNUSTO),$(BALANCES),input=$(GAMESCRIPTS)/balances.playback
+	$(GNUSTO) $(GAMESCRIPTS)/balances.grimoire
 
 zork1z3:
 	$(GNUSTO),$(ZORK1Z3),input=$(GAMESCRIPTS)/zork1.playback
