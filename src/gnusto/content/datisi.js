@@ -1,7 +1,7 @@
 // datisi.js || -*- Mode: Java; tab-width: 2; -*-
 // Standard command library
 // 
-// $Header: /cvs/gnusto/src/gnusto/content/datisi.js,v 1.33 2004/01/29 06:18:09 marnanel Exp $
+// $Header: /cvs/gnusto/src/gnusto/content/datisi.js,v 1.34 2004/01/29 19:57:45 marnanel Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -55,6 +55,7 @@ function command_open(a, nolaunch) {
 				picker.init(window, "Select a story file", ifp.modeOpen);
 				picker.appendFilter("Z-code", "*.z?");
 				picker.appendFilter("Blorb", "*.blb");
+				picker.appendFilter("Glulx", "*.ulx");
 				picker.appendFilter("Saved game", "*.sav; *.qtz");
 				picker.appendFilter("Play-testing script", "*.grimoire");
 				
