@@ -1,7 +1,7 @@
 // mozilla-glue.js || -*- Mode: Java; tab-width: 2; -*-
 // Interface between gnusto-lib.js and Mozilla. Needs some tidying.
 // Now uses the @gnusto.org/engine;1 component.
-// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.117 2003/11/16 23:47:03 marnanel Exp $
+// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.118 2003/11/16 23:57:46 marnanel Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -187,12 +187,12 @@ function command_exec(args) {
 						break;
 
 				case GNUSTO_EFFECT_FLAGS_CHANGED:
-						var flags = zGetByte(0x11);
+						var flags = zGetByte(0x10);
 						
 						if (!glue__set_transcription(flags & 1)) {
 								// they cancelled the dialogue:
 								// clear the bit
-								zSetByte(zGetByte(0x11) & ~0x1);
+								zSetByte(zGetByte(0x10) & ~0x1);
 						}
 
 						win_force_monospace(flags & 2);
@@ -966,21 +966,21 @@ function command_transcript() {
 
     var menuItem = document.getElementById("transcript");
 
-		var flags = zGetByte(0x11);
+		var flags = zGetByte(0x10);
 
 		if (flags & 1) {
 
 				// Transcription's on; turn it off.
 
 				alert('Turning transcription off now.');
-				zSetByte(flags & ~0x1, 0x11);
+				zSetByte(flags & ~0x1, 0x10);
 				glue__set_transcription(0);
 
 		} else {
 
 				alert('Turning transcription on.');
 
-				zSetByte(flags | 0x1, 0x11);
+				zSetByte(flags | 0x1, 0x10);
 				glue__set_transcription(1);
 		}
 }
@@ -1117,7 +1117,7 @@ function load_from_file(file) {
 						//    5   Want mouse            CLEAR
 						//    6   Want sound effects    CLEAR
 						//  7 MSB Want menus (v6 only)  leave  : AND with 0x57
-						engine.setByte(engine.getByte(0x11) & 0x57, 0x11);
+						engine.setByte(engine.getByte(0x10) & 0x57, 0x10);
 								
 						// It's not at all clear what architecture
 						// we should claim to be. We could decide to
