@@ -1,0 +1,28 @@
+GNUSTO.MAGIC.GRIMOIRE=1
+
+meta.name=SimpleRestore
+
+# open=simplerestore.z5 -- We don't open the file for you. You must do that.
+#                          That way, you can use this file to test many
+#                          different architectures.
+
+set.actfilenames=1
+set.output=/dev/stdout
+
+#
+# The actions:
+#
+
+act=x
+act=.
+act=.
+act=S
+act=<simplerestore.1.sav
+act=y
+act=.
+act=.
+act=R
+act=<simplerestore.1.sav
+act=.
+act=.
+
