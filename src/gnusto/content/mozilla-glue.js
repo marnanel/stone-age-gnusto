@@ -1,6 +1,6 @@
 // mozilla-glue.js || -*- Mode: Java; tab-width: 2; -*-
 // Interface between gnusto-lib.js and Mozilla. Needs some tidying.
-// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.103 2003/08/29 03:51:28 marnanel Exp $
+// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.104 2003/08/30 07:26:14 naltrexone42 Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -62,7 +62,7 @@ function glue__sound_effect(number, effect, volume, callback) {
 
 // Outputs to the screen, and the transcription file if necessary.
 function glue_print(text) {
-
+	if (text.length > 0) {
 		win_chalk(current_window, text);
 
 		if (glue__transcription_file && current_window==0) {
@@ -76,6 +76,7 @@ function glue_print(text) {
 				glue__transcription_file.write(text, text.length);
 				glue__transcription_file.flush();
 		}
+	}
 }
 
 ////////////////////////////////////////////////////////////////
