@@ -1,0 +1,84 @@
+<h1 class="page-header">Gnusto 0.7 Release Notes</h1>
+
+<p>  The purpose of this document is to provide testers and end-users with the information they need to install and use the latest version of Gnusto.  It also provides a quick summary of new features, bugfixes, and known issues.  We'll do our best to update this document based on any feedback we may receive, so please report any errors or omissions to <a href="mailto:gnusto@mozdev.org">gnusto@mozdev.org</a>.  Please report any bugs you may find in <a href="http://gnusto.mozdev.org/bugs.html">bugzilla</a>.  Checking for duplicates before submitting a bug report is appreciated.</p>  
+
+<a name="new"><h4>What's New in Gnusto 0.7?</h4></a>
+
+<p>Gnusto 0.7 features major improvements over 0.6. It should be usable to play and complete virtually all Version 3, 4, 5, 7, or 8 Z-Code games (see Known Issues for exceptions).  Here are the highlights:</p>
+
+<ul>
+        <li>Support for Z-code Versions 3 and 4 (bug <a href="http://mozdev.org/bugs/show_bug.cgi?id=3619"><strike>3619</strike></a>)<BR>(this means that all non-graphical Infocom games are now supported in some form)</li>
+        <li>Support for reading and writing savegames in the Quetzal format (bug <a href="http://mozdev.org/bugs/show_bug.cgi?id=3475"><strike>3475</strike></a>)<BR>
+        (games can now be saved and restored, and the saved games can be shared with other compliant interpreters)</li>
+        <li>Auto-invocation of Gnusto when clicking links to z-code files in FireFox (bug <a href="http://mozdev.org/bugs/show_bug.cgi?id=3504"><strike>3504</strike></a>) (Try <a href="http://mirror.ifarchive.org/if-archive/games/zcode/photopia.z5">this link</a> after you've installed to see an example)</li>
+        <li><a href="http://tinyurl.com/4ofb6">Over 100</a> new features and bugfixes</li>
+</ul>
+
+We're scheduling a Gnusto 1.0 release on New Year's Day, 2005.
+Testing is <i>always</i> greatly appreciated.  <a href="http://downloads.mozdev.org/gnusto/nightlies">Nightlies</a> (well, "occasional-ies" might be more apt) are posted 
+as bugfixes and new features are checked in.  Joining up with the <a href="http://gnusto.mozdev.org/list.html">listserv</a>
+would be helpful if you're planning on testing.  For more dynamic interaction, participate or lurk at the <a href="http://www.livejournal.com/community/gnusto">LJ Gnusto Community</a>.
+
+<a name="install"><h4>How do I install Gnusto 0.7?</h4></a>
+  <p><i><b>Note:  Gnusto 0.7 only works in Firefox 0.9 or later.</i></b></p>
+  <p>If you have an earlier version of Gnusto installed, please uninstall it before installing Gnusto 0.7 (see <a href="#uninstall">Uninstallation Instructions</a> below). As Gnusto 0.7 is the first official release to work under FireFox 0.9, this should only be an issue if you installed a recent test-build.</p>
+<p>After installation and a browser restart, Gnusto will show up in the Tools menu.  If you choose View->Toolbars->Customize, you can add a Gnusto button to your menu bar.  Clicking on a properly-tagged z-code file in the browser window will cause Gnusto to launch (try some of the z-code games at <a href="http://www.wurb.com/if/index">Baf's Guide</a>).  Gnusto can also be launched from the command line by invoking Firefox with a -gnusto argument, optionally followed by a game filename ("firefox.exe -gnusto c:\games\photopia.z5").</p>
+<p>Recent versions of Firefox require you to add sites to a whitelist before you can install extensions from them.  If you do not wish to add mozdev.org to your whitelist, a quick workaround is to right-click on the link to the extension, choose "Save Link As..." and save it to your local machine.  Then point the browser at the file and it will install ("file://c:/downloads/gnusto-0.7.xpi", for example, if you saved to "C:\downloads").  If you wish to add mozdev.org to your whitelist, do the following:
+<ol>
+  <li>Select Tools->Options from the Firefox menu bar</li>
+  <li>Choose "Web Features" from the pane on the left</li>
+  <li>Put a tick in the box next to "Allow web sites to install software"</li>
+  <li>Click the "Allowed Sites" button to the right of this tickbox</li>
+  <li>Type mozdev.org into the "Address of web site" box and click the "Allow" button</li>
+  <li>Click OK on the "Allowed Sites" window and then again in the "Options" window</li>
+  <li>You should now be configured to install software from mozdev.org</li>
+</ol>  
+</p>
+
+<a name="issues"><h4>What are the Known Issues with Gnusto 0.7?</h4></a>
+
+<p>Gnusto is a work in progress and some known issues remain.  If Gnusto is giving you trouble, it's a good idea to consult 
+this list.  If the issue is not on the list, please check <a href="http://gnusto.mozdev.org/bugs.html">bugzilla</a>.  If it's not in bugzilla, 
+please <a href="http://mozdev.org/bugs/enter_bug.cgi?product=gnusto">file a bug</a> and we'll do our best to resolve the issue in a timely fashion.</p>
+
+<ul>
+  <li>Gnusto 0.7 requires FireFox 0.9 or later.  It doesn't work on older versions of Firefox/Firebird/Phoenix, nor will it work in Mozilla suite.  We'd like to support a wider range of gecko-based browsers, but our shift to a component-based architecture makes recent Firefox builds the platform of choice.  If and when Moz-Suite reaches feature-parity with Firefox in its support of components in extensions, we'll see what we can do about supporting it again.</li>
+  <li><i>Beyond Zork</i> locks up before getting into actual gameplay and also has serious layout issues.  Full support for <i>Beyond Zork</i> is slated for Gnusto 1.0.</li>
+  <li>In <i>Phlegm</i> and a few other games, disambiguation questions ("To whom do you wish to say "hello"?") don't correctly handle responses.
+      Restating the command without ambiguity ("say "hello" to speaker") works fine.</li>  
+  <li>In <i>Trinity</i>, setting the sundial to different symbols ("set sundial to sixth symbol" or "set sundial to omega") is difficult due to an unresolved bug.  A workaround is to say "turn sundial right" or "turn sundial left" repeatedly until it points to the desired symbol.</li>  
+  <li>The "registration form" screen in <i>Bureaucracy</i> has slight layout issues and the cursor is not visible.  This can be frustrating because the game forces you fill in all the fields in a random order.  (Yes, that's a feature of the game itself.)  If you start typing, you'll see where you are and the form can be filled out successfully.</li>  
+</ul>
+
+<a name="compatibility"><h4>How Compatible is Gnusto 0.7?</h4></a>
+  <p>Gnusto will play nearly all text adventures and works of interactive fiction compiled in the z-code format.  This includes all of Infocom's text-only adventure games as well as a large and growing body of independently created works, many of which are available through <a href="http://www.wurb.com/if/index">Baf's Guide</a>.</p>
+  <p>Gnusto does not yet support z-code version 6.  This was a graphical version of the z-machine format designed by Infocom near the very end of its text-adventure-creation years.  Support for z6 will require a great deal of work for a scant handful of games, so this feature has been pushed to Gnusto 1.1 on the <a href="http://gnusto.mozdev.org/roadmap.html">roadmap</a>.</p>
+  <p>Z-Code versions 1 and 2 are unsupported.  This oughtn't be an issue as it is, in fact, absurdly difficult to locate z1 and z2 files.  Also, all z1/z2 games have been rereleased compiled as z3s or z5s in vastly wider distributions.  But if you do happen to have one of these older versions, patches to upgrade them to newer versions are available at the if-archive.  Feel free to download the 
+      <a href="http://www.ifarchive.org/if-archive/infocom/patches/zpat-2_2.zip">conversion utility</a> and <a href="http://www.ifarchive.org/indexes/if-archiveXinfocomXpatches.html">any patches</a> you need.</p>
+  <p>Finally, some of the "abuse" z-machine games like Space Invaders and Nethack cause Gnusto to lock up.  This probably has something to do with timed-reads, so the issue should be resolved in Gnusto 1.0.</p>
+
+<a name="history"><h4>What are the previous versions of Gnusto?</h4></a>
+
+<ul>
+  <li>Gnusto 0.6.0 (01 Sept 2003):   Support for z-code v7-8, command history, installation to profile, uninstaller, many bugfixes. </li>
+  <li>Gnusto 0.5.0 (26 July 2003): Ability to load unmangled z-code, Firebird support, support for all v5 opcodes, dynamic resizing. </li>
+  <li>Gnusto 0.4.0 (18 April 2003):  Improved screen-handler, color-handling, boxes. Support for more opcodes, BAF's Guide interface. </li>
+  <li>Gnusto 0.3.0 (23 March 2003):  Added support for Mozilla 1.3, improved error handling.</li>
+  <li>Gnusto 0.2.0 (04 March 2003):  Allowed the loading of arbitrary (mangled) z-code files.</li>
+  <li>Gnusto 0.1.0 (04 February 2003):  Hardcoded to run an embedded, mangled copy of "Troll's Eye View".</li>
+  <li>Blorple 0.0.2 (23 December 2002):  Proof of concept demo.</li>
+  <li>Blorple 0.0.1:  Proof of concept demo.</li>    
+</ul>
+
+<a name="uninstall"><h4>How do I uninstall Gnusto?</h4></a>
+<p>Versions of Gnusto more than one year old should be uninstalled according to their respective release notes.  Recent versions of Gnusto should be uninstalled as follows:
+<ol>
+  <li>Select Tools->Extensions in the FireFox menu bar</li>
+  <li>Select Gnusto from the list of extensions</li> 
+  <li>Click the Uninstall button located at the bottom of the Extension Manager</li>
+  <li>Answer "Yes" to the confirmation prompt</li>
+  <li>Close <i>all</i> browser windows and restart the browser</li>
+</ol>  
+You are now Gnusto-free.</p>
+
+<p align="right"><i>Last Updated: 1 October 2004</i></p>
