@@ -1,0 +1,36 @@
+<h5 class="page-header">Camenes Bounce</h5>
+
+<p><dfn>Camenes Bounce</dfn> is a <a href="http://www.everything2.com/index.pl?node=kludge">kludge</a> used in <a href="http://gnusto.org">Gnusto</a> to get around an annoying <a href="http://www.everything2.com/index.pl?node=kludge">misfeature</a> in <a href="http://www.mozilla.org">Mozilla</a>. ("Camenes" is the name of the part of Gnusto where it's used.)</p>
+
+<p>The <a href="http://www.xulplanet.com"><acronym title="XML-based user interface language">XUL</acronym></a> language, which defines the user interface of Mozilla-based applications, <a href="http://www.xulplanet.com/tutorials/xultu/cpanels.html">allows you to embed</a> an XUL or <a href="http://www.w3.org/MarkUp/"><acronym title="hypertext markup language">HTML</acronym></a> page inside any XUL page. For security reasons, the inner page cannot see anything defined in the enclosing page. (After all, the inner page could theoretically be <em>anything</a>, whether on your computer or downloaded from the Internet.) However, there's no way of getting around this safety net when you really want to. And that means that nothing in the inner document can ever affect the outer document, even if you created both of them yourself and you <em>know</em> there's nothing evil lurking within: bad news for things like hyperlinks.</p>
+
+<p>The only things that seem to be able to get through the boundary between inner and outer XUL are <a href="http://www.mozilla.org/docs/dom/domref/dom_event_ref.html">events</a>, but even those have all their fields cleared as they pass the border. So unless we want to create a new custom event type for each possible effect of a hyperlink, we have to find some other way of parameterising the events.</p>
+
+<p>The solution is to use the hyperlink object that was selected as the target of the event; that way, once the event has bubbled up to the outer XUL, we can look at the event's <code>target</code> field from the outer XUL and find which hyperlink caused it.</p>
+
+<p>Here's the way we do it in Gnusto; it's not elegant, but if you have a better solution I'd like to hear it.</p>
+
+<p>The hyperlink in the inner document looks like this:</p>
+<blockquote><pre>&lt;a href="javascript://<var>arbitrary javascript</var>" onclick="javascript:camenesbounce_throw(this);"&gt;click this to make something happen&lt;/a&gt;</pre></blockquote>
+
+<p>Note the double slash in the <code>javascript</code> URL. This is needed because clicking the link will have two effects: firstly, Mozilla will do whatever's specified in <code>onclick</code>, and secondly, it will try to resolve the URL. Because we're going to try to do everything in the first step, we want nothing to happen in the second step. So we make the target URL a JavaScript comment.</p>
+
+<p>When someone clicks on the link, its <code>onclick</code> property calls the following function in the inner XUL:</p>
+
+<blockquote><pre>function camenesbounce_throw(what) {
+   var e = document.createEvent('Events');
+   e.initEvent('camenesbounce',1,1);
+   what.dispatchEvent(e);
+}</pre></blockquote>
+
+<p>which will fire the event, targetted at <var>what</var> (which will be the hyperlink which called the function).</p>
+
+<p>Meanwhile in the <em>outer</em> XUL, events of type "camenesbounce" are handled by this simple function:</p>
+
+<blockquote><pre>function camenesbounce_catch(e) {
+   eval(e.target.toString().substring(13));
+}</pre></blockquote>
+
+<p>which looks at the target URL of the hyperlink that caused the event, strips the first thirteen characters away (since they will be "javascript://"), and evaluates the remaining string <strong>in the context of the outer window</strong>, which achieves our purpose.</p>
+
+<p>Thanks to the folk on <a href="http://www.mozdev.org/irc.html"><tt>#mozilla</tt></a> who helped me hash this out.</p>
