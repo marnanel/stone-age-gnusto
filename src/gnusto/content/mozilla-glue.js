@@ -1,7 +1,7 @@
 // mozilla-glue.js || -*- Mode: Java; tab-width: 2; -*-
 // Interface between gnusto-lib.js and Mozilla. Needs some tidying.
 // Now uses the @gnusto.org/engine;1 component.
-// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.129 2003/12/12 02:07:03 marnanel Exp $
+// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.130 2003/12/17 07:14:15 marnanel Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -164,6 +164,46 @@ function glue_effect_code() {
 }
 
 ////////////////////////////////////////////////////////////////
+
+// Timeout handling code.
+
+// We permit only one timeout to be running at once.
+
+var glue__timeout_handle = 0;
+
+function timeout_begin(interval_ds) {
+		glue__timeout_handle = setTimeout("timeout_commit()", interval_ds*100);
+}
+
+function timeout_commit() {
+		if (glue__timeout_handle) {
+				timeout_abort();
+
+				switch (glue__reason_for_stopping) {
+
+				case GNUSTO_EFFECT_INPUT: // Line at a time.
+						alert("Don't know how to deal with line-at-a-time input yet!");
+						break;
+
+				case GNUSTO_EFFECT_INPUT_CHAR: // Char at a time.
+						engine.answer(0, 0);
+						dispatch('exec');
+						break;
+
+				default: // FIXME: proper error message
+						alert('Error: Weird effect in timeout handler.');
+				}
+		}
+}
+
+function timeout_abort() {
+		if (glue__timeout_handle) {
+				clearTimeout(glue__timeout_handle);
+				glue__timeout_handle = 0;
+		}
+}
+
+////////////////////////////////////////////////////////////////
 // [MOVE TO DATISI/DARII]
 //
 // command_exec
@@ -223,6 +263,16 @@ function command_exec(args) {
 								engine.answer(0, replayer.nextKeypress());
 								looping = 1;
 						} else {
+
+								var timeout_deciseconds = engine.effect(1)*1;
+
+								if (timeout_deciseconds) {
+										win_show_status("Timed read: "+timeout_deciseconds+'ds');
+										timeout_begin(timeout_deciseconds);
+								} else {
+										win_show_status("Not a timed read. "+engine.effect(1));
+								}
+
 								// This'll be handled by the window's input routines.
 								win_relax();
 						}
@@ -927,6 +977,7 @@ function gotInput(e) {
 				return false;
 
 		case GNUSTO_EFFECT_INPUT_CHAR:
+				timeout_abort();
 				engine.answer(0, zscii_code); dispatch('exec');
 				return false;
 
