@@ -2,7 +2,7 @@
 
 <p>This document describes the current architecture of Gnusto.</p>
 
-<p><b>Section names, and future growth:</b> We're in the process of identifying the logical sections of the code, to replace the current <i lang="la">ad hoc</i> growth; eventually each section will have its own file. Names of such sections are written thus: <code>Felapton</code>.</p>
+<p><b>Section names, and future growth:</b> We're in the process of identifying the logical sections of the code, to replace the current <i lang="la">ad hoc</i> growth: eventually each section will have its own file. Newer files already do; older files are often shared by two or more logical sections. Names of sections are written thus: <code>Felapton</code>.</p>
 
 <p><b>Identifier naming:</b> A section should have a naming prefix, either its section name in lowercase or (in the case of sections which are intended to be drop-in replacements for other sections) a descriptive name. The names of identifiers exported from a section should begin with the prefix and one underscore; identifiers private to a section should begin with the prefix and two underscores. This convention is not yet followed in much of the code.</p>
 
@@ -31,8 +31,7 @@ ferio
 ferison
 fesapo
 festino
-fresison
-</code>.</small></p>
+fresison</code>.</small></p>
 
 <p>If you'd like to step through the file descriptions in a helpful order, follow the links that say "<a href="gnusto-lib.html">NEXT&gt;</a>".</p>
 
@@ -57,13 +56,14 @@ fresison
 <li><a href="bocardo.html">upper.js</a> (<code>Bocardo</code>) - produces HTML to look like a text screen</li>
 <li><a href="barbarix.html">barbarix.js</a> (<code>Barbarix</code>) - switches screens between Z-machine output and review data</li>
 <li><small><i>Historical:</i> <a href="barbara.html"><code>Barbara</code></a> - now replaced by <code>Bocardo</code></small></li>
+</ul>
 
 <h3><img src="lanterns/star.png" alt="" width="16" height="32"> Review information</h3>
 <ul>
 <li><a href="camenes.html">baf.js</a> (<code>Camenes</code> <i>and</i> <code>Camenop</code>) - integrates Baf's Guide information</a>
 </ul>
 
-<h3>Inform debugging (<i>Tossio</i>)</h3>
+<h3>Inform debugging (<i><a href="/tossio.html">Tossio</a></i>)</h3>
 <ul>
 <li><a href="tossio.html">tossio.js</a> (<code>Disamis</code> <i>and</i> <code>Darii</code>) - general-purpose Inform debugger; action handler</a>
 </ul>
