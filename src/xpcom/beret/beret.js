@@ -1,5 +1,5 @@
 // -*- Mode: Java; tab-width: 2; -*-
-// $Id: beret.js,v 1.11 2004/01/19 20:44:24 marnanel Exp $
+// $Id: beret.js,v 1.12 2004/01/19 23:59:00 marnanel Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -19,7 +19,7 @@
 
 ////////////////////////////////////////////////////////////////
 
-const CVS_VERSION = '$Date: 2004/01/19 20:44:24 $';
+const CVS_VERSION = '$Date: 2004/01/19 23:59:00 $';
 const BERET_COMPONENT_ID = Components.ID("{ed0618e3-8b2b-4bc8-b1a8-13ae575efc60}");
 const BERET_DESCRIPTION  = "Checks file magic and routes them accordingly";
 const BERET_CONTRACT_ID  = "@gnusto.org/beret;1";
@@ -253,6 +253,51 @@ Beret.prototype = {
 						} else {
 								this.m_filetype = 'error unknown iff';
 						}
+
+						// end of IFF-specific code
+
+				} else if (magic_number_is_string('GNUSTO.MAGIC.GRIMOIRE=')) {
+						dump('This is a grimoire.\n');
+
+						// We SHOULD be using nsIStringBundle here, but
+						// we don't have the array as a file. So we just
+						// convert it into a humungous string, split at CRs.
+
+						var str = String.fromCharCode.apply(this, content);
+						str = str.replace('\r','\n','g');
+						str = str.split(/\n/);
+						for (var ik in str) {
+
+								var entry = str[ik].replace(/#.*/,''); // ignore comments
+
+								var equalspos = entry.indexOf('=');
+
+								if (equalspos != -1) {
+
+										function trim(str) {
+												return str.
+														replace(/^[\t ]*/,'').
+														replace(/[\t ]*$/,'');
+										}
+
+										var lhs = trim(entry.substring(0, equalspos));
+										var rhs = trim(entry.substring(equalspos+1));
+								
+										if (lhs.indexOf('.')==-1) {
+												// Treat as gparam.
+												dump('Setting gparam: ');
+												dump(rhs);
+										} else {
+												dump('Meta: ');
+												dump(rhs);
+										}
+										dump('\n');
+										
+								}
+
+						}
+
+						this.m_filetype = 'ok other grimoire';
 
 				} else {
 						// OK, just give up.
