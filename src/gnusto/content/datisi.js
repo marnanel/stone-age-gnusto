@@ -1,7 +1,7 @@
 // datisi.js || -*- Mode: Java; tab-width: 2; -*-
 // Standard command library
 // 
-// $Header: /cvs/gnusto/src/gnusto/content/datisi.js,v 1.35 2004/04/12 03:51:33 marnanel Exp $
+// $Header: /cvs/gnusto/src/gnusto/content/datisi.js,v 1.36 2004/08/01 02:53:00 marnanel Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -38,85 +38,6 @@ function command_shutdown(a) {
 }
 
 ////////////////////////////////////////////////////////////////
-
-function command_open(a, nolaunch) {
-
-		var localfile = 0;
-		var filename = null;
-		var result = 0;
-
-		switch (a.length) {
-				
-		case 1: {
-				var ifp = Components.interfaces.nsIFilePicker;
-				var picker = Components.classes["@mozilla.org/filepicker;1"].
-						createInstance(ifp);
-
-				picker.init(window, "Select a story file", ifp.modeOpen);
-				picker.appendFilter("Z-code", "*.z?");
-				picker.appendFilter("Blorb", "*.blb");
-				picker.appendFilter("Glulx", "*.ulx");
-				picker.appendFilter("Saved game", "*.sav; *.qtz");
-				picker.appendFilter("Play-testing script", "*.grimoire");
-				
-				if (picker.show()==ifp.returnOK) {
-						
-						localfile = picker.file;
-						filename = localfile.path;
-						filename = filename.replace('\\','\\\\', 'g');
-				} else
-						return null;
-				
-				break;
-		}
-
-		case 2: {
-				localfile = new Components.Constructor("@mozilla.org/file/local;1",
-																							 "nsILocalFile",
-																							 "initWithPath")(a[1]);
-				filename = a[1];
-				filename = filename.replace('\\','\\\\', 'g');
-
-				break;
-		}
-
-		default:
-			for (var index = 2; index < a.length; index++) a[1] = a[1] + ' ' + a[index];
-			
-			localfile = new Components.Constructor("@mozilla.org/file/local;1",
-													 "nsILocalFile",
-													 "initWithPath")(a[1]);
-			filename = a[1];
-			filename = filename.replace('\\','\\\\', 'g');
-
-				break;
-		}
-
-    if (!localfile.exists()) {
-				gnusto_error(301);
-				return;
-		}
-		
-		local_game_file = localfile;
-
-		// @@@FIXME: We are circumventing dealWith until we integrate it
-		// properly into the component system.
-		//
-		// var result = dealWith(content);
-		load_from_file(localfile);
-		if (!nolaunch) {
-				glue_play();
-		}
-		//var result = dealWith(content);
-
-    // FIXME: and this (which isn't immediately necessary) depends on the
-		// result of dealWith, so we take this out too for now.
-		// It will return soon.
-		//if (filename && result==1) {
-		//		sys_notify_of_load(filename);
-		//		sys_show_story_title(filename);
-		//}
-}
 
 ////////////////////////////////////////////////////////////////
 //
