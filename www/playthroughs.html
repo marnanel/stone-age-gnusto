@@ -1,0 +1,17 @@
+<h1 class="page-header">Playthroughs</h1>
+
+<p>A <dfn>playthrough</dfn> is a file which contains instructions about how to play a particular game. We use playthroughs for testing Gnusto releases. You may find all current playbacks at <a href="http://www.mozdev.org/source/browse/gnusto/src/tests/gamescripts/">$/src/tests/gamescripts</a> in CVS.</p>
+
+<p>A playthrough may be:</p>
+<ul>
+<li>For a particular architecture, or even a <a href="http://www.speakeasy.org/~russotto/zplet/ivl.html">particular version</a> of a game. Sometimes they will only have been tested with these versions.</li>
+<li>Made for a particular reason. Often the playback will have been created to test Gnusto's support of the architecture.</li>
+<li>For a game from a particular era: Infocom or modern.</li>
+<li>In <dfn>playback</dfn> or <dfn>ini</dfn> format.
+<dl>
+<dt>Playback (<a href="http://www.mozdev.org/source/browse/gnusto/src/tests/gamescripts/zork1.playback?rev=1.2&content-type=text/x-cvsweb-markup">example</a>)</dt>
+<dd>Playback is an older form: it's simply a list of commands which Gnusto can play back (as the Z-spec requires). You may run a playback file by passing it as an <a href="http://www.livejournal.com/community/gnusto/12910.html">"input" parameter to Gnusto</a>.</dd>
+<dt>Ini (<a href="http://www.mozdev.org/source/browse/gnusto/src/tests/gamescripts/balances.ini?rev=1.1&content-type=text/x-cvsweb-markup">example</a>)</dt>
+<dd>Ini is a newer and rarer format which can specify what it means to win a game. It can also give instructions about how to run Gnusto, and can contain comments.</dd>
+</dl></li>
+</ul>
