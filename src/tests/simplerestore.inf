@@ -17,7 +17,14 @@
 
 Release 177;
 
-Global v;
+! "register" is a global because of an infelicity in the
+! design of Quetzal: local variables of the bootstrap function
+! (the one first on the call stack) are not saved. This is OK
+! for most Z-code programs because the bootstrap function
+! traditionally calls something more complicated and then quits,
+! but it does mean that the simplest programs, like this one,
+! can't expect to keep their locals across a save.
+Global register;
 
 [ Main keypress result;
 
@@ -25,30 +32,35 @@ Global v;
 
     @read_char keypress;
 
-    @je keypress 46 ?dofullstop;
-    @je keypress 83 ?dosave;
-    @je keypress 82 ?dorestore;
+    @je keypress 46 ?do_fullstop; ! .
+    @je keypress 83 ?do_save;     ! S
+    @je keypress 82 ?do_restore;  ! R
+    @je keypress 85 ?do_undo;     ! U
     
-    @add keypress 0 -> v;
-    @print_num v;
+    @add keypress 0 -> register;
+    @print_char register;
     @print_char 32;
     
     @je 0 0 ?top;
 
-    .dofullstop;
-    @print_num v;
+    .do_fullstop;
+    @print_char register;
     @print_char 32;
     @je 0 0 ?top;
 
-    .dosave;
+    .do_save;
     @save -> result;
     @je result 0 ?fail;
     @je 0 0 ?top;
     
-    .dorestore;
+    .do_restore;
     @restore -> result;
     @je 0 0 ?fail;
-    
+
+    .do_undo;
+    @print "(undo test not implemented)";
+    @je 0 0 ?top;
+
     .fail;
     @print_ret "*FAIL Unexpected error: quitting";
 ];
