@@ -1,3 +1,0 @@
-content,install,url,jar:resource:/chrome/gnusto/content/
-skin,install,url,jar:resource:/chrome/gnusto/skin/
-locale,install,url,jar:resource:/chrome/gnusto/locale/en-US/
