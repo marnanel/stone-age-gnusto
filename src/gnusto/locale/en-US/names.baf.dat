@@ -1,8 +1,4 @@
 # Names of Z-machine games reviewed in Baf's Guide
-#
-# Based upon data from Baf's Guide to the IF Archive,
-# copyright 2003 Carl Muckenhoupt. Used with permission.
-
 baf.1.name = Adventure
 baf.2.name = Zork
 baf.3.name = Adventureland
