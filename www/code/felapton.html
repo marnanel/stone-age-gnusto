@@ -1,0 +1,35 @@
+<h1 class="page-header"><img src="lanterns/engine.png" alt="" width="32" height="64"> <i>Felapton</i> - <code>gnusto-lib.js</code></h5>
+
+<p align="right"><a href="http://www.mozdev.org/source/browse/gnusto/src/gnusto/content/gnusto-lib.js">Read the code</a></p>
+
+<p><code>gnusto-lib.js</code> is Gnusto's engine, the Z-machine itself. It's currently fairly readable, although it's large enough to be unwieldy; it needs to be split into smaller pieces by function.</p>
+
+<p>gnusto-lib.js will be renamed to felapton.js at some point.</p>
+
+<p>The identifier prefixes for gnusto-lib are:</p>
+<ul>
+<li>Most identifiers are not prefixed.</li>
+<li><code>engine</code>, in newer identifiers.</li>
+<li>The handler function for the opcode <code>@<var>foo</var> is named <code>Z_<var>foo</var></code>.</li>
+<li>JIT functions constructed by gnusto-lib are named <code>J<var>pc</var></code>, where <var>pc</var> is the value of the program counter at the start of the function.</li>
+</ul>
+
+<h2>An overview of Felapton's operation</h2>
+
+<h2>Exported functions</h2>
+
+<p><b>The future:</b> We should possibly make the whole of Felapton a class; "setup" would then become the constructor and "go" would be a method.</p>
+
+<h3>setup</h3>
+
+<p>Resets the z-machine. Must be called before you call go().</p>
+
+<p><b>The future:</b> Should be renamed to <code>engine_setup</code>!</p>
+
+<h3>go</h3>
+
+<h3>engine_console_text, engine_transcript_text</h3>
+
+<h3>engine_effect_parameters</h3>
+
+<p align="right"><a href=".">Other bits of the code</a></p>
