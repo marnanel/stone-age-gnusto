@@ -4,7 +4,7 @@
 
 <!--
 
-$Header: /cvs/gnusto/src/gnusto/content/gnusto.xul,v 1.79 2005/02/09 05:23:13 naltrexone42 Exp $
+$Header: /cvs/gnusto/src/gnusto/content/gnusto.xul,v 1.80 2005/02/10 00:42:29 naltrexone42 Exp $
 
 Copyright (c) 2003 Thomas Thurman
 thomas@thurman.org.uk
@@ -248,7 +248,7 @@ function ensureHappiness() {
 </scrollbox>
 
 <box id="gnbrowser">
-    <html:iframe src="http://www.batmantis.com" width="100%" height="100%" flex="100"/>
+    <html:iframe src="http://www.batmantis.com/gnusto" width="100%" height="100%" flex="100"/>
 </box>
 
 </stack>
