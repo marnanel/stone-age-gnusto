@@ -17,40 +17,36 @@ interface gnustoIBeret : nsISupports
   // that was most recently passed in to load()'s |info| param.
   //
   // The string is a series of keywords separated by spaces.
-  // The first keyword will be one of
   //
+  // The first keyword is one of:
+  //   ok           - the file is acceptable
+  //   invalid      - the file is somehow broken
+  //   nyi          - the file is understood, but we don't support it (yet)
+  //   error        - some other error
+  //
+  // The second keyword will be one of:
   //   none         - either we haven't seen an array yet
   //                  or it was an array with zero length
   //   story        - it contained a story.
-  //                  Second word is "naked" if it was a single
+  //                  Third word is "naked" if it was a single
   //                  file (in z-machine, Glulx, or some other
   //                  format). Otherwise it was a file
   //                  including multiple kinds of subfiles
   //                  (which pretty much always means Blorb)
-  //                  and the second word is a keyword for
+  //                  and the third word is a keyword for
   //                  this (which will be "blorb" for Blorb).
-  //                  Third word describes the architecture:
+  //                  Fourth word describes the architecture:
   //                   * zX where X is the version number, e.g. z5
   //                   * glulx
   //   saved        - it contained a saved game.
-  //                  Second word is the game format:
+  //                  Third word is the game format:
   //                   * quetzal  - the only one defined for now
-  //                  Third is the architecture, as in "story" above.
-  //                  Fourth is one of:
-  //                   * ok - the component has handled the load
-  //                          into the internal engine and
-  //                          everything's good.
-  //                   * failed - something went wrong in loading
-  //                   * need - it's for a story we don't have,
-  //                            and the remaining arguments give
-  //                            details of that story. These are
-  //                            architecture-dependent.
   //   unknown       - we can't tell what it was.
   //
   //  For example, these are all possible results:
-  //     story blorb glulx
-  //     story naked z5
-  //     saved quetzal z5 ok
+  //     ok story blorb glulx
+  //     ok story naked z5
+  //     invalid saved quetzal z5
   //
   // In the case of successful "story" loads, the component will also
   // create an engine of the relevant type and load the story into it.
