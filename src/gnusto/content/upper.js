@@ -1,7 +1,7 @@
 // gnusto-lib.js || -*- Mode: Java; tab-width: 2; -*-
 // upper.js -- upper window handler.
 //
-// $Header: /cvs/gnusto/src/gnusto/content/upper.js,v 1.56 2005/01/25 07:17:41 naltrexone42 Exp $
+// $Header: /cvs/gnusto/src/gnusto/content/upper.js,v 1.57 2005/02/09 22:49:03 naltrexone42 Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -262,6 +262,41 @@ function bocardo_chalk(win, text) {
 function bocardo_gotoxy(win, x, y) {
 		bocardo__current_x[win] = x;
 		bocardo__current_y[win] = y;
+}
+
+function bocardo_char_at(x,y) {
+    	if (y > bocardo__screen_window.childNodes.length) return ' ';
+  
+    	var current_line = bocardo__screen_window.childNodes[y];
+
+    	var spans = current_line.childNodes;
+
+	var charactersSeen = 0;
+	var cursor = 0;
+
+	// Go past all the spans before us.
+
+        // Don't forget that the sum of the lengths is effectively 1-based whereas the indexing is 0 based
+	while ((cursor<current_line.childNodes.length) && 
+		    ((charactersSeen+current_line.childNodes[cursor].getAttribute('value').length) <= x)) {
+				charactersSeen += current_line.childNodes[cursor].getAttribute('value').length;
+				cursor++;
+	}
+	 
+	//if we're off the end of the line, return a blank 
+	if ((cursor >= current_line.childNodes.length) || (x > (charactersSeen + current_line.childNodes[cursor].getAttribute('value').length))) 
+	  return ' ';
+	
+	//elsewise, return the char in question:
+	return current_line.childNodes[cursor].getAttribute('value')[x-charactersSeen];
+}
+
+function bocardo_getx(win) {
+		return bocardo__current_x[win];	
+}
+
+function bocardo_gety(win) {
+		return bocardo__current_y[win];	
 }
 
 ////////////////////////////////////////////////////////////////

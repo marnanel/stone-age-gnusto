@@ -1,7 +1,7 @@
 // baroco.js || -*- Mode: Java; tab-width: 2; -*-
 // Screen handler.
 //
-// $Header: /cvs/gnusto/src/gnusto/content/baroco.js,v 1.22 2005/01/25 06:50:31 naltrexone42 Exp $
+// $Header: /cvs/gnusto/src/gnusto/content/baroco.js,v 1.23 2005/02/09 22:49:03 naltrexone42 Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -178,7 +178,7 @@ function win_set_top_window_size(lines) {
 
 ////////////////////////////////////////////////////////////////
 
-function win_set_input(textlist) {
+function win_set_input(win, textlist) {
 		barbara_set_input(textlist);
 }
 

@@ -1,7 +1,7 @@
 // mozilla-glue.js || -*- Mode: Java; tab-width: 2; -*-
 // Interface between gnusto-lib.js and Mozilla. Needs some tidying.
 // Now uses the @gnusto.org/engine;1 component.
-// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.152 2005/02/09 07:17:45 naltrexone42 Exp $
+// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.153 2005/02/09 22:49:03 naltrexone42 Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -188,6 +188,14 @@ function timeout_commit() {
 						break;
 
 				case GNUSTO_EFFECT_INPUT_CHAR: // Char at a time.
+				
+                                		// if we're in the upper window, clean up after the fake cursor
+                                		if (current_window==1) {
+			            			var char_at_point = bocardo_char_at(bocardo_getx(current_window),bocardo_gety(current_window));
+			            			win_chalk(current_window,char_at_point);
+			            			win_gotoxy(current_window, bocardo_getx(current_window)-1, bocardo_gety(current_window));
+                                  		}
+				
 						engine.answer(0, READ_TIMED_OUT);
 						command_exec();
 						break;
@@ -273,6 +281,27 @@ function command_exec(args) {
 								} else {
 										//win_show_status("Not a timed read. "+engine.effect(1));
 								}
+								
+								if (current_window==1) {
+	   							  var old_fg = baroco__current_foreground;
+	   							  var old_bg = baroco__current_background;
+	   							  var new_fg = baroco__current_background;
+	   							  if (baroco__current_foreground == baroco__current_background) {
+	   							    if (baroco__current_foreground == 2) {
+	   							    	var new_bg = 9; //if it's black on black, make it black on white
+	   							    } else {
+	   							      var new_bg = 2;
+	   							    }
+	   							    
+	   							  } else {
+	   							    var new_bg = baroco__current_foreground;	
+	   							  }
+	   							  var char_at_point = bocardo_char_at(bocardo_getx(current_window),bocardo_gety(current_window));
+	  							  win_set_text_style(-1,new_fg,new_bg);
+	  							  win_chalk(current_window,char_at_point);
+	  							  win_gotoxy(current_window, bocardo_getx(current_window)-1, bocardo_gety(current_window));
+	  							  win_set_text_style(-1,old_fg,old_bg);									
+	  							}
 
 								// This'll be handled by the window's input routines.
 								win_relax();
@@ -304,7 +333,7 @@ function command_exec(args) {
 
 								win_relax();
 								glue__input_buffer_max_chars = engine.effect(3)*1;
-								win_set_input([win_recaps(engine.effect(2)*1), '']);
+								win_set_input(current_window, [win_recaps(engine.effect(2)*1), '']);
 								glue__set_terminating_characters(engine.effect(4));
 								glue__command_history_position = -1;
 								
@@ -936,7 +965,7 @@ function gotInput(e) {
 												current[0] = current[0].substring(0, current[0].length-1);
 										} else glue__beep();
 								}
-								win_set_input(current);
+								win_set_input(current_window, current);
 								break;
 
 						case 129: // cursor up
@@ -945,7 +974,8 @@ function gotInput(e) {
 								} else {
 										current[0] = glue__command_history[++glue__command_history_position];
 										current[1] = '';
-										win_set_input(current);
+										// CHECK:  Should this always be lower window or current window?
+										win_set_input(0, current);
 								}
 								break;
 
@@ -955,7 +985,8 @@ function gotInput(e) {
 								} else {
 										current[0] = glue__command_history[--glue__command_history_position];
 										current[1] = '';
-										win_set_input(current);
+										// CHECK:  Should this always be lower window or current window?
+										win_set_input(0, current);
 								}
 								break;
 
@@ -963,7 +994,9 @@ function gotInput(e) {
 								if (current[0].length>0) {
 										current[1] = current[0].substring(current[0].length-1)+current[1];
 										current[0] = current[0].substring(0, current[0].length-1);
-										win_set_input(current);
+										
+										// CHECK:  Should this always be lower window or current window?
+										win_set_input(0, current);
 								} else glue__beep();
 								break;
 								
@@ -971,7 +1004,9 @@ function gotInput(e) {
 								if (current[1].length>0) {
 										current[0] = current[0]+current[1].substring(0, 1);
 										current[1] = current[1].substring(1);
-										win_set_input(current);
+										
+										// CHECK:  Should this always be lower window or current window?
+										win_set_input(0, current);
 								} else glue__beep();
 								break;
 
@@ -1000,7 +1035,8 @@ function gotInput(e) {
 										} else {
 												current[0] = current[0] + String.fromCharCode(zscii_code);
 										}
-										win_set_input(current);
+										// CHECK:  Should this always be lower window or current window?
+										win_set_input(0, current);
 								}
 
 						}
@@ -1009,6 +1045,14 @@ function gotInput(e) {
 				return false;
 
 		case GNUSTO_EFFECT_INPUT_CHAR:
+
+                                // if we're in the upper window, clean up after the fake cursor
+                                if (current_window==1) {
+			            var char_at_point = bocardo_char_at(bocardo_getx(current_window),bocardo_gety(current_window));
+			            win_chalk(current_window,char_at_point);
+			            win_gotoxy(current_window, bocardo_getx(current_window)-1, bocardo_gety(current_window));
+                                }
+                                
 				timeout_abort();
 				engine.answer(0, zscii_code); command_exec();
 				return false;
