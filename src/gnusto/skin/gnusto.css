@@ -11,6 +11,7 @@ description.bodytext {
 
 description.bocardo { 
   font-family: monospace; 
+  font-size: 12pt;
   margin: 0 0 0 0;
 }
 
@@ -20,6 +21,7 @@ scrollbox {
 
 window {
         font-family: serif;
+        font-size: 12pt;
 	border: 0;
 }
 
