@@ -1,6 +1,9 @@
 # Gnusto tests: random number generation
 # Copyright (c) 2003 Thomas Thurman. Distributed under v2 of the GNU GPL.
 
+# FIXME: Need also to test whether seeding <-1000 and >-1000 are different.
+# (The ZMSD suggests they should be.)
+
 # Where things are:
 mozilla = '/home/marnanel/MozillaFirebird/MozillaFirebird'
 stdout_file = '/dev/stdout'
@@ -51,6 +54,8 @@ print 'Testing with no seeding.'
 counts = run_many()
 print_result('Initial state is randomized', len(counts['1'])==repeat_count)
 print_result('Seeded state is predictable', len(counts['P'])==1)
+if len(counts['P'])==1 and not 'P: 1 2 3 4 5 6 7 8 9 1 ' in counts['P']:
+    print '*WARN: Seeded state not in accordance with ZMSD *suggested* behaviour'
 print_result('Randomized state is not predictable', len(counts['R'])==repeat_count)
     
 # Second pass: seeded. "1:" should not be random.
