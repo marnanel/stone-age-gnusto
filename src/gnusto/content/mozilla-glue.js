@@ -1,7 +1,7 @@
 // mozilla-glue.js || -*- Mode: Java; tab-width: 2; -*-
 // Interface between gnusto-lib.js and Mozilla. Needs some tidying.
 // Now uses the @gnusto.org/engine;1 component.
-// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.118 2003/11/16 23:57:46 marnanel Exp $
+// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.119 2003/11/17 00:23:08 marnanel Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -224,6 +224,10 @@ function command_exec(args) {
 						break;
 
 				case GNUSTO_EFFECT_QUIT:
+						if ('gameoverquit' in glue__arguments) {
+								window.close();
+						}
+
 						win_relax();
 						win_show_status("Game over.");
 						break;
