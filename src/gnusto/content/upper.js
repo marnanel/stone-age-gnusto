@@ -1,7 +1,7 @@
 // gnusto-lib.js || -*- Mode: Java; tab-width: 2; -*-
 // upper.js -- upper window handler.
 //
-// $Header: /cvs/gnusto/src/gnusto/content/upper.js,v 1.55 2005/01/25 06:50:31 naltrexone42 Exp $
+// $Header: /cvs/gnusto/src/gnusto/content/upper.js,v 1.56 2005/01/25 07:17:41 naltrexone42 Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -371,6 +371,7 @@ function bocardo__subchalk(win, text) {
     while (bocardo__screen_window.childNodes.length <= y) {
 				var newdiv = bocardo__screen_doc.createElement('hbox');
 				var dummySpan = bocardo__screen_doc.createElement('description');
+				dummySpan.setAttribute('class', 'bocardo fb');
 				dummySpan.setAttribute('value', ' ');
 				newdiv.appendChild(dummySpan);
 
