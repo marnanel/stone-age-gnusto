@@ -18,3 +18,8 @@ function NewGnustoWindow(LaunchInWindow)
 	tBrowser.selectedTab = tab; 	
     }
 }
+
+function gnustoButtonPress()
+{
+  document.getElementById("gnustopopup2").showPopup(document.getElementById("gnusto-button"),-1, -1,"popup","bottomleft","topleft");	
+}

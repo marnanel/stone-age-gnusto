@@ -11,8 +11,8 @@
   <menupopup id="menu_ToolsPopup">
     <menu id="gnustotop" label="&gnustoMenu.label;" position="7">
       <menupopup id="gnustopopup"> 
-        <menuitem id="gnusto-item" label="&gnustoMenuLaunchWindow.label;" oncommand="toGnusto(1);"/>
-        <menuitem id="gnusto-item" label="&gnustoMenuLaunchTab.label;" oncommand="toGnusto(0);"/>
+        <menuitem id="gnusto-item1" label="&gnustoMenuLaunchWindow.label;" oncommand="toGnusto(1);"/>
+        <menuitem id="gnusto-item2" label="&gnustoMenuLaunchTab.label;" oncommand="toGnusto(0);"/>
       </menupopup>
     </menu>
   </menupopup> 
@@ -22,9 +22,15 @@
     <toolbarbutton class="toolbarbutton-1" 
                    id="gnusto-button" 
                    label="&gnustoButton.label;" 
-                   oncommand="toGnusto();" 
+                   oncommand="gnustoButtonPress();"
                    tooltiptext="&gnustoButton.tooltip;" 
-                   type="menu-button;" />
+                   type="menu-button;">
+      	<menupopup id="gnustopopup2"> 
+        	<menuitem id="gnusto-item3" label="&gnustoMenuLaunchWindow.label;" oncommand="toGnusto(1);"/>
+        	<menuitem id="gnusto-item4" label="&gnustoMenuLaunchTab.label;" oncommand="toGnusto(0);"/>
+      	</menupopup>
+     </toolbarbutton>
+                   
   </toolbarpalette>  
   
 </overlay>
