@@ -1,7 +1,7 @@
 // mozilla-glue.js || -*- Mode: Java; tab-width: 2; -*-
 // Interface between gnusto-lib.js and Mozilla. Needs some tidying.
 // Now uses the @gnusto.org/engine;1 component.
-// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.107 2003/09/24 01:51:45 marnanel Exp $
+// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.108 2003/09/24 06:34:23 marnanel Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -34,7 +34,7 @@ var GNUSTO_EFFECT_QUIT           = 'QU';
 var GNUSTO_EFFECT_RESTART        = 'NU';
 var GNUSTO_EFFECT_WIMP_OUT       = 'WO';
 var GNUSTO_EFFECT_BREAKPOINT     = 'BP';
-var GNUSTO_EFFECT_FLAGS_CHANGED  = 'XC'; // obsolescent
+var GNUSTO_EFFECT_FLAGS_CHANGED  = 'XC';
 var GNUSTO_EFFECT_VERIFY         = 'CV';
 var GNUSTO_EFFECT_PIRACY         = 'CP';
 var GNUSTO_EFFECT_STYLE          = 'SS';
@@ -47,8 +47,7 @@ var GNUSTO_EFFECT_SETCURSOR      = 'SC';
 var GNUSTO_EFFECT_SETBUFFERMODE  = 'SB';
 var GNUSTO_EFFECT_SETINPUTSTREAM = 'SI';
 var GNUSTO_EFFECT_GETCURSOR      = 'GC';
-var GNUSTO_EFFECT_PRINT_TABLE    = 'PT';
-var GNUSTO_EFFECT_PRINT_STRING   = 'PS';
+var GNUSTO_EFFECT_PRINTTABLE     = 'PT';
 
 // Dictionary of Gnusto errors which should be ignored.
 // The keys are the error numbers; the values are ignored.
@@ -305,19 +304,10 @@ function command_exec(args) {
 						looping = 1;
 						break;
 
-				case GNUSTO_EFFECT_PRINT_TABLE:
-						var table = [];
-						var count = engine.effect(1)*1;
-						for (var i=0; i<count; i++) {
-								table[i] = engine.effect(2+i);
-						}
-
-						win_print_table(current_window, table);
-						looping = 1;
-						break;
-
-				case GNUSTO_EFFECT_PRINT_STRING:
-						glue_print(engine.effect(1));
+				case GNUSTO_EFFECT_PRINTTABLE:
+						// FIXME: needs rethink
+						win_print_table(current_window,
+														engine_effect_parameters());
 						looping = 1;
 						break;
 						
