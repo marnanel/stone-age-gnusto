@@ -1,7 +1,7 @@
 // mozilla-glue.js || -*- Mode: Java; tab-width: 2; -*-
 // Interface between gnusto-lib.js and Mozilla. Needs some tidying.
 // Now uses the @gnusto.org/engine;1 component.
-// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.108 2003/09/24 06:34:23 marnanel Exp $
+// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.109 2003/09/29 06:06:53 marnanel Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -685,7 +685,9 @@ function gnusto_error(n) {
 				m = m + 'fatal';
 
 		for (var i=1; i<arguments.length; i++) {
-				m = m + '\nDetail: '+arguments[i].toString();
+				if (arguments[i] && arguments[i].toString) {
+						m = m + '\nDetail: '+arguments[i].toString();
+				}
 		}
 
 		var procs = arguments.callee;
