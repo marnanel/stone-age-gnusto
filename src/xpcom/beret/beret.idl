@@ -1,0 +1,11 @@
+#include "nsISupports.idl"
+
+// The beret takes loaded files and decides where they should go.
+
+[scriptable, uuid(ed0618e3-8b2b-4bc8-b1a8-13ae575efc60)]
+interface gnustoIBeret : nsISupports
+{
+  void load(in PRUint32 aLength,
+	    [size_is(aLength), array] in PRUint8 target);		 
+
+};
