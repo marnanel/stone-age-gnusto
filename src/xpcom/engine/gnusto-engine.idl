@@ -1,17 +1,23 @@
 #include "nsISupports.idl"
 #include "nsIInputStream.idl"
+#include "nsIBinaryOutputStream.idl"
 
 ////////////////////////////////////////////////////////////////
 
 [scriptable, uuid(bf7a4808-211f-4c6c-827a-c0e5c51e27e1)]
 interface gnustoIEngine : nsISupports
 {
-  void loadStory(in nsIInputStream story, in long length);
-  void loadStoryMZ5(in string story);
+  void loadStory(in PRUint32 aLength,
+		 [size_is(aLength), array] in PRUint8 target);		 
 
-  void loadSavedGame(in nsIInputStream savedgame);
-  void loadSavedGameMZ5(in string story);
+  void loadSavedGame(in PRUint32 aLength,
+		     [size_is(aLength), array] in PRUint8 target);		 
 
+  long saveGame();
+
+  void saveGameData(in PRUint32 aLength,
+		    [size_is(aLength), array, retval] out PRUint8 target);
+		 
   readonly attribute string signature;
   readonly attribute string cvsVersion;
 
@@ -22,7 +28,7 @@ interface gnustoIEngine : nsISupports
 
   void walk(in string answer);
 
-  string consoleText();  // obsolescent
+  string consoleText();
 
   readonly attribute string architecture;
 
