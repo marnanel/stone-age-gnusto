@@ -25,6 +25,7 @@
     <em:homepageURL>http://gnusto.mozdev.org/</em:homepageURL>
 
     <!-- Front End Integration Hooks (used by Extension Manager)-->    
+    <em:optionsURL>chrome://gnusto/content/gnustosettings.xul</em:optionsURL>    
     <em:iconURL>chrome://gnusto/skin/images/gnusto-icon-lrg.png</em:iconURL>    
     
     <!-- Packages, Skins and Locales that this extension registers -->
