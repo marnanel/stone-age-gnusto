@@ -1,4 +1,4 @@
-// $Header: /cvs/gnusto/src/gnusto/content/gnusto-base.js,v 1.3 2004/08/01 03:18:32 marnanel Exp $
+// $Header: /cvs/gnusto/src/gnusto/content/gnusto-base.js,v 1.4 2004/08/01 03:36:11 marnanel Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -75,6 +75,7 @@ function command_open(filename, nolaunch) {
 
   if (!nolaunch) {
     glue_play();
+    command_exec();
   }
 
   return 1;
