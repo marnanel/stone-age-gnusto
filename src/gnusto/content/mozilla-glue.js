@@ -1,7 +1,7 @@
 // mozilla-glue.js || -*- Mode: Java; tab-width: 2; -*-
 // Interface between gnusto-lib.js and Mozilla. Needs some tidying.
 // Now uses the @gnusto.org/engine;1 component.
-// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.143 2004/09/28 19:55:58 naltrexone42 Exp $
+// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.144 2004/09/30 00:02:32 marnanel Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -329,11 +329,9 @@ function command_exec(args) {
 						break;
 						
 				case GNUSTO_EFFECT_RESTART:
-						// FIXME: bug 5784 makes this redundant. Implement.
+						engine.resetStory()
 						win_relax();
 						start_up();
-						// FIXME: The beret needs to do this!
-						load_from_file(local_game_file);
 						glue_play();
 						looping = 1;
 						break;
