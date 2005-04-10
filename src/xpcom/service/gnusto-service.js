@@ -1,5 +1,5 @@
 // -*- Mode: Java; tab-width: 2; -*-
-// $Id: gnusto-service.js,v 1.10 2005/03/24 07:54:49 naltrexone42 Exp $
+// $Id: gnusto-service.js,v 1.11 2005/04/10 07:37:41 naltrexone42 Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -24,6 +24,10 @@
 // The URL for the main window of Gnusto.
 const GNUSTO_MAIN_WINDOW_URL =
 		'chrome://gnusto/content/';
+
+// The URL for the download progress window of Gnusto.
+const GNUSTO_PROGRESS_WINDOW_URL =
+		'chrome://gnusto/content/progress.xul';
 
 // A set of MIME types to grab. Each of these will be passed to
 // the beret when Mozilla sees them.
@@ -57,7 +61,7 @@ const mime_types = {
 
 ////////////////////////////////////////////////////////////////
 
-const CVS_VERSION = '$Date: 2005/03/24 07:54:49 $';
+const CVS_VERSION = '$Date: 2005/04/10 07:37:41 $';
 
 const CONTENT_HANDLER_CONTRACT_ID_PREFIX = // Only the start of it:
 		"@mozilla.org/uriloader/content-handler;1?type=";
@@ -125,15 +129,22 @@ function cd_and_maybe_mkdir(nsifile, name) {
 
 ////////////////////////////////////////////////////////////////
 
-function openInNewWindow(url, filename) {
+function openInNewWindow(url, filename, shouldcenter) {
 		try {
 				var ass = Components.
 						classes['@mozilla.org/appshell/appShellService;1'].
 						getService(Components.interfaces.nsIAppShellService);
-				return ass.hiddenDOMWindow.openDialog(url,
+				if (shouldcenter) {
+					return ass.hiddenDOMWindow.openDialog(url,
+																			 '_blank',
+																			 'chrome,all,centerscreen,dialog=no',
+																			 filename);
+				} else {
+					return ass.hiddenDOMWindow.openDialog(url,
 																			 '_blank',
 																			 'chrome,all,dialog=no',
 																			 filename);
+				}																			 
 				
 		} catch (e) {
 				// FIXME: we want some proper error handling
@@ -193,10 +204,14 @@ GnustoStreamListener.prototype = {
     onStartRequest: function gsl_onstart(request, context) {
 				// We don't need to do anything here. All our
 				// setup is done in setTargetFile.
+				m_progwin = openInNewWindow(GNUSTO_PROGRESS_WINDOW_URL, '', true);				
 		},
 
     onStopRequest: function gsl_onstop(request, context, status) {
 				try {
+						// whatever the result, close the progress window
+						m_progwin.close();
+						
 						if (Components.isSuccessCode(status)) {
 							
 							// success is true, so moz thinks the file should exist
@@ -206,8 +221,8 @@ GnustoStreamListener.prototype = {
 							  // do nothing... is there a way to do this that's not
 							  // such a busy wait?	
 							}
-
-								openInNewWindow(GNUSTO_MAIN_WINDOW_URL, this.m_file.path);
+								
+								openInNewWindow(GNUSTO_MAIN_WINDOW_URL, this.m_file.path, false);
 
 						} else {
 
@@ -232,7 +247,7 @@ GnustoStreamListener.prototype = {
 		setTargetFile: function gsl_stf(file) {
 				with (Components) {
 						this.m_file = file;
-						//this.m_progwin = openInNewWindow('http://batmantis.com','');
+						
 						var stream = Constructor('@mozilla.org/network/file-output-stream;1',
 																				 'nsIFileOutputStream',
 																				 'init')(
@@ -255,7 +270,7 @@ GnustoStreamListener.prototype = {
 		// an nsIFileOutputStream which is where the downloaded story goes.
 		m_sink: null,
 		
-		//m_progwin: null,
+		m_progwin: null,
 };
 
 ////////////////////////////////////////////////////////////////
