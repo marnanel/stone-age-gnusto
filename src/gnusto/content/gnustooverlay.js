@@ -85,7 +85,12 @@ function registerHelperApp() {
        	
        }
        
-       if (entry.appPath != '') {
+       // Until we figure out why registering as a helper app on Mac doesn't get
+       // gnusto launched when clicking on badly MIME-typed links, we'd best not
+       // do so at all.  So we only register as a helper app if we found the firefox
+       // executable and we're not running on a Mac.  For now.
+        
+       if ((navigator.platform.indexOf("MacPPC") < 0 ) && (entry.appPath != '')) {
        
        		// Do RDF magic.
        		try {
