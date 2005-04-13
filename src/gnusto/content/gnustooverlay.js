@@ -28,7 +28,7 @@ var gDS = null;
 var gRDF = Components.classes["@mozilla.org/rdf/rdf-service;1"].getService(Components.interfaces.nsIRDFService);     
 
 function registerHelperApp() {
-       Components.classes["@mozilla.org/moz/jssubscript-loader;1"].getService(Components.interfaces.mozIJSSubScriptLoader).loadSubScript("chrome://gnusto/content/overrideHandler.js");
+       Components.classes["@mozilla.org/moz/jssubscript-loader;1"].getService(Components.interfaces.mozIJSSubScriptLoader).loadSubScript("chrome://communicator/content/pref/overrideHandler.js");
        
        const mimeTypes = "UMimTyp";
        var fileLocator = Components.classes["@mozilla.org/file/directory_service;1"].getService();
