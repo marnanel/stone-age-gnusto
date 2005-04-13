@@ -1,7 +1,7 @@
 // mozilla-glue.js || -*- Mode: Java; tab-width: 2; -*-
 // Interface between gnusto-lib.js and Mozilla. Needs some tidying.
 // Now uses the @gnusto.org/engine;1 component.
-// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.155 2005/04/08 07:34:37 naltrexone42 Exp $
+// $Header: /cvs/gnusto/src/gnusto/content/mozilla-glue.js,v 1.156 2005/04/13 17:09:29 naltrexone42 Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -1086,6 +1086,11 @@ function gnusto_error(n) {
 // already have a filename. Returns 0 if transcription
 // shouldn't go ahead (e.g. the user cancelled.)
 function glue__set_transcription(whether) {
+                if (engine!=null) {
+		  var flags = zGetByte(0x10);
+		} else {
+		  var flags = glue__transcription_on;	                             
+		}
 
 		if (whether && !glue__transcription_on) {
 
@@ -1126,6 +1131,7 @@ function glue__set_transcription(whether) {
 										output_stream(glue__transcription_filename,
 																	APPEND_CREATE_AND_WRITE_ONLY,
 																	PERMISSIONS);
+																	
 						} catch (e) {
 								gnusto_error(301, e);
 								return 0;
@@ -1137,9 +1143,13 @@ function glue__set_transcription(whether) {
 
 				glue__transcription_on = 1;
 
+				// We've got a file and it's valid-- go ahead and set the header bit to transcribe
+				if (engine!=null) {zSetByte(flags | 0x1, 0x10);}
+
 				return 1;
 
-		} else if (!whether && glue__transcription_on) {
+	} else if (!whether && glue__transcription_on) {
+		                //set the header bit to turn off transcription  
 
 				if (glue__transcription_streams.pop()!=glue__transcription_saved_target) {
 						gnusto_error(170,
@@ -1148,6 +1158,7 @@ function glue__set_transcription(whether) {
 				}
 				glue__transcription_on = 0;
 
+				if (engine!=null) {zSetByte(flags & ~0x1, 0x10);}
 
 				return 1;
 		}
@@ -1170,17 +1181,17 @@ function command_transcript() {
 				// Transcription's on; turn it off.
 
 				alert('Turning transcription off now.');
-				if (engine!=null) {zSetByte(flags & ~0x1, 0x10);}
-				glue__set_transcription(0);
-				menuItem.setAttribute('label','Start transcript...');
+//				if (engine!=null) {zSetByte(flags & ~0x1, 0x10);}
+				if (glue__set_transcription(0)) {
+					menuItem.setAttribute('label','Start transcript...');}
 
 		} else {
 
 				alert('Turning transcription on.');
 
-				if (engine!=null) {zSetByte(flags | 0x1, 0x10);}
-				glue__set_transcription(1);
-				menuItem.setAttribute('label', 'Stop Transcript');
+//				if (engine!=null) {zSetByte(flags | 0x1, 0x10);}
+				if (glue__set_transcription(1)) {
+					menuItem.setAttribute('label', 'Stop Transcript');}
 		}
 }
 
