@@ -4,7 +4,7 @@
 
 <!--
 
-$Header: /cvs/gnusto/src/gnusto/content/gnusto.xul,v 1.82 2005/04/08 07:34:37 naltrexone42 Exp $
+$Header: /cvs/gnusto/src/gnusto/content/gnusto.xul,v 1.83 2005/04/14 06:47:40 naltrexone42 Exp $
 
 Copyright (c) 2003 Thomas Thurman
 thomas@thurman.org.uk
@@ -121,6 +121,9 @@ function ensureHappiness() {
 
 ]]></script>
 
+<script type="application/x-javascript" src="chrome://gnusto/content/registerhelperapp.js"/>
+
+
 <!-- Basic support for the UI. Much of this was originally in the files below,
      and as that gets moved into gnusto-base.js the links below will disappear. -->
 <script type="application/x-javascript" src="chrome://gnusto/content/gnusto-base.js"/>
@@ -188,6 +191,7 @@ function ensureHappiness() {
 <menu id="tools-menu" label="Tools" accesskey="T">
 <menupopup>
 <menuitem label="Options" accesskey="O" oncommand="openDialog('gnustosettings.xul');"/>
+<menuitem label="Register Gnusto as Helper App" accesskey="O" oncommand="triple_register(true);"/>
 </menupopup>
 </menu>
 

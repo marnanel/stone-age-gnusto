@@ -7,6 +7,7 @@
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
 <script type="application/x-javascript" src="chrome://gnusto/content/gnustooverlay.js" />
+
    
   <menupopup id="menu_ToolsPopup">
     <menu id="gnustotop" label="&gnustoMenu.label;" position="7">
