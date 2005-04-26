@@ -1,7 +1,7 @@
 // datisi.js || -*- Mode: Java; tab-width: 2; -*-
 // Standard command library
 // 
-// $Header: /cvs/gnusto/src/gnusto/content/datisi.js,v 1.43 2005/02/09 05:23:13 naltrexone42 Exp $
+// $Header: /cvs/gnusto/src/gnusto/content/datisi.js,v 1.44 2005/04/26 01:50:31 naltrexone42 Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -25,6 +25,16 @@
 var sys__current_filename = '';
 
 ////////////////////////////////////////////////////////////////
+
+function leafName(filename) {
+        filename = filename.replace('\\', '/', 'g');
+        filename = filename.replace(':', '/', 'g');
+        var gn_index1 = filename.lastIndexOf("/") + 1;
+        var gn_index2 = filename.lastIndexOf(".");
+        if (gn_index2 < 0) { gn_index2 = filename.length - 1;}
+        return filename.substring(gn_index1, gn_index2);
+}
+
 
 function command_about(a) {
     // simple JS alert for now.
@@ -132,7 +142,7 @@ function sys_init() {
 
 		sys_update_recent_menu(sys_get_recent_list());
 
-		sys_show_story_title('');
+		sys_show_story_title();
 }
 
 ////////////////////////////////////////////////////////////////
@@ -276,9 +286,9 @@ function sys_update_recent_menu(recent) {
 				if (recent[i].length>0) command = 'command_open(\''+ recent[i][0].replace('\\','\\\\', 'g') + '\');';
 
 				if (recent[i].length>1)
-						label = recent[i][1];
+						label = leafName(recent[i][1]) + '  (' + recent[i][1] + ')'
 				else
-						label = recent[i][0];
+						label = leafName(recent[i][0]) + '  (' + recent[i][0] + ')';
 
 				if (element==null) {
 
@@ -303,21 +313,15 @@ function sys_update_recent_menu(recent) {
 
 var sys__story_name = '';
 
-function sys_show_story_title(newname) {
-
+function sys_show_story_title(newname) {		
+		alert(newname);
 		if (newname != null)
 				sys__story_name = newname;
 
 		if (sys__story_name == '') {
 				window.title = "Gnusto 0.8";
 		} else {
-			        sys__story_name = sys__story_name.replace('\\', '/', 'g');
-			        sys__story_name = sys__story_name.replace(':', '/', 'g');
-			        var gn_index1 = sys__story_name.lastIndexOf("/") + 1;
-			        var gn_index2 = sys__story_name.lastIndexOf(".");
-			        if (gn_index2 < 0) { gn_index2 = sys__story_name.length - 1;}
-			        sys__story_name = sys__story_name.substring(gn_index1, gn_index2);
-				window.title = sys__story_name + "  (" + newname + ") - Gnusto 0.8";
+				window.title = leafName(sys__story_name) + "  (" + newname + ") - Gnusto 0.8";
 		}
 }
 

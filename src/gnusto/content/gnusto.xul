@@ -4,7 +4,7 @@
 
 <!--
 
-$Header: /cvs/gnusto/src/gnusto/content/gnusto.xul,v 1.83 2005/04/14 06:47:40 naltrexone42 Exp $
+$Header: /cvs/gnusto/src/gnusto/content/gnusto.xul,v 1.84 2005/04/26 01:50:31 naltrexone42 Exp $
 
 Copyright (c) 2003 Thomas Thurman
 thomas@thurman.org.uk
@@ -49,7 +49,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
            compMgr.autoRegister(gnustoCompDir);
         }
      } catch (e) { alert(e);}                               				
-
 
 // Function to check that all the parts of the program loaded.
 // Each source file defines FOO_HAPPY = 1 at the end; if there
