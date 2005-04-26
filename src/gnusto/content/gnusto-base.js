@@ -1,4 +1,4 @@
-// $Header: /cvs/gnusto/src/gnusto/content/gnusto-base.js,v 1.7 2005/02/09 07:17:45 naltrexone42 Exp $
+// $Header: /cvs/gnusto/src/gnusto/content/gnusto-base.js,v 1.8 2005/04/26 21:58:53 naltrexone42 Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -59,11 +59,12 @@ function command_open(filename, nolaunch) {
     // FIXME: This list should be made from components;
     // it shouldn't be hard-coded like this.
     picker.init(window, "Select a story file", ifp.modeOpen);
-    picker.appendFilter("Z-code", "*.z?");
-    picker.appendFilter("Blorb", "*.blb");
-    picker.appendFilter("Glulx", "*.ulx");
-    picker.appendFilter("Saved game", "*.sav; *.qtz");
-    picker.appendFilter("Play-testing script", "*.grimoire");
+    picker.appendFilter("Z-code (*.z1 - *.z8, *.dat)", "*.z?; *.dat");
+    picker.appendFilter("Blorb (*.blb)", "*.blb");
+    picker.appendFilter("Glulx (*.ulx)", "*.ulx");
+    picker.appendFilter("Saved game (*.sav, *.qtz)", "*.sav; *.qtz");
+    picker.appendFilter("Play-testing script (*.grimoire)", "*.grimoire");
+    picker.appendFilter("Any File (*.*)", "*.*");
 
     if (picker.show()!=ifp.returnOK) return 0;
 
