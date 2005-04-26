@@ -1,7 +1,7 @@
 // datisi.js || -*- Mode: Java; tab-width: 2; -*-
 // Standard command library
 // 
-// $Header: /cvs/gnusto/src/gnusto/content/datisi.js,v 1.44 2005/04/26 01:50:31 naltrexone42 Exp $
+// $Header: /cvs/gnusto/src/gnusto/content/datisi.js,v 1.45 2005/04/26 01:58:13 naltrexone42 Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -314,7 +314,7 @@ function sys_update_recent_menu(recent) {
 var sys__story_name = '';
 
 function sys_show_story_title(newname) {		
-		alert(newname);
+
 		if (newname != null)
 				sys__story_name = newname;
 
