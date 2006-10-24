@@ -1,0 +1,6 @@
+content gnusto chrome/content/
+# overlay chrome://navigator/content/navigator.xul chrome://gnusto/chrome/content/gnustooverlay_fb.xul
+overlay chrome://browser/content/browser.xul chrome://gnusto/content/gnustooverlay_fb.xul
+locale  gnusto en-US chrome/locale/en-US/
+locale  gnusto en-GB chrome/locale/en-US/
+skin    gnusto classic/1.0 chrome/skin/
