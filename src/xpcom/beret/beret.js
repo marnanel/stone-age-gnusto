@@ -1,5 +1,5 @@
 // -*- Mode: Java; tab-width: 2; -*-
-// $Id: beret.js,v 1.21 2005/02/09 07:29:30 naltrexone42 Exp $
+// $Id: beret.js,v 1.22 2006/10/24 16:11:09 naltrexone42 Exp $
 //
 // Copyright (c) 2003 Thomas Thurman
 // thomas@thurman.org.uk
@@ -19,8 +19,8 @@
 
 ////////////////////////////////////////////////////////////////
 
-const CVS_VERSION = '$Date: 2005/02/09 07:29:30 $';
-const BERET_COMPONENT_ID = Components.ID("{ed0618e3-8b2b-4bc8-b1a8-13ae575efc60}");
+const CVS_VERSION = '$Date: 2006/10/24 16:11:09 $';
+const BERET_COMPONENT_ID = Components.ID("{7C016609-50CB-4E0F-80AC-F71D872A99DA}");
 const BERET_DESCRIPTION  = "Checks file magic and routes them accordingly";
 const BERET_CONTRACT_ID  = "@gnusto.org/beret;1";
 
